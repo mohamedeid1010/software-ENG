@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE 302 — Software Engineering Study Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070a;
+    --panel: rgba(255, 255, 255, 0.02);
+    --panel-hover: rgba(232, 184, 90, 0.06);
+    --border: rgba(232, 184, 90, 0.15);
+    --border-hover: rgba(232, 184, 90, 0.4);
+    --ink: #e9e6df;
+    --muted: #8c887f;
+    --gold: #e8b85a;
+    --gold-soft: #f4d28a;
+    --shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+    --shadow-glow: 0 0 25px rgba(232, 184, 90, 0.12);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Sora', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: 
+      radial-gradient(800px 500px at 50% -10%, rgba(232, 184, 90, 0.08), transparent 50%),
+      radial-gradient(600px 400px at 50% 110%, rgba(232, 184, 90, 0.04), transparent 50%);
+    padding: 40px 20px;
+  }
+
+  .portal {
+    max-width: 550px;
+    width: 100%;
+    text-align: center;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  header {
+    margin-bottom: 45px;
+  }
+
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold);
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold-soft);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .portal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 20px 28px;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .portal-btn span.label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+  }
+
+  .portal-btn span.num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+    background: rgba(232, 184, 90, 0.1);
+    border: 1px solid rgba(232, 184, 90, 0.2);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  .portal-btn span.arrow {
+    color: var(--muted);
+    font-size: 1.2rem;
+    transition: transform 0.25s ease, color 0.25s ease;
+  }
+
+  .portal-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    background: var(--panel-hover);
+    box-shadow: var(--shadow), var(--shadow-glow);
+  }
+
+  .portal-btn:hover span.arrow {
+    transform: translateX(6px);
+    color: var(--gold);
+  }
+
+  footer {
+    margin-top: 50px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="portal">
+  <header>
+    <span class="kicker">Misr University · CSE 302</span>
+    <h1>Software <em>Engineering</em></h1>
+    <div style="font-family: 'Tajawal', sans-serif; color: var(--gold-soft); font-size: 1.15rem; margin-top: -5px; margin-bottom: 8px; font-weight: 500;">أبو عيد بيمسي 👋</div>
+    <p class="subtitle">Study Portal & Hub</p>
+  </header>
+
+  <div class="menu">
+    <a href="lec 1 se.html" class="portal-btn">
+      <span class="label">
+        <span class="num">LEC 1</span>
+        SE Introduction & Foundations
+      </span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a href="lec 2 se.html" class="portal-btn">
+      <span class="label">
+        <span class="num">LEC 2</span>
+        Good Software & Professional Ethics
+      </span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a href="lec 3 se.html" class="portal-btn">
+      <span class="label">
+        <span class="num">LEC 3</span>
+        Software Process Models
+      </span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <footer>
+    FACULTY OF ENGINEERING · 2026
+  </footer>
+</div>
+
+</body>
+</html>

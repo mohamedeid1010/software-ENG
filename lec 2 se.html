@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CSE 302 — Software Engineering · Lecture 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Sora:wght@300;400;500;600;700&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --bg2:#101015;
+    --panel:#15151c;
+    --panel2:#1c1c25;
+    --ink:#e9e6df;
+    --muted:#9c988e;
+    --gold:#e8b85a;
+    --gold-soft:#f4d28a;
+    --gold-deep:#b8862f;
+    --line:rgba(232,184,90,0.18);
+    --line2:rgba(255,255,255,0.06);
+    --green:#7fc99a;
+    --red:#e08a7a;
+    --shadow:0 24px 60px -20px rgba(0,0,0,0.8);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Sora',sans-serif;line-height:1.65;
+    background-image:
+      radial-gradient(900px 500px at 80% -5%, rgba(232,184,90,0.08), transparent 60%),
+      radial-gradient(700px 500px at -10% 30%, rgba(232,184,90,0.05), transparent 55%);
+    background-attachment:fixed;
+  }
+  ::selection{background:var(--gold);color:#1a1408;}
+
+  /* layout */
+  .wrap{display:flex;max-width:1500px;margin:0 auto;}
+  nav.side{
+    width:280px;flex-shrink:0;position:sticky;top:0;height:100vh;
+    overflow-y:auto;padding:30px 18px;border-right:1px solid var(--line2);
+    background:linear-gradient(180deg,rgba(20,20,26,0.6),rgba(10,10,12,0.3));
+    backdrop-filter:blur(6px);
+  }
+  nav.side .logo{font-family:'Fraunces',serif;font-weight:900;font-size:1.45rem;color:var(--gold-soft);line-height:1.1;margin-bottom:4px;letter-spacing:-.5px;}
+  nav.side .logo span{color:var(--ink);}
+  nav.side .sub{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:24px;}
+  nav.side a{display:block;color:var(--muted);text-decoration:none;font-size:.86rem;padding:8px 12px;border-radius:9px;margin:2px 0;transition:.2s;border-left:2px solid transparent;}
+  nav.side a:hover{color:var(--ink);background:rgba(232,184,90,0.07);}
+  nav.side a.head{color:var(--gold);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;margin-top:18px;border:none;pointer-events:none;}
+  nav.side a.active{color:var(--gold-soft);border-left:2px solid var(--gold);background:rgba(232,184,90,0.09);}
+
+  main{flex:1;min-width:0;padding:0 clamp(20px,5vw,70px) 120px;}
+
+  /* hero */
+  header.hero{padding:90px 0 50px;border-bottom:1px solid var(--line);position:relative;}
+  .kicker{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;}
+  header.hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.6rem,6vw,4.6rem);line-height:0.98;margin:14px 0 10px;letter-spacing:-1.5px;}
+  header.hero h1 em{font-style:italic;color:var(--gold-soft);text-shadow:0 0 40px rgba(232,184,90,0.35);}
+  header.hero p.lead{max-width:640px;color:var(--muted);font-size:1.05rem;}
+  .ar{font-family:'Tajawal',sans-serif;direction:rtl;}
+  .hero-ar{font-family:'Tajawal',sans-serif;direction:rtl;color:var(--gold-soft);font-size:1.1rem;margin-top:18px;background:rgba(232,184,90,0.06);border:1px solid var(--line);border-radius:14px;padding:16px 20px;}
+
+  /* sections */
+  section{padding:60px 0 10px;border-bottom:1px solid var(--line2);scroll-margin-top:20px;}
+  .sec-tag{font-family:'JetBrains Mono',monospace;color:var(--gold-deep);font-size:.78rem;letter-spacing:2px;text-transform:uppercase;}
+  section h2{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(1.8rem,3.6vw,2.7rem);margin:6px 0 4px;letter-spacing:-.8px;line-height:1.05;}
+  section h2 .slide{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(232,184,90,0.12);color:var(--gold);padding:4px 9px;border-radius:7px;vertical-align:middle;margin-left:10px;letter-spacing:1px;}
+  section h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.4rem;color:var(--gold-soft);margin:34px 0 8px;}
+  section h4{font-size:1.05rem;color:var(--ink);margin:22px 0 6px;font-weight:600;}
+  p{margin:10px 0;}
+  .muted{color:var(--muted);}
+
+  /* child explainer */
+  .eli5{background:linear-gradient(135deg,rgba(232,184,90,0.1),rgba(232,184,90,0.03));border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:18px 0;position:relative;}
+  .eli5::before{content:"🧒 Think of it like this";font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:6px;}
+  .eli5 b{color:var(--gold-soft);}
+
+  /* arabic note */
+  .note{background:var(--panel);border-right:3px solid var(--gold);border-radius:12px;padding:14px 18px;margin:16px 0;font-family:'Tajawal',sans-serif;direction:rtl;color:#d9d4c8;font-size:1.02rem;}
+  .note b{color:var(--gold-soft);}
+
+  /* cards grid */
+  .grid{display:grid;gap:16px;margin:20px 0;}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+  .card{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:18px 20px;transition:.25s;}
+  .card:hover{border-color:var(--line);transform:translateY(-3px);box-shadow:var(--shadow);}
+  .card .ic{font-size:1.5rem;margin-bottom:6px;display:block;}
+  .card h5{margin:0 0 4px;font-size:1.05rem;color:var(--gold-soft);font-family:'Fraunces',serif;font-weight:600;}
+  .card p{margin:4px 0 0;font-size:.9rem;color:var(--muted);}
+  .card .ex{margin-top:8px;font-size:.8rem;color:var(--gold);font-style:italic;}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem;background:var(--panel);border-radius:14px;overflow:hidden;}
+  th{background:rgba(232,184,90,0.12);color:var(--gold-soft);text-align:left;padding:13px 16px;font-family:'Fraunces',serif;font-weight:600;font-size:.95rem;}
+  td{padding:13px 16px;border-top:1px solid var(--line2);vertical-align:top;color:#d4d0c6;}
+  td:first-child{color:var(--gold);font-weight:500;width:34%;}
+
+  /* diagrams */
+  .diagram{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px 22px;margin:22px 0;text-align:center;position:relative;overflow:hidden;}
+  .diagram .dt{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold-deep);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;}
+  .box{display:inline-block;background:var(--panel2);border:1.5px solid var(--gold);color:var(--gold-soft);padding:11px 18px;border-radius:10px;font-size:.9rem;font-weight:500;box-shadow:0 0 22px -6px rgba(232,184,90,0.4);}
+  .box.dim{border-color:var(--line2);color:var(--ink);box-shadow:none;background:var(--panel);}
+  .arrow{color:var(--gold);font-size:1.3rem;margin:0 6px;vertical-align:middle;}
+  .row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:10px 0;}
+  .layer{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;}
+  .layer .ll{font-size:.72rem;color:var(--gold-deep);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;text-align:left;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+  .chip{background:var(--panel2);border:1px solid var(--line2);color:#d4d0c6;padding:6px 12px;border-radius:8px;font-size:.8rem;}
+
+  /* SVG Diagram elements */
+  .svg-diagram {
+    max-width: 100%;
+    height: auto;
+    background: var(--bg2);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .svg-node {
+    fill: var(--panel2);
+    stroke: var(--line2);
+    stroke-width: 1.5px;
+    transition: all 0.3s ease;
+  }
+  .svg-node.active-node {
+    stroke: var(--gold);
+    fill: rgba(232, 184, 90, 0.08);
+  }
+  .svg-node.header-node {
+    fill: rgba(232, 184, 90, 0.04);
+    stroke: var(--line);
+  }
+  .svg-text {
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    fill: var(--ink);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .svg-text.active-text {
+    fill: var(--gold-soft);
+    font-weight: 600;
+  }
+  .svg-arrow-line {
+    stroke: var(--gold);
+    stroke-width: 2px;
+    fill: none;
+  }
+
+  /* triangle */
+  .tri-wrap{display:flex;justify-content:center;margin:20px 0;}
+
+  /* quiz */
+  .quiz{margin:22px 0;}
+  .q{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:18px 20px;margin:14px 0;}
+  .q-text{font-weight:500;margin:0 0 12px;color:var(--ink);font-size:.98rem;}
+  .q-text b{color:var(--gold);font-family:'JetBrains Mono',monospace;margin-right:6px;}
+  .opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line2);color:#d4d0c6;padding:10px 14px;border-radius:9px;margin:6px 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:.9rem;transition:.18s;}
+  .opt:hover{border-color:var(--gold);color:var(--ink);}
+  .opt.correct{background:rgba(127,201,154,0.16);border-color:var(--green);color:#cdeed8;}
+  .opt.wrong{background:rgba(224,138,122,0.14);border-color:var(--red);color:#f2d2cb;}
+  .opt .mark{float:right;font-weight:700;}
+  .q.done .opt{cursor:default;}
+  .q-fb{margin-top:10px;font-size:.85rem;color:var(--green);display:none;font-family:'Tajawal',sans-serif;direction:rtl;}
+  .q.done .q-fb{display:block;}
+
+  .quiz-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 0;}
+  .score{font-family:'JetBrains Mono',monospace;color:var(--gold);background:rgba(232,184,90,0.1);border:1px solid var(--line);padding:8px 16px;border-radius:10px;font-size:.9rem;}
+  .btn{background:var(--gold);color:#1a1408;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;font-size:.85rem;transition:.2s;}
+  .btn:hover{background:var(--gold-soft);box-shadow:0 0 24px -4px rgba(232,184,90,0.6);}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--gold);}
+  .btn.ghost:hover{background:rgba(232,184,90,0.08);box-shadow:none;}
+
+  /* key takeaways */
+  .keys{background:linear-gradient(135deg,rgba(232,184,90,0.12),transparent);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:24px 0;}
+  .keys .kt{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:.74rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  .keys ul{margin:0;padding-left:20px;}
+  .keys li{margin:8px 0;color:#d9d4c8;}
+  .keys li b{color:var(--gold-soft);}
+
+  footer{padding:50px 0 0;color:var(--muted);font-size:.85rem;text-align:center;}
+  footer .ar{display:inline-block;margin-top:8px;}
+
+  /* progress bar */
+  #prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold-deep),var(--gold-soft));width:0;z-index:99;box-shadow:0 0 10px var(--gold);}
+  .mobile-top{display:none;}
+  @media(max-width:980px){
+    nav.side{display:none;}
+    .wrap{flex-direction:column;}
+    .mobile-top{display:flex;padding:18px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,12,0.92);backdrop-filter:blur(8px);z-index:50;gap:10px;align-items:center;}
+    .mobile-top select{flex:1;background:var(--panel);color:var(--gold-soft);border:1px solid var(--line);padding:10px;border-radius:10px;font-family:'Sora';}
+  }
+
+  .back-btn-floating {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    text-decoration: none;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--line);
+    color: var(--gold-soft);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .back-btn-floating:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(232, 184, 90, 0.2);
+  }
+  @media(max-width:980px){
+    .back-btn-floating {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<a href="index.html" class="back-btn-floating">← Back to Portal</a>
+
+<div class="wrap">
+
+  <!-- SIDEBAR -->
+  <nav class="side">
+    <div class="logo">CSE 302<br><span>Software Engineering</span></div>
+    <div class="sub">Lecture 2 Study Hub</div>
+    <a href="index.html" style="background: rgba(232,184,90,0.08); border: 1px solid var(--line); color: var(--gold-soft); text-align: center; margin-bottom: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: .2s; text-decoration: none; border-radius: 9px; padding: 10px;">🏠 Back to Portal</a>
+    <a class="head">Lecture 2 — Sheet 2</a>
+    <a href="#s7" data-s>7 · Good Software (Op/Tr/Mt)</a>
+    <a href="#s8" data-s>8 · SE Ethics</a>
+    <a href="#s9" data-s>9 · Case Studies (4)</a>
+    <a href="#q2" data-s>★ Quiz — Sheet 2 MCQ</a>
+    <a class="head">Review</a>
+    <a href="#cram" data-s>⚡ Last-Minute Cram</a>
+  </nav>
+
+  <div class="mobile-top">
+    <a href="index.html" style="text-decoration:none;background:var(--panel);border:1px solid var(--line);color:var(--gold-soft);padding:10px 14px;border-radius:10px;font-family:'Sora';font-size:0.9rem;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.2s;">🏠 Back</a>
+    <select onchange="if(this.value)location.hash=this.value">
+      <option value="">📚 Jump to a section…</option>
+      <option value="#s7">7 · Good Software (Op/Tr/Mt)</option>
+      <option value="#s8">8 · SE Ethics</option>
+      <option value="#s9">9 · Case Studies</option>
+      <option value="#q2">★ Quiz Sheet 2</option>
+      <option value="#cram">⚡ Last-Minute Cram</option>
+    </select>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <header class="hero">
+      <div class="kicker">Misr University · Faculty of Engineering · Sommerville Ch.1</div>
+      <h1>Your <em>Final-Exam</em><br>Software Engineering Map</h1>
+      <p class="lead">Lecture 2 Good Software Attributes, Ethics &amp; Case Studies — explained in the simplest English, with diagrams, examples, and interactive quizzes for every MCQ.</p>
+      <div class="hero-ar">يا أبو عيد 👋 ده الجزء المخصص للمحاضرة الثانية وشيت 2. كل نقطة ليها قسم بالشرح بالإنجليزي السهل + ملاحظة بالعربي + رسمة + كويز تتمرّن عليه. بالتوفيق إن شاء الله 🤍</div>
+    </header>
+
+    <!-- ====== SECTION 7 ====== -->
+    <section id="s7">
+      <div class="sec-tag">Sheet 2 · Q1</div>
+      <h2>Characteristics of Good Software <span class="slide">Slides 7–9</span></h2>
+      <p>A software product is judged by <b>what it offers</b> and <b>how well it's used</b>. It's measured on <b>three grounds</b>: Operational, Transitional, Maintenance.</p>
+
+      <h3>① Operational — how well it works <em style="color:var(--muted)">while running</em></h3>
+      <div class="chips">
+        <span class="chip">Budget</span><span class="chip">Usability</span><span class="chip">Efficiency</span><span class="chip">Correctness</span>
+        <span class="chip">Functionality</span><span class="chip">Dependability</span><span class="chip">Security</span><span class="chip">Safety</span>
+      </div>
+
+      <h3>② Transitional — when moved from <em style="color:var(--muted)">one platform to another</em></h3>
+      <div class="chips">
+        <span class="chip">Portability</span><span class="chip">Interoperability</span><span class="chip">Reusability</span><span class="chip">Adaptability</span>
+      </div>
+
+      <h3>③ Maintenance — how well it <em style="color:var(--muted)">maintains itself</em> in a changing world</h3>
+      <div class="chips">
+        <span class="chip">Modularity</span><span class="chip">Maintainability</span><span class="chip">Flexibility</span><span class="chip">Scalability</span>
+      </div>
+
+      <div class="eli5">Think of a good <b>backpack</b>: <b>Operational</b> = it carries your books well right now. <b>Transitional</b> = it still works if you move to a new school / new country. <b>Maintenance</b> = you can fix a zipper or add pockets easily over time. Good software needs all three.</div>
+      <div class="note"><b>سؤال شبه مؤكد:</b> اشرح خصائص السوفتوير الجيد من حيث Operational / Transitional / Maintenance. احفظ الكلمات اللي تحت كل واحدة (مش لازم كلها، بس عارف الفكرة):<br>• Operational = شغّال دلوقتي كويس (usability, correctness, security, safety…).<br>• Transitional = ينتقل بين المنصّات (portability, reusability…).<br>• Maintenance = يتصان ويتطوّر بسهولة (modularity, scalability…).</div>
+      <p class="muted">In short: <b>Software engineering is a branch of computer science using well-defined engineering concepts to produce efficient, durable, scalable, in-budget, on-time software products.</b></p>
+    </section>
+
+    <!-- ====== SECTION 8 ====== -->
+    <section id="s8">
+      <div class="sec-tag">Sheet 2 · Q2</div>
+      <h2>Software Engineering Ethics <span class="slide">Slides 14–17</span></h2>
+      <p>SE involves <b>wider responsibilities than just technical skill</b>. Engineers must behave honestly & ethically. Ethical behaviour is <b>more than just obeying the law</b> — it means following morally correct principles.</p>
+
+      <h3>The ACM/IEEE Code of Ethics — 8 Principles</h3>
+      <p class="muted">US professional societies (ACM + IEEE) created this code. Members sign it. It has <b>8 principles</b>. Mnemonic: <b>P-C-P-J-M-P-C-S</b>.</p>
+      <div class="grid g2">
+        <div class="card"><span class="ic">1️⃣</span><h5>PUBLIC</h5><p>Act consistently with the <b>public interest</b>.</p></div>
+        <div class="card"><span class="ic">2️⃣</span><h5>CLIENT & EMPLOYER</h5><p>Act in their best interest — <b>consistent with the public interest</b>.</p></div>
+        <div class="card"><span class="ic">3️⃣</span><h5>PRODUCT</h5><p>Products & modifications meet the <b>highest professional standards</b>.</p></div>
+        <div class="card"><span class="ic">4️⃣</span><h5>JUDGMENT</h5><p>Maintain <b>integrity & independence</b> in professional judgment.</p></div>
+        <div class="card"><span class="ic">5️⃣</span><h5>MANAGEMENT</h5><p>Managers & leaders promote an <b>ethical approach</b> to management.</p></div>
+        <div class="card"><span class="ic">6️⃣</span><h5>PROFESSION</h5><p>Advance the <b>integrity & reputation</b> of the profession.</p></div>
+        <div class="card"><span class="ic">7️⃣</span><h5>COLLEAGUES</h5><p>Be <b>fair to and supportive</b> of colleagues.</p></div>
+        <div class="card"><span class="ic">8️⃣</span><h5>SELF</h5><p>Commit to <b>lifelong learning</b> & promote an ethical approach.</p></div>
+      </div>
+      <div class="mem">🧠 8 principles order → <span>"Please Call Patrick, Just Make Professional Colleagues Smile"</span></div>
+
+      <h3>Issues of Professional Responsibility</h3>
+      <div class="grid g4">
+        <div class="card"><h5>Confidentiality</h5><p>Respect employer/client confidentiality — <b>even without a signed agreement</b>.</p></div>
+        <div class="card"><h5>Competence</h5><p>Don't misrepresent your skill; don't accept work <b>beyond your competence</b>.</p></div>
+        <div class="card"><h5>Intellectual Property</h5><p>Know local laws (patents, copyright); <b>protect</b> employers'/clients' IP.</p></div>
+        <div class="card"><h5>Computer Misuse</h5><p>Don't misuse others' computers — from <b>trivial</b> (gaming at work) to <b>serious</b> (spreading viruses).</p></div>
+      </div>
+
+      <h3>Ethical Dilemmas (slide 17)</h3>
+      <div class="grid g3">
+        <div class="card"><span class="ic">⚖️</span><h5>Disagreement</h5><p>Disagreeing <b>in principle</b> with senior management's policies.</p></div>
+        <div class="card"><span class="ic">🧪</span><h5>Untested release</h5><p>Employer acts unethically — releases a <b>safety-critical system without finishing testing</b>.</p></div>
+        <div class="card"><span class="ic">💣</span><h5>Weapons</h5><p>Being asked to participate in <b>military weapons or nuclear systems</b>.</p></div>
+      </div>
+      <div class="note"><b>أهم نقطة للأخلاقيات:</b> الكود بيتبع ACM/IEEE وفيه 8 مبادئ — وأهم مبدأ لو اتسألت عن «الأولوية وقت تعارض المصالح» = <b>مصلحة العامة (public health, safety, welfare)</b> ومصلحة العميل/المستخدم. وممنوع تحطّ مصلحتك الشخصية فوق الكل.</div>
+    </section>
+
+    <!-- ====== SECTION 9 ====== -->
+    <section id="s9">
+      <div class="sec-tag">Sheet 2 · Q3</div>
+      <h2>The 4 Case Studies <span class="slide">Slides 18–41</span></h2>
+      <p>The book uses these example systems. For each: know its <b>meaning, its block diagram, and the key arguments/concerns</b>.</p>
+
+      <!-- INSULIN -->
+      <h3>① Insulin Pump Control System 💉</h3>
+      <p><b>Meaning:</b> an <b>embedded, safety-critical</b> system inside an insulin pump for diabetics. It reads blood sugar and injects the right insulin dose automatically.</p>
+      <ul class="muted" style="margin-top:4px">
+        <li>Collects data from a <b>blood sugar sensor</b>, calculates insulin needed (based on the <b>rate of change</b> of sugar).</li>
+        <li>Sends signals to a <b>micro-pump</b> to deliver the correct dose.</li>
+        <li><b>Safety-critical:</b> low sugar → coma/death; high sugar → long-term eye & kidney damage.</li>
+      </ul>
+      <div class="diagram">
+        <div class="dt">Slide 20 — Hardware architecture (Textbook Version)</div>
+        <svg viewBox="0 0 600 360" class="svg-diagram">
+          <defs>
+            <marker id="arrow-book" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold)"/>
+            </marker>
+          </defs>
+          
+          <!-- Nodes -->
+          <rect x="20" y="15" width="560" height="30" rx="4" class="svg-node header-node" />
+          <text x="300" y="34" class="svg-text" style="font-weight:bold;">Insulin reservoir</text>
+          
+          <rect x="60" y="75" width="120" height="45" rx="4" class="svg-node" />
+          <text x="120" y="101" class="svg-text">Needle assembly</text>
+          
+          <rect x="250" y="75" width="100" height="45" rx="4" class="svg-node active-node" />
+          <text x="300" y="101" class="svg-text active-text">Pump</text>
+          
+          <rect x="440" y="75" width="100" height="45" rx="4" class="svg-node" />
+          <text x="490" y="101" class="svg-text">Clock</text>
+          
+          <rect x="60" y="160" width="100" height="45" rx="4" class="svg-node" />
+          <text x="110" y="186" class="svg-text">Sensor</text>
+          
+          <rect x="240" y="160" width="120" height="45" rx="4" class="svg-node active-node" />
+          <text x="300" y="186" class="svg-text active-text">Controller</text>
+          
+          <rect x="440" y="160" width="100" height="45" rx="4" class="svg-node" />
+          <text x="490" y="186" class="svg-text">Alarm</text>
+          
+          <rect x="175" y="245" width="110" height="45" rx="4" class="svg-node" />
+          <text x="230" y="271" class="svg-text">Display 1</text>
+          
+          <rect x="315" y="245" width="110" height="45" rx="4" class="svg-node" />
+          <text x="370" y="271" class="svg-text">Display 2</text>
+          
+          <rect x="20" y="315" width="560" height="30" rx="4" class="svg-node header-node" />
+          <text x="300" y="334" class="svg-text" style="font-weight:bold;">Power supply</text>
+          
+          <!-- Connections / Arrows -->
+          <line x1="290" y1="45" x2="290" y2="75" class="svg-arrow-line" style="marker-end:none;" />
+          <line x1="310" y1="45" x2="310" y2="75" class="svg-arrow-line" style="marker-end:none;" />
+          <path d="M 180 97.5 L 240 97.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+          <path d="M 440 105 L 355 160" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+          <path d="M 160 182.5 L 230 182.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+          <path d="M 300 160 L 300 130" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+          <path d="M 360 182.5 L 430 182.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+          <path d="M 300 205 L 300 225" class="svg-arrow-line" style="marker-end:none;" />
+          <path d="M 230 225 L 370 225" class="svg-arrow-line" style="marker-end:none;" />
+          <path d="M 230 225 L 230 237.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+          <path d="M 370 225 L 370 237.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
+        </svg>
+      </div>
+      <div class="diagram">
+        <div class="dt">Slide 21 — Activity model (Textbook Version)</div>
+        <svg viewBox="0 0 920 380" class="svg-diagram">
+          <defs>
+            <marker id="arrow-act" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold)"/>
+            </marker>
+          </defs>
+          
+          <circle cx="135" cy="75" r="10" fill="var(--gold-soft)" />
+          
+          <rect x="180" y="50" width="80" height="50" rx="2" class="svg-node" />
+          <text x="220" y="79" class="svg-text" style="font-size: 11px;">Blood sensor</text>
+          
+          <rect x="300" y="50" width="160" height="50" rx="15" class="svg-node active-node" />
+          <text x="380" y="74" class="svg-text" style="font-size: 11px;">Analyse sensor</text>
+          <text x="380" y="89" class="svg-text" style="font-size: 11px;">reading</text>
+          
+          <rect x="500" y="50" width="80" height="50" rx="2" class="svg-node" />
+          <text x="540" y="79" class="svg-text" style="font-size: 11px;">Blood sugar</text>
+          
+          <rect x="620" y="50" width="120" height="50" rx="15" class="svg-node active-node" />
+          <text x="680" y="79" class="svg-text active-text" style="font-size: 11px;">Compute insulin</text>
+          
+          <rect x="780" y="50" width="80" height="50" rx="2" class="svg-node" />
+          <text x="820" y="71" class="svg-text" style="font-size: 11px;">Insulin</text>
+          <text x="820" y="86" class="svg-text" style="font-size: 11px;">log</text>
+
+          <rect x="640" y="140" width="80" height="50" rx="2" class="svg-node" />
+          <text x="680" y="161" class="svg-text" style="font-size: 11px;">Insulin</text>
+          <text x="680" y="176" class="svg-text" style="font-size: 11px;">dose</text>
+
+          <line x1="600" y1="220" x2="760" y2="220" class="svg-arrow-line" style="stroke-width: 6px; marker-end: none;" />
+
+          <rect x="730" y="255" width="100" height="50" rx="15" class="svg-node" />
+          <text x="780" y="284" class="svg-text" style="font-size: 11px;">Log dose</text>
+          
+          <rect x="480" y="255" width="160" height="50" rx="15" class="svg-node active-node" />
+          <text x="560" y="279" class="svg-text active-text" style="font-size: 11px;">Compute pump</text>
+          <text x="560" y="294" class="svg-text active-text" style="font-size: 11px;">commands</text>
+          
+          <rect x="360" y="255" width="80" height="50" rx="2" class="svg-node" />
+          <text x="400" y="280" class="svg-text" style="font-size: 11px;">Pump data</text>
+          
+          <rect x="180" y="255" width="140" height="50" rx="15" class="svg-node active-node" />
+          <text x="250" y="279" class="svg-text active-text" style="font-size: 11px;">Control insulin</text>
+          <text x="250" y="294" class="svg-text active-text" style="font-size: 11px;">pump</text>
+          
+          <rect x="60" y="255" width="80" height="50" rx="2" class="svg-node" />
+          <text x="100" y="276" class="svg-text" style="font-size: 11px;">Insulin</text>
+          <text x="100" y="291" class="svg-text" style="font-size: 11px;">pump</text>
+
+          <circle cx="25" cy="280" r="12" fill="none" stroke="var(--gold)" stroke-width="2" />
+          <circle cx="25" cy="280" r="7" fill="var(--gold-soft)" />
+
+          <path d="M 145 75 L 170 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 260 75 L 290 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 460 75 L 490 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 580 75 L 610 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 780 75 L 750 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+
+          <path d="M 680 100 L 680 130" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 680 190 L 680 210" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+
+          <path d="M 720 220 L 760 245" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 820 255 L 820 110" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 640 220 L 590 245" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          
+          <path d="M 480 280 L 450 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 360 280 L 330 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 180 280 L 330 280" style="display:none;" />
+          <path d="M 180 280 L 150 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+          <path d="M 60 280 L 47 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
+        </svg>
+      </div>
+      <div class="eli5">It's like a <b>smart thermostat for your blood</b>: it reads the level, decides how much "fix" to inject, and acts — but because a mistake can kill, it must be <b>extremely reliable</b>.</div>
+
+      <!-- MHC-PMS -->
+      <h3>② MHC-PMS — Mental Health Care Patient Management System 🏥</h3>
+      <p><b>Meaning:</b> a <b>medical information system</b> that stores info about mental-health patients and their treatments. Used in clinics, hospitals, and community centres.</p>
+      <ul class="muted" style="margin-top:4px">
+        <li>Uses a <b>centralized patient database</b>, but also runs on a PC so it works at sites <b>without secure network</b> (download local copies when disconnected).</li>
+        <li><b>Goals:</b> generate management info for health-service targets + give medical staff timely info to support treatment.</li>
+        <li><b>Key features:</b> Individual care management · Patient monitoring (warnings) · Administrative reporting.</li>
+      </ul>
+      <div class="diagram">
+        <div class="dt">Slide 26 — Organization of the MHC-PMS (Textbook Version)</div>
+        <svg viewBox="0 0 600 280" class="svg-diagram">
+          <defs>
+            <marker id="arrow-bi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold)"/>
+            </marker>
+          </defs>
+          
+          <rect x="50" y="30" width="120" height="50" rx="2" class="svg-node" />
+          <text x="110" y="54" class="svg-text" style="font-size: 11px;">MHC-PMS</text>
+          <text x="110" y="69" class="svg-text" style="font-size: 11px;">local</text>
+          
+          <rect x="240" y="30" width="120" height="50" rx="2" class="svg-node" />
+          <text x="300" y="54" class="svg-text" style="font-size: 11px;">MHC-PMS</text>
+          <text x="300" y="69" class="svg-text" style="font-size: 11px;">local</text>
+          
+          <rect x="430" y="30" width="120" height="50" rx="2" class="svg-node" />
+          <text x="490" y="54" class="svg-text" style="font-size: 11px;">MHC-PMS</text>
+          <text x="490" y="69" class="svg-text" style="font-size: 11px;">local</text>
+
+          <rect x="180" y="115" width="240" height="50" rx="2" class="svg-node active-node" />
+          <text x="300" y="144" class="svg-text active-text" style="font-size: 11px;">MHC-PMS server</text>
+
+          <rect x="140" y="200" width="320" height="50" rx="2" class="svg-node" />
+          <text x="300" y="229" class="svg-text" style="font-size: 11px;">Patient database</text>
+
+          <path d="M 125 80 L 190 115" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
+          <path d="M 300 80 L 300 115" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
+          <path d="M 475 80 L 410 115" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
+          <path d="M 240 165 L 240 200" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
+          <path d="M 360 165 L 360 200" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
+        </svg>
+      </div>
+      <h4>Concerns (slide 28)</h4>
+      <div class="grid g2">
+        <div class="card"><span class="ic">🔒</span><h5>Privacy</h5><p>Patient info must be <b>confidential</b> — never disclosed to anyone except authorised staff & the patient.</p></div>
+        <div class="card"><span class="ic">🚨</span><h5>Safety</h5><p>Some illnesses make patients suicidal/dangerous → system should <b>warn staff</b>. Must be <b>available</b> or care is compromised.</p></div>
+      </div>
+
+      <!-- WEATHER -->
+      <h3>③ Wilderness Weather Station 🌦️</h3>
+      <p><b>Meaning:</b> a <b>data-collection</b> system. A government deploys hundreds of stations in remote areas to measure <b>temperature, pressure, sunshine, rainfall, wind speed & direction</b> over 24-hour periods.</p>
+      <div class="diagram">
+        <div class="dt">Slide 30 — The weather station's environment (3 systems)</div>
+        <div class="row"><span class="box">«system» Weather station</span><span class="arrow">—</span><span class="box dim">«system» Data management & archiving</span></div>
+        <div class="row"><span class="arrow">|</span></div>
+        <div class="row"><span class="box dim">«system» Station maintenance</span></div>
+      </div>
+      <div class="grid g3">
+        <div class="card"><h5>Weather station system</h5><p>Collects weather data, does initial processing, <b>transmits</b> it to the management system.</p></div>
+        <div class="card"><h5>Data management & archiving</h5><p>Collects data from <b>all</b> stations, processes, analyses & <b>archives</b> it.</p></div>
+        <div class="card"><h5>Station maintenance</h5><p>Communicates <b>by satellite</b> to monitor station health & report problems.</p></div>
+      </div>
+      <p class="muted"><b>Additional functionality:</b> monitor instruments & report faults · manage power (charge batteries, shut generators in high wind) · support <b>dynamic reconfiguration</b> (swap in backup instruments / new software versions).</p>
+
+      <!-- ILEARN -->
+      <h3>④ iLearn — Digital Learning Environment 📚</h3>
+      <p><b>Meaning:</b> a <b>service-oriented</b> educational framework. Teachers & learners pick the tools they need (spreadsheets, VLE for homework, games, simulations). Every component is a <b>replaceable service</b>, so it updates incrementally and can be configured for different groups (young kids, senior students).</p>
+      <div class="diagram">
+        <div class="dt">Slide 39 — iLearn layered architecture</div>
+        <div class="layer"><div class="ll">User interface</div><div class="chips"><span class="chip">Browser-based UI</span><span class="chip">iLearn app</span></div></div>
+        <div class="layer"><div class="ll">Configuration services</div><div class="chips"><span class="chip">Group mgmt</span><span class="chip">Application mgmt</span><span class="chip">Identity mgmt</span></div></div>
+        <div class="layer"><div class="ll">Application services</div><div class="chips"><span class="chip">Email</span><span class="chip">Messaging</span><span class="chip">Video conf.</span><span class="chip">Word processing</span><span class="chip">Spreadsheet</span><span class="chip">VLE</span><span class="chip">Simulation</span><span class="chip">Archives</span></div></div>
+        <div class="layer"><div class="ll">Utility services</div><div class="chips"><span class="chip">Authentication</span><span class="chip">Logging & monitoring</span><span class="chip">Interfacing</span><span class="chip">User storage</span><span class="chip">Search</span></div></div>
+      </div>
+      <div class="grid g3">
+        <div class="card"><h5>Utility services</h5><p>Basic <b>application-independent</b> functions used by other services.</p></div>
+        <div class="card"><h5>Application services</h5><p>Specific apps (email, conferencing) + educational content.</p></div>
+        <div class="card"><h5>Configuration services</h5><p>Adapt the environment & define how services are <b>shared</b> between students/teachers/parents.</p></div>
+      </div>
+      <p class="muted"><b>Service integration:</b> <b>Integrated services</b> offer an <b>API</b> (direct service-to-service talk). <b>Independent services</b> are accessed only through the browser; sharing needs explicit user actions like copy/paste, and may require re-authentication.</p>
+
+      <div class="keys">
+        <div class="kt">Match each case to its type 🔑</div>
+        <ul>
+          <li><b>Insulin pump</b> → Embedded / Medical device / <b>safety-critical</b>.</li>
+          <li><b>MHC-PMS</b> → Information system / safety-critical (privacy + safety concerns).</li>
+          <li><b>Weather station</b> → <b>Data collection / environmental monitoring</b>.</li>
+          <li><b>iLearn</b> → <b>Educational</b>, service-oriented system.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== QUIZ 2 ====== -->
+    <section id="q2">
+      <div class="sec-tag">Sheet 2 · Q4</div>
+      <h2>★ Quiz — Sheet 2 (Ethics + Cases)</h2>
+      <p class="muted">Duplicate questions from the sheet are removed so you train on the unique ones.</p>
+      <div class="quiz-bar">
+        <span class="score" id="score2">Score: 0 / 18</span>
+        <button class="btn ghost" onclick="resetQuiz('quiz2','score2')">↺ Reset</button>
+        <button class="btn ghost" onclick="revealAll('quiz2','score2')">👁 Reveal all</button>
+      </div>
+      <div class="quiz" id="quiz2">
+        <div class="q" data-a="B"><p class="q-text"><b>1</b>The ACM-IEEE SE Code of Ethics primarily aims to promote?</p>
+          <button class="opt" data-o="A">A) Ethical hacking techniques</button>
+          <button class="opt" data-o="B">B) Integrity and professionalism in software engineering</button>
+          <button class="opt" data-o="C">C) Intellectual property infringement</button>
+          <button class="opt" data-o="D">D) Unethical business practices</button>
+          <div class="q-fb">يعزّز النزاهة والاحترافية في هندسة البرمجيات.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>2</b>Which is NOT one of the key ethical principles?</p>
+          <button class="opt" data-o="A">A) Public</button>
+          <button class="opt" data-o="B">B) Professional</button>
+          <button class="opt" data-o="C">C) Organizational</button>
+          <button class="opt" data-o="D">D) Personal</button>
+          <div class="q-fb">"Organizational" مش من المبادئ الثمانية.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>3</b>Primary purpose of the Code of Ethics?</p>
+          <button class="opt" data-o="A">A) To promote the interests of SE companies</button>
+          <button class="opt" data-o="B">B) To ensure compliance with government regulations</button>
+          <button class="opt" data-o="C">C) To guide ethical decision-making in SE practice</button>
+          <button class="opt" data-o="D">D) To restrict competition within the industry</button>
+          <div class="q-fb">إرشاد اتخاذ القرار الأخلاقي في الممارسة.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>4</b>When facing conflicting interests, engineers should prioritize?</p>
+          <button class="opt" data-o="A">A) Their personal interests</button>
+          <button class="opt" data-o="B">B) The interests of their employer</button>
+          <button class="opt" data-o="C">C) The interests of their clients or users</button>
+          <button class="opt" data-o="D">D) The interests of their colleagues</button>
+          <div class="q-fb">الأولوية لمصلحة العميل/المستخدم.</div></div>
+
+        <div class="q" data-a="D"><p class="q-text"><b>5</b>Which is NOT a fundamental principle?</p>
+          <button class="opt" data-o="A">A) Maintaining professional competence</button>
+          <button class="opt" data-o="B">B) Acting with honesty and integrity</button>
+          <button class="opt" data-o="C">C) Avoiding harm to others</button>
+          <button class="opt" data-o="D">D) Promoting personal interests above all else</button>
+          <div class="q-fb">تقديم المصلحة الشخصية فوق الكل = غلط أخلاقيًا.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>6</b>Engineers should strive to do what, in relation to their work?</p>
+          <button class="opt" data-o="A">A) Maximize profits for their employer</button>
+          <button class="opt" data-o="B">B) Minimize their workload</button>
+          <button class="opt" data-o="C">C) Ensure that their work serves the public interest</button>
+          <button class="opt" data-o="D">D) Prioritize their personal advancement</button>
+          <div class="q-fb">يخدم المصلحة العامة.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>7</b>Role of confidentiality in the Code?</p>
+          <button class="opt" data-o="A">A) Not addressed</button>
+          <button class="opt" data-o="B">B) Prioritized over all else</button>
+          <button class="opt" data-o="C">C) Balanced with other ethical responsibilities</button>
+          <button class="opt" data-o="D">D) Optional for engineers</button>
+          <div class="q-fb">متوازنة مع باقي المسؤوليات الأخلاقية.</div></div>
+
+        <div class="q" data-a="B"><p class="q-text"><b>8</b>Conflicts of interest should be…?</p>
+          <button class="opt" data-o="A">A) Unavoidable and not disclosed</button>
+          <button class="opt" data-o="B">B) Disclosed and managed appropriately</button>
+          <button class="opt" data-o="C">C) Always resolved in favor of the employer</button>
+          <button class="opt" data-o="D">D) Ignored in favor of personal gain</button>
+          <div class="q-fb">يتم الإفصاح عنها وإدارتها بشكل سليم.</div></div>
+
+        <div class="q" data-a="B"><p class="q-text"><b>9</b>In relation to colleagues, engineers should?</p>
+          <button class="opt" data-o="A">A) Undermine them to advance their career</button>
+          <button class="opt" data-o="B">B) Promote a positive environment & treat them with respect</button>
+          <button class="opt" data-o="C">C) Compete aggressively for promotions</button>
+          <button class="opt" data-o="D">D) Avoid collaborating to stay independent</button>
+          <div class="q-fb">احترام الزملاء وبيئة عمل إيجابية.</div></div>
+
+        <div class="q" data-a="B"><p class="q-text"><b>10</b>Significance of the Code for professionals?</p>
+          <button class="opt" data-o="A">A) Imposes legal obligations</button>
+          <button class="opt" data-o="B">B) Provides guidance for ethical decision-making in practice</button>
+          <button class="opt" data-o="C">C) Promotes unethical behavior</button>
+          <button class="opt" data-o="D">D) Restricts new technologies</button>
+          <div class="q-fb">يقدّم إرشادًا للقرار الأخلاقي.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>11</b>When facing ethical dilemmas, engineers prioritize?</p>
+          <button class="opt" data-o="A">A) Compliance with company policies</button>
+          <button class="opt" data-o="B">B) Adherence to industry standards</button>
+          <button class="opt" data-o="C">C) Public health, safety, and welfare</button>
+          <button class="opt" data-o="D">D) Maximizing personal profit</button>
+          <div class="q-fb">صحة وسلامة ورفاهية العامة فوق أي شيء.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>12</b>Role of integrity in the Code?</p>
+          <button class="opt" data-o="A">A) Optional for engineers</button>
+          <button class="opt" data-o="B">B) Subordinate to professional success</button>
+          <button class="opt" data-o="C">C) Essential for maintaining public trust and confidence</button>
+          <button class="opt" data-o="D">D) Mainly about protecting personal interests</button>
+          <div class="q-fb">النزاهة أساسية لثقة الجمهور.</div></div>
+
+        <div class="q" data-a="B"><p class="q-text"><b>13</b>Example of a safety-critical software application?</p>
+          <button class="opt" data-o="A">A) Social media platform</button>
+          <button class="opt" data-o="B">B) Mental health patient management system</button>
+          <button class="opt" data-o="C">C) E-commerce website</button>
+          <button class="opt" data-o="D">D) Personal blog</button>
+          <div class="q-fb">نظام إدارة مرضى الصحة النفسية = safety-critical.</div></div>
+
+        <div class="q" data-a="B"><p class="q-text"><b>14</b>An insulin pump is an example of what type of software?</p>
+          <button class="opt" data-o="A">A) Entertainment software</button>
+          <button class="opt" data-o="B">B) Medical device software</button>
+          <button class="opt" data-o="C">C) Educational software</button>
+          <button class="opt" data-o="D">D) Financial software</button>
+          <div class="q-fb">سوفتوير جهاز طبي.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>15</b>Primary purpose of a mental health patient management system?</p>
+          <button class="opt" data-o="A">A) Manage financial transactions</button>
+          <button class="opt" data-o="B">B) Provide educational resources</button>
+          <button class="opt" data-o="C">C) Monitor & track patient information and treatment plans</button>
+          <button class="opt" data-o="D">D) Control weather monitoring systems</button>
+          <div class="q-fb">متابعة معلومات المرضى وخطط العلاج.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>16</b>Potential risk of a mental health patient management system?</p>
+          <button class="opt" data-o="A">A) Increased patient safety</button>
+          <button class="opt" data-o="B">B) Improved treatment outcomes</button>
+          <button class="opt" data-o="C">C) Breach of patient confidentiality</button>
+          <button class="opt" data-o="D">D) Enhanced communication between providers</button>
+          <div class="q-fb">الخطر = اختراق سرية بيانات المريض.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>17</b>A wilderness weather station is an example of what software?</p>
+          <button class="opt" data-o="A">A) Entertainment software</button>
+          <button class="opt" data-o="B">B) Medical device software</button>
+          <button class="opt" data-o="C">C) Environmental monitoring software</button>
+          <button class="opt" data-o="D">D) Financial software</button>
+          <div class="q-fb">سوفتوير مراقبة بيئية.</div></div>
+
+        <div class="q" data-a="C"><p class="q-text"><b>18</b>What type of software is an iLearn digital learning system?</p>
+          <button class="opt" data-o="A">A) Entertainment software</button>
+          <button class="opt" data-o="B">B) Medical device software</button>
+          <button class="opt" data-o="C">C) Educational software</button>
+          <button class="opt" data-o="D">D) Financial software</button>
+          <div class="q-fb">سوفتوير تعليمي.</div></div>
+      </div>
+    </section>
+
+    <!-- ====== CRAM ====== -->
+    <section id="cram">
+      <div class="sec-tag">Final Review</div>
+      <h2>⚡ Last-Minute Cram Sheet</h2>
+      <p class="muted">Read this in the 30 minutes before the exam.</p>
+      <div class="keys">
+        <div class="kt">The 12 facts you must not lose marks on</div>
+        <ul>
+          <li><b>Software</b> = programs + data + documentation (system & user).</li>
+          <li><b>SE</b> = engineering discipline → <b>all aspects of software production</b>.</li>
+          <li><b>4 SE activities</b> = Specification · Development · Validation · Evolution.</li>
+          <li><b>4 good-software attributes</b> = Maintainability · Dependability & Security · Efficiency · Acceptability.</li>
+          <li><b>3 design concerns</b> = Time · Cost · Quality (the triangle).</li>
+          <li><b>Costs</b> ≈ 60% development, 40% testing; evolution often &gt; development.</li>
+          <li><b>3 crises</b> = Scotland flights 2009 · Ariane 5 (overflow, 36.7s) · London Ambulance 1992 (46 deaths).</li>
+          <li><b>8 app types</b> incl. stand-alone, embedded (most common), systems of systems.</li>
+          <li><b>Good software grounds</b> = Operational · Transitional · Maintenance.</li>
+          <li><b>Ethics</b> = ACM/IEEE, <b>8 principles</b>; priority = <b>public health, safety & welfare</b>.</li>
+          <li><b>Cases</b> = Insulin pump (embedded/medical, safety-critical) · MHC-PMS (info, privacy+safety) · Weather station (data collection) · iLearn (educational, service-oriented).</li>
+          <li><b>SE diversity</b> = no universal set of techniques for all software.</li>
+        </ul>
+      </div>
+      <div class="note" style="border-right-color:var(--green)">يا أبو عيد، لو ذاكرت الـ 12 نقطة دول كويس + حليت الكويزين مرتين، إنت كده مغطي الفينال بإذن الله. ركّز على: الجداول (slides 8–9)، المثلث (Time/Cost/Quality)، التلات أزمات بالأرقام، الـ 8 مبادئ أخلاقية، والـ 4 case studies وكل واحدة نوعها إيه. ربنا يوفقك 🤍</div>
+    </section>
+
+    <footer>
+      CSE 302 · Software Engineering · Lecture 2 — built for أبو عيد.<br>
+      Based on Sommerville (Ch.1) lecture slides & Sheet 2.
+      <span class="ar">مذاكرة موفقة وإن شاء الله الفينال يبقى سهل عليك.</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // progress bar
+  const prog=document.getElementById('prog');
+  window.addEventListener('scroll',()=>{
+    const h=document.documentElement;
+    const p=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+    prog.style.width=p+'%';
+  });
+
+  // active nav
+  const links=[...document.querySelectorAll('nav.side a[data-s]')];
+  const secs=links.map(l=>document.querySelector(l.getAttribute('href')));
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const id='#'+e.target.id;
+        links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')===id));
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  secs.forEach(s=>s&&io.observe(s));
+
+  // quiz logic
+  document.querySelectorAll('.quiz').forEach(quiz=>{
+    quiz.addEventListener('click',e=>{
+      const opt=e.target.closest('.opt');
+      if(!opt) return;
+      const q=opt.closest('.q');
+      if(q.classList.contains('done')) return;
+      const ans=q.dataset.a;
+      const picked=opt.dataset.o;
+      q.classList.add('done');
+      q.querySelectorAll('.opt').forEach(o=>{
+        if(o.dataset.o===ans){o.classList.add('correct');o.querySelector('.mark')||o.insertAdjacentHTML('beforeend','<span class="mark">✓</span>');}
+        if(o.dataset.o===picked && picked!==ans){o.classList.add('wrong');o.insertAdjacentHTML('beforeend','<span class="mark">✗</span>');}
+      });
+      updateScore(quiz);
+    });
+  });
+
+  function updateScore(quiz){
+    const total=quiz.querySelectorAll('.q').length;
+    let correct=0;
+    quiz.querySelectorAll('.q.done').forEach(q=>{
+      const picked=q.querySelector('.opt.wrong');
+      if(!picked) correct++;
+    });
+    const scoreEl=document.getElementById('score2');
+    scoreEl.textContent='Score: '+correct+' / '+total;
+  }
+
+  function resetQuiz(id,scoreId){
+    const quiz=document.getElementById(id);
+    quiz.querySelectorAll('.q').forEach(q=>{
+      q.classList.remove('done');
+      q.querySelectorAll('.opt').forEach(o=>{o.classList.remove('correct','wrong');const m=o.querySelector('.mark');if(m)m.remove();});
+    });
+    document.getElementById(scoreId).textContent='Score: 0 / '+quiz.querySelectorAll('.q').length;
+  }
+
+  function revealAll(id,scoreId){
+    const quiz=document.getElementById(id);
+    quiz.querySelectorAll('.q').forEach(q=>{
+      q.classList.add('done');
+      const ans=q.dataset.a;
+      q.querySelectorAll('.opt').forEach(o=>{
+        o.classList.remove('wrong');
+        if(o.dataset.o===ans && !o.classList.contains('correct')){o.classList.add('correct');o.insertAdjacentHTML('beforeend','<span class="mark">✓</span>');}
+      });
+    });
+    document.getElementById(scoreId).textContent='Answers revealed';
+  }
+</script>
+</body>
+</html>

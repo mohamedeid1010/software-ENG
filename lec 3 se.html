@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CSE 302 · رحلة نماذج البرمجيات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080810;--ink:#e8e4db;--muted:#7a7670;
+  --gold:#e8b85a;--gold2:#f4d28a;--gold3:#b8862f;
+  --red:#e07a7a;--green:#7ac99a;--blue:#7ab0e8;
+  --panel:rgba(255,255,255,0.04);--border:rgba(232,184,90,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Tajawal',sans-serif;font-size:1.15rem;line-height:1.9;
+  overflow-x:hidden;
+}
+
+/* ── PROGRESS ── */
+#bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2));width:0;z-index:100;transition:width .1s;}
+
+/* ── CHAPTER NAV ── */
+#chapterNav{
+  position:fixed;top:50%;right:20px;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:90;
+}
+.cnav{
+  width:10px;height:10px;border-radius:50%;border:2px solid var(--muted);
+  cursor:pointer;transition:.3s;background:transparent;
+}
+.cnav.on{background:var(--gold);border-color:var(--gold);box-shadow:0 0 12px var(--gold);}
+.cnav:hover{border-color:var(--gold2);}
+
+/* ── SECTIONS ── */
+.chapter{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:80px 20px;position:relative;overflow:hidden;
+}
+.chapter::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(232,184,90,0.04),transparent);
+  pointer-events:none;
+}
+.inner{max-width:780px;width:100%;margin:0 auto;}
+
+/* ── BIG NUMBER ── */
+.chnum{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8rem;font-weight:600;
+  color:rgba(232,184,90,0.06);
+  position:absolute;top:40px;left:40px;
+  line-height:1;user-select:none;
+  direction:ltr;
+}
+
+/* ── HOOK QUESTION ── */
+.hook{
+  background:linear-gradient(135deg,rgba(232,184,90,0.1),rgba(232,184,90,0.03));
+  border:1px solid var(--border);border-radius:20px;
+  padding:30px 36px;margin-bottom:40px;
+  cursor:pointer;transition:.3s;position:relative;
+}
+.hook:hover{border-color:rgba(232,184,90,0.4);background:linear-gradient(135deg,rgba(232,184,90,0.14),rgba(232,184,90,0.06));}
+.hook-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;display:block;}
+.hook h2{font-size:1.5rem;font-weight:700;color:var(--gold2);line-height:1.5;margin-bottom:10px;}
+.hook p{color:var(--muted);font-size:1rem;}
+.hook .tap{font-size:.85rem;color:var(--gold3);margin-top:14px;display:flex;align-items:center;gap:8px;}
+.hook .tap::before{content:'';width:20px;height:1px;background:var(--gold3);}
+
+/* ── STORY BODY ── */
+.story{opacity:0;transform:translateY(20px);transition:.5s;display:none;}
+.story.show{opacity:1;transform:none;display:block;}
+
+/* ── SCENE ── */
+.scene{
+  border-right:3px solid var(--gold3);
+  padding-right:24px;margin:28px 0;
+  position:relative;
+}
+.scene::before{
+  content:'';width:12px;height:12px;border-radius:50%;
+  background:var(--gold);position:absolute;right:-8px;top:6px;
+  box-shadow:0 0 16px var(--gold);
+}
+.scene .who{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--gold);letter-spacing:2px;margin-bottom:6px;}
+.scene p{color:#d4d0c6;font-size:1.05rem;line-height:1.85;}
+.scene b{color:var(--gold2);}
+
+/* ── DIALOGUE ── */
+.dialogue{margin:20px 0;}
+.msg{
+  display:flex;gap:14px;margin:14px 0;align-items:flex-start;
+}
+.msg.right{flex-direction:row-reverse;}
+.avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;border:2px solid var(--border);
+  background:var(--panel);
+}
+.bubble{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:16px;padding:14px 18px;max-width:85%;
+  font-size:1rem;line-height:1.75;color:#d4d0c6;
+}
+.bubble b{color:var(--gold2);}
+.bubble em{color:var(--green);font-style:normal;}
+.bubble.gold{background:rgba(232,184,90,0.08);border-color:rgba(232,184,90,0.3);color:var(--ink);}
+
+/* ── REVEAL BOX ── */
+.reveal{
+  background:rgba(0,0,0,0.4);border:1px solid var(--border);
+  border-radius:16px;padding:24px 28px;margin:28px 0;
+  position:relative;overflow:hidden;
+}
+.reveal::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.reveal-tag{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.reveal h3{color:var(--gold2);font-size:1.25rem;margin-bottom:10px;font-weight:700;}
+.reveal p, .reveal li{color:#d4d0c6;font-size:.98rem;line-height:1.8;}
+.reveal ul{padding-right:20px;}
+.reveal li{margin:6px 0;}
+.reveal li b{color:var(--gold2);}
+
+/* ── DING MOMENT ── */
+.ding{
+  text-align:center;padding:30px;margin:28px 0;
+  background:linear-gradient(135deg,rgba(122,201,154,0.08),rgba(122,201,154,0.02));
+  border:1px solid rgba(122,201,154,0.2);border-radius:20px;
+}
+.ding .emoji{font-size:3rem;display:block;margin-bottom:10px;}
+.ding p{color:var(--green);font-size:1.1rem;font-weight:700;}
+.ding small{color:var(--muted);font-size:.9rem;display:block;margin-top:6px;}
+
+/* ── TRAP ── */
+.trap{
+  background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);
+  border-radius:14px;padding:18px 22px;margin:20px 0;
+}
+.trap-tag{color:var(--red);font-size:.75rem;font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:8px;display:block;}
+.trap p{color:#e0c0c0;font-size:.98rem;}
+.trap b{color:var(--red);}
+
+/* ── PHASES FLOW ── */
+.flow{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0;align-items:center;}
+.phase-box{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;padding:10px 16px;font-size:.9rem;color:var(--gold2);
+  transition:.3s;cursor:default;
+}
+.phase-box:hover{background:rgba(232,184,90,0.1);border-color:var(--gold);}
+.phase-box.bad{border-color:rgba(224,122,122,0.4);color:var(--red);}
+.arr{color:var(--gold3);font-size:1.2rem;margin:0 2px;}
+
+
+/* ── SCORE ── */
+#scoreDisplay{
+  text-align:center;padding:50px 20px;
+}
+#scoreDisplay .big{font-size:5rem;font-weight:900;color:var(--gold2);line-height:1;}
+#scoreDisplay p{color:var(--muted);margin-top:10px;font-size:1.1rem;}
+#scoreDisplay .msg{color:var(--gold2);font-size:1.3rem;font-weight:700;margin-top:20px;}
+
+/* ── BTN ── */
+.btn{
+  display:inline-block;background:var(--gold);color:#1a1000;
+  border:none;padding:12px 28px;border-radius:12px;
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:1rem;
+  cursor:pointer;transition:.2s;
+}
+.btn:hover{background:var(--gold2);box-shadow:0 0 30px -5px rgba(232,184,90,0.5);}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--gold);}
+.btn.ghost:hover{background:rgba(232,184,90,0.06);}
+
+/* ── HEADINGS ── */
+.ch-title{font-size:clamp(2rem,5vw,3.2rem);font-weight:900;line-height:1.1;color:var(--ink);margin-bottom:8px;}
+.ch-title em{color:var(--gold2);}
+.ch-sub{color:var(--muted);font-size:1rem;margin-bottom:40px;}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(232,184,90,0.07),transparent);}
+#hero h1{font-size:clamp(2.5rem,7vw,5rem);font-weight:900;line-height:1.05;color:var(--ink);}
+#hero h1 em{color:var(--gold2);display:block;}
+#hero p{color:var(--muted);font-size:1.1rem;max-width:560px;margin:16px auto 36px;}
+#hero .scrollHint{color:var(--gold3);font-size:.85rem;margin-top:40px;animation:bounce 2s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+/* ── FINAL CTA ── */
+#final{text-align:center;}
+#final h2{font-size:2.5rem;font-weight:900;color:var(--gold2);margin-bottom:14px;}
+#final p{color:var(--muted);max-width:500px;margin:0 auto 30px;}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:40px 0;}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  .chnum{font-size:5rem;left:10px;}
+  #chapterNav{display:none;}
+  .chapter{padding:60px 16px;}
+  .hook{padding:20px;}
+  .scene{padding-right:16px;}
+}
+
+.back-hub-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 101;
+  text-decoration: none;
+  background: rgba(8, 8, 16, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  color: var(--gold2);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.back-hub-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(232, 184, 90, 0.25);
+}
+@media(max-width:600px){
+  .back-hub-btn {
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<a href="index.html" class="back-hub-btn">← Back to Portal</a>
+<div id="chapterNav"></div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero" data-ch="البداية">
+<div>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--gold3);letter-spacing:3px;margin-bottom:20px;">CSE 302 · SOFTWARE ENGINEERING · LEC 3</p>
+  <h1>كيف تبني<em>برنامجاً ناجحاً؟</em></h1>
+  <p>قصة المبرمجين اللي واجهوا أزمات حقيقية — وكيف اكتشفوا النماذج الصحيحة. مش هتذاكر، هتعيش التجربة.</p>
+  <button class="btn" onclick="document.getElementById('c1').scrollIntoView({behavior:'smooth'})">ابدأ الرحلة ←</button>
+  <div class="scrollHint">↓ اسكرول للأسفل</div>
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 1: WATERFALL ═══════════════ -->
+<section class="chapter" id="c1" data-ch="Waterfall">
+<div class="chnum">01</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s1')">
+    <span class="hook-label">السؤال الأول</span>
+    <h2>تخيل إنك بتبني برنامج محاسبة لمستشفى كبير. وبعد 18 شهر من الشغل... اتصل بك العميل وقالك: "كل اللي عملتوه غلط — احنا كنا قصدنا حاجة تانية!"</h2>
+    <p>إيه اللي اتعمل غلط؟ وكيف كان ممكن يتاجنب؟</p>
+    <div class="tap">اضغط عشان تعرف الحكاية</div>
+  </div>
+
+  <div class="story" id="s1">
+    <div class="scene">
+      <div class="who">القاهرة · 2005 · شركة DataSoft</div>
+      <p>كان الفريق متحمس. اجتمعوا مع العميل في اليوم الأول، كتبوا <b>كل المتطلبات</b> في دفتر، وقالوا: "تمام، هنشتغل ونرجعلك بعد 18 شهر بالبرنامج الكامل." ووافق العميل على التوقيع.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="msg">
+        <div class="avatar">👨‍💼</div>
+        <div class="bubble">يعني إيه "اتفقنا على كل حاجة"؟ احنا كتبنا كل المتطلبات في اليوم الأول!</div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">👩‍⚕️</div>
+        <div class="bubble gold">أيوه، بس احنا كنا قصدنا إن الأطباء يدخلوا البيانات هم... مش الإداريين! غيرنا فكرتنا بعد شهرين من الاجتماع.</div>
+      </div>
+      <div class="msg">
+        <div class="avatar">😰</div>
+        <div class="bubble">18 شهر من الشغل... ووضعنا الغلط من البداية.</div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="who">المشكلة الحقيقية</div>
+      <p>الفريق كان بيستخدم نموذج الـ <b>Waterfall</b> — النموذج الخطي اللي بيقول: <b>خلّص المرحلة الأولى خالص</b> وبعدين تبدأ التانية. زي الشلال — الميه بتنزل بس مش بترجع فوق.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">⚡ إيه هو الـ Waterfall Model؟</div>
+      <h3>النموذج الخطي التسلسلي</h3>
+      <p>كل مرحلة <b>لازم تخلص خالص</b> قبل ما تبدأ اللي بعدها. المراحل بالترتيب:</p>
+      <div class="flow" style="margin-top:16px;">
+        <div class="phase-box">📋 Requirements Analysis</div>
+        <div class="arr">→</div>
+        <div class="phase-box">🎨 Design</div>
+        <div class="arr">→</div>
+        <div class="phase-box">💻 Implementation</div>
+        <div class="arr">→</div>
+        <div class="phase-box">🧪 Testing</div>
+        <div class="arr">→</div>
+        <div class="phase-box">🔧 Maintenance</div>
+      </div>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ فخ الامتحان الأشهر</span>
+      <p>لو جالك سؤال: <b>"Which is NOT a phase in Waterfall?"</b> والخيارات فيها <b>Iteration</b> — الإجابة هي <b>Iteration</b>. لأن الـ Waterfall مفيش فيه iteration خالص — بتعمل كل مرحلة مرة واحدة بس!</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ فخ تاني شائع</span>
+      <p><b>"In which phase are requirements gathered?"</b> → الجواب هو <b>Requirements Analysis</b> — مش Planning ولا Design.</p>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">💡</span>
+      <p>الـ Waterfall كلمته السحرية: "خطي تسلسلي" و"كل مرحلة تعتمد على اللي قبلها"</p>
+      <small>لو شفت الكلمتين دول في الامتحان → Waterfall فوراً</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 2: AGILE ═══════════════ -->
+<section class="chapter" id="c2" data-ch="Agile" style="background:radial-gradient(ellipse 70% 50% at 30% 60%,rgba(122,201,154,0.04),transparent);">
+<div class="chnum">02</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s2')">
+    <span class="hook-label">السؤال الثاني</span>
+    <h2>شركة ناشئة عندها عميل بيغير رأيه كل أسبوعين. الـ Waterfall هيودّي الشركة الإفلاس. إيه الحل؟</h2>
+    <p>تخيل إنك بتبني تطبيق للعميل ده — إيه النموذج اللي هيخليك تنجح؟</p>
+    <div class="tap">اكتشف الحل</div>
+  </div>
+
+  <div class="story" id="s2">
+    <div class="scene">
+      <div class="who">سيليكون فالي · 2001</div>
+      <p>اجتمع 17 مبرمج في Utah وكانوا كلهم متضايقين من نفس المشكلة — العملاء دايماً بيغيروا رأيهم، والنماذج التقليدية بتتكسر. فكتبوا وثيقة اسمها <b>Agile Manifesto</b>.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="msg">
+        <div class="avatar">🧠</div>
+        <div class="bubble gold">الفكرة بسيطة: بدل ما نخطط كل حاجة في الأول ونسلّم بعد سنة — نسلّم <b>كل أسبوعين</b> حاجة شغالة، وناخد رأي العميل طول الوقت.</div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">🤔</div>
+        <div class="bubble">وإيه الفايدة؟</div>
+      </div>
+      <div class="msg">
+        <div class="avatar">🧠</div>
+        <div class="bubble gold">لو العميل غير رأيه — مش مشكلة! بنغير في الـ <em>iteration</em> الجاية، مش بنرمي 18 شهر من الشغل!</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">📜 الـ Agile Manifesto — القيم الأربعة</div>
+      <h3>Agile يفضّل الـ 4 حاجات دول:</h3>
+      <ul>
+        <li><b>Individuals & Interactions</b> — الناس والتواصل أهم من العمليات والأدوات</li>
+        <li><b>Working Software</b> — برنامج شغال أهم من documentation ضخمة</li>
+        <li><b>Customer Collaboration</b> — التعاون مع العميل أهم من العقد</li>
+        <li><b>Responding to Change</b> — التكيف مع التغيير أهم من اتباع الخطة بالحرف</li>
+      </ul>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ الفخ الأكثر تكراراً في شيت 3</span>
+      <p><b>"Which is NOT a principle of the Agile Manifesto?"</b> → والخيارات فيها <b>Comprehensive documentation</b> — الإجابة هي <b>Comprehensive documentation</b>! لأن Agile بيقول Working software أهم من الـ documentation!</p>
+    </div>
+
+    <div class="scene">
+      <div class="who">المراحل المهمة للامتحان</div>
+      <p>في Agile فيه مرحلتين بيتسألوا عنهم دايماً:</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="msg">
+        <div class="avatar">🎯</div>
+        <div class="bubble gold"><b>Planning Phase:</b> هدفها الأساسي إيه؟<br>→ <em>Prioritizing user stories and estimating effort</em><br>يعني: إيه أهم حاجة نعملها الأول؟ وهتاخد قد إيه وقت؟</div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">🗂️</div>
+        <div class="bubble"><b>Iteration Planning Phase:</b> هدفها إيه؟<br>→ <em>Breaking down requirements into smaller, manageable tasks</em><br>يعني: نقسم الشغل لحتت صغيرة ممكن تتعمل في sprint واحدة</div>
+      </div>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ فخ دقيق جداً</span>
+      <p>لما بيسألوا "which phase involves breaking requirements into smaller tasks?" — الجواب هو <b>Iteration Planning</b> — مش "Planning" العادي! الفرق في كلمة Iteration.</p>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">⚡</span>
+      <p>Agile = تسليم مستمر + عميل موجود طول الوقت + تغيير مرحّب بيه</p>
+      <small>كلماته السحرية: "continuous customer involvement" و"incremental" و"iterative"</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 3: SPIRAL ═══════════════ -->
+<section class="chapter" id="c3" data-ch="Spiral" style="background:radial-gradient(ellipse 70% 50% at 70% 40%,rgba(122,176,232,0.04),transparent);">
+<div class="chnum">03</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s3')">
+    <span class="hook-label">السؤال الثالث</span>
+    <h2>تخيل إنك بتبني نظام للأقمار الصناعية. لو وقعت في غلطة واحدة في المتطلبات — الخسارة مليار دولار. إيه النموذج اللي يحميك؟</h2>
+    <p>مش عيز agile (التغيير هيكلف أكثر)، ومش waterfall (التأخر في اكتشاف الأخطاء كارثي). فيه إيه؟</p>
+    <div class="tap">اكتشف نموذج المخاطر</div>
+  </div>
+
+  <div class="story" id="s3">
+    <div class="scene">
+      <div class="who">Barry Boehm · 1988</div>
+      <p>الدكتور <b>Barry Boehm</b> كان بيشتغل مع مشاريع ضخمة جداً — الدفاع، الفضاء، البنوك. اكتشف إن المشكلة الرئيسية مش في التنفيذ... المشكلة في <b>المخاطر (Risks)</b>. فاخترع نموذج الـ Spiral.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="msg">
+        <div class="avatar">🌀</div>
+        <div class="bubble gold">الفكرة: بدل ما تشتغل بخط مستقيم — اشتغل <b>في حلقات (loops)</b>. كل حلقة = مرحلة كاملة. وفي كل حلقة، أول حاجة تعملها: <b>حلل المخاطر</b>.</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🌀 الـ 4 خطوات في كل Loop</div>
+      <h3>كل دورة في الـ Spiral بتمر بـ 4 مراحل:</h3>
+      <ul>
+        <li>🗺️ <b>Planning:</b> نخطط — إيه اللي عايزين نعمله في الدورة دي؟</li>
+        <li>⚠️ <b>Risk Analysis:</b> نحلل المخاطر — إيه اللي ممكن يغلط؟</li>
+        <li>🔨 <b>Engineering:</b> نطوّر — بناء prototypes وتجارب لتقليل المخاطر</li>
+        <li>📊 <b>Evaluation:</b> العميل يقيّم — feedback للدورة الجاية</li>
+      </ul>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ أخطر فخ في الـ Sheet 3 كله!</span>
+      <p>السؤال: <b>"Which phase involves developing prototypes to mitigate risks?"</b></p>
+      <p>كثير بيقولوا "Risk Analysis" — <b>ده غلط!</b></p>
+      <p>الإجابة الصح هي <b>Engineering</b> — لأن Risk Analysis بس بتحلل، أما Engineering هي اللي فيها الـ prototypes الفعلية!</p>
+    </div>
+
+    <div class="scene">
+      <div class="who">الحلقات من الداخل للخارج</div>
+      <p>كل ما الحلقة بتكبر، المشروع بيكبر:
+      الحلقة الداخلية = Feasibility (هل المشروع ممكن؟)
+      الحلقة الثانية = Requirements (إيه المتطلبات؟)
+      الحلقة الثالثة = Design (إيه التصميم؟)
+      وهكذا لحد ما يتسلم المنتج النهائي.</p>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">🌀</span>
+      <p>Spiral = كلمته السحرية "Risk Assessment and Management" في كل مرحلة</p>
+      <small>لو شفت "risk" + "each phase" في السؤال → Spiral فوراً</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 4: V-MODEL ═══════════════ -->
+<section class="chapter" id="c4" data-ch="V-Model" style="background:radial-gradient(ellipse 70% 50% at 20% 50%,rgba(176,122,232,0.04),transparent);">
+<div class="chnum">04</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s4')">
+    <span class="hook-label">السؤال الرابع</span>
+    <h2>المبرمج وصل للـ Testing بعد شهور من الشغل — ولقى أخطاء في الـ Design! ليه ما اكتشفناش من الأول؟ وكيف نحل المشكلة دي؟</h2>
+    <p>الـ Waterfall بيختبر في الآخر بس. كان لازم فيه نموذج يختبر من البداية!</p>
+    <div class="tap">اكتشف نموذج الحرف V</div>
+  </div>
+
+  <div class="story" id="s4">
+    <div class="scene">
+      <div class="who">الفكرة الذكية</div>
+      <p>الـ V-Model جاء بفكرة ذكية: <b>لكل مرحلة تطوير — فيه مرحلة اختبار مقابلة مباشرة</b>. تخيل حرف V — الجانب الأيسر بتنزل فيه التطوير، والجانب الأيمن بتطلع فيه الاختبارات.</p>
+    </div>
+
+    <div style="text-align:center;margin:30px 0;padding:28px;background:var(--panel);border:1px solid var(--border);border-radius:18px;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:2px;margin-bottom:20px;">THE V-MODEL</p>
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-width:140px;">
+          <div style="background:rgba(122,176,232,0.1);border:1px solid rgba(122,176,232,0.3);border-radius:10px;padding:10px 14px;color:var(--blue);font-size:.88rem;text-align:right;">📋 Requirements</div>
+          <div style="background:rgba(122,176,232,0.08);border:1px solid rgba(122,176,232,0.2);border-radius:10px;padding:10px 14px;color:var(--blue);font-size:.85rem;text-align:right;margin-right:10px;">🏗️ System Design</div>
+          <div style="background:rgba(122,176,232,0.06);border:1px solid rgba(122,176,232,0.15);border-radius:10px;padding:10px 14px;color:var(--blue);font-size:.82rem;text-align:right;margin-right:20px;">📐 Architecture</div>
+          <div style="background:rgba(122,176,232,0.04);border:1px solid rgba(122,176,232,0.1);border-radius:10px;padding:10px 14px;color:var(--blue);font-size:.8rem;text-align:right;margin-right:30px;">🧩 Module Design</div>
+        </div>
+        <div style="display:flex;align-items:center;color:var(--gold2);font-size:2rem;flex-shrink:0;font-weight:900;">V</div>
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-width:140px;">
+          <div style="background:rgba(122,201,154,0.1);border:1px solid rgba(122,201,154,0.3);border-radius:10px;padding:10px 14px;color:var(--green);font-size:.88rem;">✅ Acceptance Test</div>
+          <div style="background:rgba(122,201,154,0.08);border:1px solid rgba(122,201,154,0.2);border-radius:10px;padding:10px 14px;color:var(--green);font-size:.85rem;margin-right:10px;">🧪 System Test</div>
+          <div style="background:rgba(122,201,154,0.06);border:1px solid rgba(122,201,154,0.15);border-radius:10px;padding:10px 14px;color:var(--green);font-size:.82rem;margin-right:20px;">🔗 Integration Test</div>
+          <div style="background:rgba(122,201,154,0.04);border:1px solid rgba(122,201,154,0.1);border-radius:10px;padding:10px 14px;color:var(--green);font-size:.8rem;margin-right:30px;">⚙️ Unit Test</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;background:rgba(232,184,90,0.08);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--gold2);font-size:.9rem;">💻 Coding — قاع الـ V</div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">✅ خصائص الـ V-Model الأساسية</div>
+      <ul>
+        <li><b>Verification & Validation في كل مرحلة</b> — مش في الآخر بس</li>
+        <li><b>لكل مرحلة تطوير → مرحلة testing مقابلة</b> — يعني اكتشاف المشاكل بدري</li>
+        <li><b>Early detection of defects</b> — لأن الاختبار موجود من البداية</li>
+      </ul>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ الفخ الأشهر في V-Model</span>
+      <p><b>"Which is NOT a characteristic of V-Model?"</b></p>
+      <p>الخيار اللي بيجيب: <b>"It is a linear sequential model similar to waterfall"</b> → ده <b>الإجابة الصح</b> للـ "NOT"!</p>
+      <p>الـ V-Model مش زي الـ Waterfall — عنده اتجاهين (يسار للتطوير، يمين للاختبار)، مش خط واحد رايح!</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ سؤال تاني متكرر</span>
+      <p><b>"What is the purpose of testing in V-Model?"</b> → الجواب: <b>"To verify that software meets specified requirements"</b> — مش "identify requirements" ولا "develop components"</p>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">V</span>
+      <p>V-Model = كلمته السحرية "verification per phase" و"testing for each development phase"</p>
+      <small>وتذكر: مش زي الـ Waterfall!</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 5: PROTOTYPE + RUP ═══════════════ -->
+<section class="chapter" id="c5" data-ch="Prototype & RUP">
+<div class="chnum">05</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s5')">
+    <span class="hook-label">السؤال الخامس</span>
+    <h2>العميل جالك وقالك: "مش عارف بالظبط إيه اللي عايزه — بس عيزك تعملي حاجة!" إيه اللي تعمله؟</h2>
+    <p>ومشروع تاني: شركة ضخمة عندها مئات المطورين وعايزة نظام موحد. Waterfall مش كافي وAgile مش مناسب. فيه إيه؟</p>
+    <div class="tap">اكتشف النموذجين الأخيرين</div>
+  </div>
+
+  <div class="story" id="s5">
+
+    <div class="scene">
+      <div class="who">نموذج الـ Prototype</div>
+      <p>لما العميل مش عارف بالظبط إيه اللي عايزه — بتعمله <b>نموذج أولي (prototype)</b>. تخيل إنك بتعمل تطبيق سوشيال ميديا — بدل ما تبني التطبيق كامل، بتعمل version مبسطة جداً، بتعرضها على المستخدمين، وبتاخد feedback. لو مش عاجبهم حاجة — بتغير الـ prototype مش التطبيق كامله!</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">📐 Prototype Model</div>
+      <ul>
+        <li>✅ <b>يقلل التكلفة الكلية</b> — بتكتشف المشاكل بدري</li>
+        <li>✅ <b>Risk factor منخفض</b> — التجريب قبل البناء الكامل</li>
+        <li>✅ <b>يوفر وقت وجهد</b></li>
+        <li>❌ <b>التنازل في المتطلبات</b> ممكن يودي لنظام لا يلبي الاحتياجات</li>
+        <li>❌ <b>Components قديمة</b> ممكن تبقى غير متوافقة مع النظام الجديد</li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="scene">
+      <div class="who">نموذج الـ Rational Unified Process (RUP)</div>
+      <p>الـ RUP نموذج حديث ومتطور — مشتق من الـ UML. بيمر بـ <b>4 مراحل رئيسية</b>:</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="msg">
+        <div class="avatar">1️⃣</div>
+        <div class="bubble gold"><b>Inception — البداية:</b> إيه الجدوى التجارية للنظام؟ مين المستخدمين؟ نحدد كل الكيانات الخارجية.</div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">2️⃣</div>
+        <div class="bubble"><b>Elaboration — التفصيل:</b> فهم المشكلة، تحديد الـ architecture، خطة المشروع، والمخاطر الرئيسية.</div>
+      </div>
+      <div class="msg">
+        <div class="avatar">3️⃣</div>
+        <div class="bubble gold"><b>Construction — البناء:</b> التصميم، البرمجة، والاختبار — system design, programming, and testing.</div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">4️⃣</div>
+        <div class="bubble"><b>Transition — الانتقال:</b> نقل النظام من فريق التطوير للمستخدمين وتشغيله في البيئة الحقيقية.</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(0,0,0,0.4);border:1px dashed rgba(232,184,90,0.3);border-radius:12px;padding:16px 20px;margin-top:20px;font-family:'JetBrains Mono',monospace;color:var(--gold2);font-size:.9rem;direction:ltr;">
+      RUP = Inception → Elaboration → Construction → Transition<br>
+      <span style="color:var(--muted)">// Remember: I-E-C-T</span>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">🧠</span>
+      <p>كده بقيت عارف كل النماذج! جاهز للاختبار؟</p>
+      <small>Quiz شامل بيحاكي أسئلة الامتحان بالظبط</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 6: PLAN-DRIVEN vs AGILE + GENERIC MODELS ═══════════════ -->
+<section class="chapter" id="c6" data-ch="Plan-driven vs Agile">
+<div class="chnum">06</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s6')">
+    <span class="hook-label">السؤال السادس</span>
+    <h2>في الشغل الحقيقي — فيه فريق بيخطط كل حاجة في الأول، وفيه فريق بيخطط وهو ماشي. إيه الفرق؟ وفيه كام نموذج عام في البرمجيات؟</h2>
+    <p>الـ Lecture بيحدد 3 نماذج عامة رئيسية — ولازم تعرفهم.</p>
+    <div class="tap">اكتشف التفاصيل</div>
+  </div>
+
+  <div class="story" id="s6">
+
+    <div class="reveal">
+      <div class="reveal-tag">📌 Plan-driven vs Agile Processes</div>
+      <h3>نوعان من العمليات:</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;">
+        <div style="background:rgba(122,176,232,0.07);border:1px solid rgba(122,176,232,0.25);border-radius:12px;padding:16px;">
+          <p style="color:var(--blue);font-weight:700;margin-bottom:8px;">📋 Plan-driven</p>
+          <p style="font-size:.95rem;color:#d4d0c6;">كل الأنشطة <b style="color:var(--blue)">مخططة مسبقاً</b> والتقدم بيتقاس بناءً على الخطة. مثال: Waterfall.</p>
+        </div>
+        <div style="background:rgba(122,201,154,0.07);border:1px solid rgba(122,201,154,0.25);border-radius:12px;padding:16px;">
+          <p style="color:var(--green);font-weight:700;margin-bottom:8px;">⚡ Agile</p>
+          <p style="font-size:.95rem;color:#d4d0c6;">التخطيط <b style="color:var(--green)">تدريجي</b> ويعكس متطلبات العميل المتغيرة. في التطبيق الفعلي، معظم العمليات تأخذ عناصر من الاثنين.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🗂️ الـ 3 Generic Software Process Models</div>
+      <h3>النماذج العامة الثلاثة للبرمجيات</h3>
+      <ul>
+        <li><b>1. The Waterfall Model</b> — مراحل منفصلة ومتميزة من الـ specification والـ development. Plan-driven.</li>
+        <li><b>2. Evolutionary Development</b> — الـ specification والتطوير والتحقق متشابكين مع بعض. ممكن plan-driven أو agile.</li>
+        <li><b>3. Integration and Configuration (Reuse-oriented)</b> — النظام بيتجمّع من components موجودة قابلة للتهيئة. ممكن plan-driven أو agile.</li>
+      </ul>
+      <p style="margin-top:12px;color:var(--muted);font-size:.92rem;">في التطبيق الفعلي، معظم الأنظمة الكبيرة بتستخدم مزيجاً من النماذج الثلاثة دي.</p>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">💡</span>
+      <p>3 نماذج عامة: Waterfall · Evolutionary · Reuse-oriented</p>
+      <small>الـ 3 دول ممكن يكونوا plan-driven أو agile — ما فيش "خطأ وصح"، كل مشروع بيختار الأنسب</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 7: EVOLUTIONARY + REUSE ═══════════════ -->
+<section class="chapter" id="c7" data-ch="Evolutionary & Reuse">
+<div class="chnum">07</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s7')">
+    <span class="hook-label">السؤال السابع</span>
+    <h2>مشروع: العميل مش عارف بالضبط إيه اللي يريده. ومشروع تاني: فيه components جاهزة من قبل. كيف تتعامل مع كل واحد؟</h2>
+    <p>Evolutionary Development وReuse-oriented — النموذجان اللي الـ Lecture بيشرحهم بتفصيل.</p>
+    <div class="tap">اكتشف النموذجين</div>
+  </div>
+
+  <div class="story" id="s7">
+
+    <div class="scene">
+      <div class="who">Evolutionary Development — التطوير التطوري</div>
+      <p>بدل ما تحدد كل المتطلبات في الأول — تبدأ بـ outline وتطور النظام تدريجياً مع العميل. الـ specification والتطوير والـ validation بيحصلوا <b>في نفس الوقت تقريباً</b>.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🧬 نوعان من الـ Evolutionary Development</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;">
+        <div style="background:rgba(232,184,90,0.07);border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <p style="color:var(--gold2);font-weight:700;margin-bottom:8px;">🔍 Exploratory Development</p>
+          <p style="font-size:.93rem;color:#d4d0c6;">العمل مع العميل لتطوير النظام النهائي من <b>متطلبات مفهومة جيداً</b> في البداية. يبدأ بالـ well-understood requirements.</p>
+        </div>
+        <div style="background:rgba(122,201,154,0.07);border:1px solid rgba(122,201,154,0.2);border-radius:12px;padding:16px;">
+          <p style="color:var(--green);font-weight:700;margin-bottom:8px;">🗑️ Prototyping (Throw-away)</p>
+          <p style="font-size:.93rem;color:#d4d0c6;">هدفه فهم <b>المتطلبات الغامضة</b>. يبدأ بالـ poorly-understood requirements. الـ prototype بيُرمى في الآخر!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">✅❌ مزايا وعيوب الـ Evolutionary Model</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;">
+        <div>
+          <p style="color:var(--green);font-weight:700;margin-bottom:8px;">✅ مزايا</p>
+          <ul style="font-size:.9rem;">
+            <li>يسمح بالتطوير والتحسين التدريجي</li>
+            <li>تسليم مبكر للـ working software</li>
+            <li>feedback مستمر من أصحاب المصلحة</li>
+            <li>يقلل مخاطر فشل المشروع</li>
+          </ul>
+        </div>
+        <div>
+          <p style="color:var(--red);font-weight:700;margin-bottom:8px;">❌ عيوب</p>
+          <ul style="font-size:.9rem;">
+            <li>يحتاج وقت وجهد أكثر لإدارة التغييرات</li>
+            <li>يحتاج تعاون عالٍ بين أعضاء الفريق</li>
+            <li>مش مناسب للمشاريع ذات المواعيد الثابتة</li>
+            <li>نتائج أقل قابلية للتنبؤ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="scene">
+      <div class="who">Reuse-oriented Development — التطوير القائم على إعادة الاستخدام</div>
+      <p>بدل ما تبني كل حاجة من الصفر — بتستخدم <b>components موجودة</b> وبتجمّعها مع بعض. ده النموذج الثالث من الـ 3 Generic Models.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🔄 مراحل الـ Reuse-oriented Development</div>
+      <div class="flow" style="flex-direction:column;align-items:flex-start;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="phase-box">📋 Requirements Specification</div>
+          <div class="arr">→</div>
+          <div class="phase-box">🔍 Component Analysis</div>
+          <div class="arr">→</div>
+          <div class="phase-box">✏️ Requirements Modification</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="phase-box">🏗️ System Design with Reuse</div>
+          <div class="arr">→</div>
+          <div class="phase-box">⚙️ Development & Integration</div>
+          <div class="arr">→</div>
+          <div class="phase-box">✅ System Validation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🧩 الـ 3 أنواع من الـ Reusable Components</div>
+      <ul>
+        <li><b>Web services</b> — بيتطوروا حسب معايير service standards وبيكونوا متاحين للـ remote invocation</li>
+        <li><b>Collections of objects</b> — بيتطوروا كـ package ليتندمج مع framework زي .NET أو J2EE</li>
+        <li><b>Stand-alone software systems</b> — أنظمة برمجية كاملة بتتهيأ لاستخدام في بيئة معينة</li>
+      </ul>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">🔄</span>
+      <p>Evolutionary = تطوير تدريجي مع العميل. Reuse = بناء من components جاهزة.</p>
+      <small>Exploratory يبدأ من well-understood requirements. Throw-away يبدأ من poorly-understood requirements.</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 8: PROCESS ACTIVITIES ═══════════════ -->
+<section class="chapter" id="c8" data-ch="Process Activities">
+<div class="chnum">08</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s8')">
+    <span class="hook-label">السؤال الثامن</span>
+    <h2>لو مش عارف تعمل برنامج من الصفر — تبدأ بإيه؟ وإيه الـ 4 أنشطة الأساسية اللي موجودة في أي عملية برمجيات؟</h2>
+    <p>الـ Process Activities هي العمود الفقري لأي software process — الـ Lecture بيشرحهم بالتفصيل.</p>
+    <div class="tap">اكتشف الـ 4 أنشطة</div>
+  </div>
+
+  <div class="story" id="s8">
+
+    <div class="reveal">
+      <div class="reveal-tag">⚙️ الـ 4 Process Activities الأساسية</div>
+      <h3>أي software process بيمر بـ 4 أنشطة رئيسية:</h3>
+    </div>
+
+    <div class="dialogue">
+      <div class="msg">
+        <div class="avatar">1️⃣</div>
+        <div class="bubble gold">
+          <b>Software Specification (Requirements Engineering)</b><br>
+          تحديد الخدمات المطلوبة من النظام والقيود على تشغيله وتطويره.<br>
+          <em>العملية: Feasibility Study → Requirements Elicitation & Analysis → Requirements Specification → Requirements Validation</em>
+        </div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">2️⃣</div>
+        <div class="bubble">
+          <b>Software Design and Implementation</b><br>
+          تحويل الـ specification إلى نظام قابل للتنفيذ.<br>
+          <em>Software design</em> = تصميم هيكل يحقق الـ specification.<br>
+          <em>Implementation</em> = ترجمة الهيكل لبرنامج قابل للتنفيذ.
+        </div>
+      </div>
+      <div class="msg">
+        <div class="avatar">3️⃣</div>
+        <div class="bubble gold">
+          <b>Software Validation (Testing)</b><br>
+          إظهار أن النظام مطابق لـ specification ويلبي متطلبات العميل.<br>
+          يشمل: checking, review processes, و system testing.
+        </div>
+      </div>
+      <div class="msg right">
+        <div class="avatar">4️⃣</div>
+        <div class="bubble">
+          <b>Software Evolution</b><br>
+          البرمجيات مرنة وتتغير. التطوير والصيانة باتوا continuum واحد مش عمليتين منفصلتين.<br>
+          العملية: Define requirements → Assess existing systems → Propose changes → Modify systems.
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">📐 Software Design Process — الأنشطة والمخرجات</div>
+      <h3>Design Activities (الأنشطة):</h3>
+      <ul>
+        <li><b>Architectural Design</b> — تحديد البنية الكلية للنظام</li>
+        <li><b>Interface Design</b> — تصميم واجهات المكونات</li>
+        <li><b>Component Design</b> — تصميم المكونات الفردية</li>
+        <li><b>Database Design</b> — تصميم قاعدة البيانات</li>
+      </ul>
+      <h3 style="margin-top:16px;">Design Methods (الأساليب):</h3>
+      <ul>
+        <li>Data-flow model</li>
+        <li>Entity-relation-attribute model</li>
+        <li>Structural model</li>
+        <li>Object models</li>
+      </ul>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🔬 Requirements Engineering — الـ 4 أنشطة</div>
+      <ul>
+        <li><b>Feasibility Study</b> — هل النظام ممكن ومجدي؟ يكون رخيص ومحدود المدة.</li>
+        <li><b>Requirements Elicitation and Analysis</b> — تحديد المتطلبات بمراقبة الأنظمة الحالية، مناقشة أصحاب المصلحة، تحليل النماذج والـ prototypes.</li>
+        <li><b>Requirements Specification</b> — توثيق المتطلبات. نوعان: <em>User requirements</em> و<em>System requirements</em>.</li>
+        <li><b>Requirements Validation</b> — التحقق من واقعية ودقة واكتمال المتطلبات.</li>
+      </ul>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">⚙️</span>
+      <p>4 أنشطة: Specification → Design & Implementation → Validation → Evolution</p>
+      <small>دي أنشطة موجودة في أي process — مهما كان النموذج المستخدم</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 9: INCREMENTAL + TESTING STAGES ═══════════════ -->
+<section class="chapter" id="c9" data-ch="Incremental & Testing">
+<div class="chnum">09</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s9')">
+    <span class="hook-label">السؤال التاسع</span>
+    <h2>مبرمج سأل: "ليه مش نسلّم البرنامج كله مرة واحدة؟" والمدير ضحك وقاله: "لو عملنا كده — العميل هينتظر سنة ويمكن يغير رأيه!" — إيه الحل؟ وإيه مراحل الـ Testing الخمسة؟</h2>
+    <div class="tap">اكتشف التفاصيل</div>
+  </div>
+
+  <div class="story" id="s9">
+
+    <div class="scene">
+      <div class="who">Incremental Development — التسليم على دفعات</div>
+      <p>بدل ما تسلّم البرنامج كله دفعة واحدة — <b>تقسّمه لـ increments</b> وتسلّم كل واحد لما يخلص. المتطلبات ذات الأولوية العالية بتيجي في أول الـ increments.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">✅ مزايا الـ Incremental Development</div>
+      <ul>
+        <li><b>تسليم مبكر</b> — العميل بياخد قيمة من البرنامج بدري حتى لو مش اكتمل</li>
+        <li><b>أول increments كـ prototype</b> — بتساعد في استخلاص متطلبات اللاحقة</li>
+        <li><b>مخاطر أقل</b> لفشل المشروع كله</li>
+        <li><b>المتطلبات ذات الأولوية العالية</b> بتتختبر أكثر — بتاخد أكبر قدر من الـ testing</li>
+      </ul>
+    </div>
+
+    <div class="trap">
+      <span class="trap-tag">⚠️ مشاكل الـ Incremental Delivery</span>
+      <p>1. معظم الأنظمة محتاجة وظائف أساسية بيستخدمها كل الـ increments — صعب تحدد مين يجيب إيه.<br>
+      2. التطوير التكراري صعب لو المستخدمين عايزين كل الوظائف.<br>
+      3. العقود الحكومية الكبيرة بتحتاج specification كامل قبل البداية — الـ incremental مش مناسب.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="scene">
+      <div class="who">Software Validation — مراحل الـ Testing الخمسة</div>
+      <p>الـ testing مش خطوة واحدة — ده سلسلة من الـ 5 مراحل، كل واحدة بتتحقق من جانب مختلف:</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🧪 الـ 5 Testing Stages — بالترتيب</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num" style="background:rgba(122,176,232,0.15);border-color:var(--blue);color:var(--blue);">1</div>
+          <div class="step-body">
+            <h5>Unit Testing — اختبار الوحدة</h5>
+            <p><b>Individual components</b> بيتختبروا — كل function أو module لوحده</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(122,176,232,0.15);border-color:var(--blue);color:var(--blue);">2</div>
+          <div class="step-body">
+            <h5>Module Testing — اختبار الموديول</h5>
+            <p><b>Related collections of dependent components</b> بيتختبروا مع بعض</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(232,184,90,0.15);border-color:var(--gold);color:var(--gold);">3</div>
+          <div class="step-body">
+            <h5>Sub-system Testing — اختبار النظام الفرعي</h5>
+            <p>الـ modules بتتدمج في sub-systems وبتتختبر. التركيز هنا على <b>interface testing</b></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(122,201,154,0.15);border-color:var(--green);color:var(--green);">4</div>
+          <div class="step-body">
+            <h5>System Testing — اختبار النظام</h5>
+            <p>اختبار <b>النظام كله</b> ككتلة واحدة. التركيز على الـ emergent properties (الخصائص الناشئة)</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(122,201,154,0.15);border-color:var(--green);color:var(--green);">5</div>
+          <div class="step-body">
+            <h5>Acceptance Testing — اختبار القبول</h5>
+            <p>الاختبار <b>بـ customer data حقيقية</b> للتحقق من إن النظام مقبول للاستخدام الفعلي</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mem">
+      📝 حفظة سريعة: <span style="color:var(--gold)">U</span>nit → <span style="color:var(--gold)">M</span>odule → <span style="color:var(--gold)">S</span>ub-system → <span style="color:var(--gold)">S</span>ystem → <span style="color:var(--gold)">A</span>cceptance<br>
+      اختصار: <span style="color:var(--gold2)">UMSSA</span>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">🧪</span>
+      <p>5 مراحل testing: Unit → Module → Sub-system → System → Acceptance</p>
+      <small>Acceptance testing = بـ customer data حقيقية. Sub-system focus = interface testing.</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHAPTER 10: CASE TOOLS ═══════════════ -->
+<section class="chapter" id="c10" data-ch="CASE Tools">
+<div class="chnum">10</div>
+<div class="inner">
+
+  <div class="hook" onclick="revealStory('s10')">
+    <span class="hook-label">السؤال العاشر</span>
+    <h2>تخيل إنك بتبني برنامج — ومحتاج أدوات تساعدك في التخطيط والكود والاختبار والتوثيق. فيه نوع من البرمجيات اسمه CASE — إيه هو وإزاي بيتصنّف؟</h2>
+    <div class="tap">اكتشف أدوات المبرمج المحترف</div>
+  </div>
+
+  <div class="story" id="s10">
+
+    <div class="scene">
+      <div class="who">CASE = Computer-Aided Software Engineering</div>
+      <p>برمجيات تساعد في دعم عملية تطوير وتطور البرمجيات. يشمل: <b>Activity automation</b> (أتمتة الأنشطة) مثل رسم diagrams، إدارة الـ data dictionary، بناء الواجهات، دعم testing.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">📊 CASE Classification — 3 منظورات</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px;" class="g3-local">
+        <div style="background:rgba(232,184,90,0.07);border:1px solid var(--border);border-radius:12px;padding:14px;">
+          <p style="color:var(--gold2);font-weight:700;font-size:.95rem;margin-bottom:6px;">🎯 Functional Perspective</p>
+          <p style="font-size:.88rem;color:var(--muted);">الأدوات بتتصنف حسب <b>وظيفتها المحددة</b></p>
+        </div>
+        <div style="background:rgba(122,176,232,0.07);border:1px solid rgba(122,176,232,0.2);border-radius:12px;padding:14px;">
+          <p style="color:var(--blue);font-weight:700;font-size:.95rem;margin-bottom:6px;">⚙️ Process Perspective</p>
+          <p style="font-size:.88rem;color:var(--muted);">الأدوات بتتصنف حسب <b>أنشطة العملية</b> اللي بتدعمها</p>
+        </div>
+        <div style="background:rgba(122,201,154,0.07);border:1px solid rgba(122,201,154,0.2);border-radius:12px;padding:14px;">
+          <p style="color:var(--green);font-weight:700;font-size:.95rem;margin-bottom:6px;">🔗 Integration Perspective</p>
+          <p style="font-size:.88rem;color:var(--muted);">الأدوات بتتصنف حسب <b>تنظيمها في وحدات متكاملة</b></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reveal-tag">🛠️ أنواع الـ CASE Tools (Functional Classification)</div>
+      <table style="margin-top:10px;">
+        <tr><th>نوع الأداة</th><th>أمثلة</th></tr>
+        <tr><td>Planning tools</td><td>PERT tools, estimation tools, spreadsheets</td></tr>
+        <tr><td>Editing tools</td><td>Text editors, diagram editors, word processors</td></tr>
+        <tr><td>Change management tools</td><td>Requirements traceability tools, change control systems</td></tr>
+        <tr><td>Configuration management tools</td><td>Version management systems, system building tools</td></tr>
+        <tr><td>Prototyping tools</td><td>Very high-level languages, user interface generators</td></tr>
+        <tr><td>Method-support tools</td><td>Design editors, data dictionaries, code generators</td></tr>
+        <tr><td>Testing tools</td><td>Test data generators, file comparators</td></tr>
+        <tr><td>Debugging tools</td><td>Interactive debugging systems</td></tr>
+        <tr><td>Documentation tools</td><td>Page layout programs, image editors</td></tr>
+        <tr><td>Re-engineering tools</td><td>Cross-reference generators, program restructuring systems</td></tr>
+      </table>
+    </div>
+
+    <div class="ding">
+      <span class="emoji">🛠️</span>
+      <p>CASE = برمجيات تساعد في تطوير البرمجيات. 3 تصنيفات: Functional · Process · Integration.</p>
+      <small>Case Technology حسّنت البرمجيات بشكل كبير — لكن البرمجة لا تزال نشاط إنساني لا يمكن أتمتته بالكامل</small>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ CHEAT SHEET ═══════════════ -->
+<section class="chapter" id="cheatsheet" data-ch="Cheat Sheet ★">
+<div class="chnum" style="color:rgba(232,184,90,0.06);">★</div>
+<div class="inner" style="max-width:900px;">
+
+  <div class="ch-title">Full Lecture <em>Cheat Sheet</em></div>
+  <div class="ch-sub">Every concept from Lecture 3 — condensed, exam-ready, in English.</div>
+
+  <!-- BLOCK 1: PROCESS OVERVIEW -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">01 · THE SOFTWARE PROCESS</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:24px 28px;">
+      <p style="color:#d4d0c6;line-height:1.9;font-size:.97rem;">
+        A <b style="color:var(--gold2)">software process</b> = a structured set of activities required to develop a software system.<br>
+        Every process involves: <b style="color:var(--gold2)">Specification → Design &amp; Implementation → Validation → Evolution</b><br><br>
+        A <b style="color:var(--gold2)">software process model</b> = an abstract representation of a process from a particular perspective — its goal is to provide a <b style="color:var(--gold2)">framework for managing and improving</b> software processes.<br><br>
+        <b style="color:var(--gold2)">Primary goal</b> of any software process = <b style="color:var(--gold2)">ensure high-quality software products</b>.<br><br>
+        <b style="color:var(--gold2)">Effective process characteristics:</b> Flexibility · Predictability · Adaptability — <b style="color:var(--red)">NOT Rigidity</b>.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: PLAN-DRIVEN vs AGILE -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">02 · PLAN-DRIVEN vs AGILE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="background:rgba(122,176,232,0.06);border:1px solid rgba(122,176,232,0.2);border-radius:14px;padding:18px 22px;">
+        <p style="color:var(--blue);font-weight:700;margin-bottom:8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;">PLAN-DRIVEN</p>
+        <p style="font-size:.92rem;color:#d4d0c6;line-height:1.8;">All activities are <b style="color:var(--blue)">planned in advance</b>. Progress measured against the plan. Example: Waterfall.</p>
+      </div>
+      <div style="background:rgba(122,201,154,0.06);border:1px solid rgba(122,201,154,0.2);border-radius:14px;padding:18px 22px;">
+        <p style="color:var(--green);font-weight:700;margin-bottom:8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;">AGILE</p>
+        <p style="font-size:.92rem;color:#d4d0c6;line-height:1.8;">Planning is <b style="color:var(--green)">incremental</b>, reflects changing customer requirements. In practice, most real processes include elements of both.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: 3 GENERIC MODELS -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">03 · THE 3 GENERIC SOFTWARE PROCESS MODELS</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th style="width:30%">Model</th><th>Key Idea</th><th>Type</th></tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">1. Waterfall</td>
+          <td style="font-size:.92rem;">Separate &amp; distinct phases of specification and development. Each phase depends on the previous.</td>
+          <td style="color:var(--blue);font-size:.88rem;">Plan-driven</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">2. Evolutionary</td>
+          <td style="font-size:.92rem;">Specification, development, and validation are interleaved. Software evolves from an initial outline.</td>
+          <td style="color:var(--muted);font-size:.88rem;">Either</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">3. Reuse-oriented</td>
+          <td style="font-size:.92rem;">System assembled from existing configurable components. Requirements modified to fit what's available.</td>
+          <td style="color:var(--muted);font-size:.88rem;">Either</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: WATERFALL -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">04 · WATERFALL MODEL ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        <b style="color:var(--gold2)">Phases in order:</b> Requirements Definition → System &amp; Software Design → Implementation &amp; Unit Testing → Integration &amp; System Testing → Operation &amp; Maintenance.<br>
+        <b style="color:var(--gold2)">Key words:</b> "linear", "sequential", "each phase depends on previous".<br>
+        <b style="color:var(--red)">NOT a phase in Waterfall:</b> Iteration — Waterfall does each phase exactly once, no loops.<br><br>
+        <b style="color:var(--gold2)">Advantages:</b> Longer operational life · Meets requirements · Excellent documentation · Less need for supporting systems.<br>
+        <b style="color:var(--red)">Disadvantages:</b> Expensive to maintain · Difficult to use · Requires research into user needs · Difficult to customize.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 5: EVOLUTIONARY DEVELOPMENT -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">05 · EVOLUTIONARY DEVELOPMENT</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        <b style="color:var(--gold2)">Two types:</b><br>
+        • <b style="color:var(--blue)">Exploratory Development</b> — Work with customers to evolve a final system from <b>well-understood</b> initial requirements.<br>
+        • <b style="color:var(--green)">Prototyping (throw-away)</b> — Understand system requirements starting from <b>poorly-understood</b> requirements. Prototype is discarded.<br><br>
+        <b style="color:var(--gold2)">Concurrent activities:</b> Outline description → [Specification / Development / Validation happening together] → Initial version → Intermediate versions → Final version.<br><br>
+        <b style="color:var(--gold2)">Advantages:</b> Incremental dev &amp; improvement · Early delivery of working software · Continuous feedback · Reduces project failure risk.<br>
+        <b style="color:var(--red)">Disadvantages:</b> More time/effort · Requires high collaboration · Not suitable for strict deadlines · Less predictable.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 6: REUSE-ORIENTED -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">06 · REUSE-ORIENTED DEVELOPMENT</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        <b style="color:var(--gold2)">Phases:</b> Requirements Specification → Component Analysis → Requirements Modification → System Design with Reuse → Development &amp; Integration → System Validation.<br><br>
+        <b style="color:var(--gold2)">3 types of reusable components:</b><br>
+        1. <b>Web services</b> — developed to service standards, available for remote invocation.<br>
+        2. <b>Collections of objects</b> — developed as a package to integrate with .NET or J2EE.<br>
+        3. <b>Stand-alone software systems</b> — configured for use in a particular environment.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 7: PROCESS ACTIVITIES -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">07 · THE 4 PROCESS ACTIVITIES</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>Activity</th><th>What it does</th></tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">1. Specification<br><small style="color:var(--muted);font-weight:400;">(Requirements Engineering)</small></td>
+          <td style="font-size:.92rem;line-height:1.8;">Define what services are required &amp; the constraints. Process: <b>Feasibility Study → Elicitation &amp; Analysis → Specification → Validation</b>. Two types of requirements: <b>user requirements</b> &amp; <b>system requirements</b>.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">2. Design &amp; Implementation</td>
+          <td style="font-size:.92rem;line-height:1.8;">Convert specification into an executable system. <b>Software design</b> = design the structure. <b>Implementation</b> = translate into executable program. Design activities: Architectural · Interface · Component · Database design.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">3. Validation<br><small style="color:var(--muted);font-weight:400;">(Testing)</small></td>
+          <td style="font-size:.92rem;line-height:1.8;">Show system conforms to specification &amp; meets customer requirements. Includes checking, review processes, and system testing.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">4. Evolution</td>
+          <td style="font-size:.92rem;line-height:1.8;">Software must change over its lifetime in response to customer needs. Development &amp; maintenance are now a <b>continuum</b>, not two separate processes.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- BLOCK 8: PROCESS ITERATION -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">08 · PROCESS ITERATION & INCREMENTAL DEVELOPMENT</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        System requirements <b style="color:var(--gold2)">ALWAYS evolve</b> — reworking earlier stages is always part of the process for large systems. Two iterative approaches: <b>Incremental development</b> &amp; <b>Spiral development</b>.<br><br>
+        <b style="color:var(--gold2)">Incremental Development:</b> Break delivery into increments. High-priority requirements delivered in early increments.<br>
+        <b style="color:var(--gold2)">Advantages:</b> Early value delivery · Early increments act as prototypes · Lower risk of failure · Highest-priority items get most testing.<br>
+        <b style="color:var(--red)">Problems:</b> Hard to identify common facilities needed by all increments · Users want all functionality · Government contracts need complete specs.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 9: 4 KEY MODELS -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">09 · THE 4 EXAM MODELS — SIDE BY SIDE ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>Model</th><th>Magic Keywords</th><th>Exam Trap</th></tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">🌊 Waterfall</td>
+          <td style="font-size:.88rem;">linear · sequential · phases depend on previous</td>
+          <td style="font-size:.88rem;color:var(--red);">"Iteration" is NOT a phase</td>
+        </tr>
+        <tr>
+          <td style="color:var(--green);font-weight:700;">⚡ Agile</td>
+          <td style="font-size:.88rem;">continuous customer involvement · incremental · iterative</td>
+          <td style="font-size:.88rem;color:var(--red);">"Comprehensive documentation" is NOT an Agile principle</td>
+        </tr>
+        <tr>
+          <td style="color:var(--blue);font-weight:700;">🌀 Spiral</td>
+          <td style="font-size:.88rem;">risk-driven · risk assessment in each phase · loops</td>
+          <td style="font-size:.88rem;color:var(--red);">Prototypes built in <b>Engineering</b> phase, NOT Risk Analysis</td>
+        </tr>
+        <tr>
+          <td style="color:#b07ae8;font-weight:700;">V V-Model</td>
+          <td style="font-size:.88rem;">verification per phase · testing for each dev phase · early defect detection</td>
+          <td style="font-size:.88rem;color:var(--red);">"Linear sequential like Waterfall" is NOT a V-Model characteristic</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- BLOCK 10: PROTOTYPE MODEL PHASES -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">10 · PROTOTYPE MODEL</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        <b style="color:var(--gold2)">Phases:</b> Communication → Quick Design → Modeling Quick Design → Construction of Prototype → Delivery, Deployment &amp; Feedback → (repeat)<br><br>
+        <b style="color:var(--gold2)">Advantages:</b> Stakeholder role is vital (customer response, evaluation, feedback) · Quick response time · Risk can be avoided · Greater customer involvement improves quality.<br>
+        <b style="color:var(--red)">Disadvantages:</b> Time-consuming (multiple tickets from customer) · Scope difficult to manage if prototype constantly changes · Risk that prototype becomes the final product even if unsatisfactory.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 11: SPIRAL SECTORS -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">11 · SPIRAL MODEL — 4 SECTORS PER LOOP ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th style="width:25%">Sector</th><th>What happens</th></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">1. Objective Setting</td><td style="font-size:.92rem;">Specific objectives for the phase are defined. Constraints on the process &amp; product identified. Detailed management plan drawn up.</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">2. Risk Assessment &amp; Reduction</td><td style="font-size:.92rem;">Risks identified &amp; evaluated. Risk reduction activities carried out (e.g., prototype if interface risk).</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">3. Development &amp; Validation (Engineering) ★</td><td style="font-size:.92rem;"><b style="color:var(--gold2)">Prototypes developed</b> to mitigate risks. Development model chosen based on identified risks. This is the phase for building &amp; testing.</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">4. Planning</td><td style="font-size:.92rem;">Project reviewed. Decision made whether to continue to next loop. Plans for the next phase are drawn up.</td></tr>
+      </table>
+      <p style="padding:14px 20px;color:var(--muted);font-size:.88rem;">Loops from innermost outward: Feasibility → Requirements → Design → Build → … Proposed by <b style="color:var(--gold2)">Boehm (1988)</b>. Each loop = one complete phase.</p>
+    </div>
+  </div>
+
+  <!-- BLOCK 12: TESTING STAGES -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">12 · TESTING STAGES — IN ORDER ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>#</th><th>Stage</th><th>What is tested</th></tr>
+        <tr><td style="color:var(--blue);">1</td><td style="color:var(--gold2);font-weight:700;">Unit Testing</td><td style="font-size:.92rem;">Individual components tested in isolation.</td></tr>
+        <tr><td style="color:var(--blue);">2</td><td style="color:var(--gold2);font-weight:700;">Module Testing</td><td style="font-size:.92rem;">Related collections of <b>dependent components</b> tested together.</td></tr>
+        <tr><td style="color:var(--gold);">3</td><td style="color:var(--gold2);font-weight:700;">Sub-system Testing</td><td style="font-size:.92rem;">Modules integrated into sub-systems. Focus: <b>interface testing</b>.</td></tr>
+        <tr><td style="color:var(--green);">4</td><td style="color:var(--gold2);font-weight:700;">System Testing</td><td style="font-size:.92rem;">Testing the system <b>as a whole</b>. Focus: emergent properties.</td></tr>
+        <tr><td style="color:var(--green);">5</td><td style="color:var(--gold2);font-weight:700;">Acceptance Testing</td><td style="font-size:.92rem;">Testing with <b>real customer data</b> to check acceptability for use.</td></tr>
+      </table>
+      <p style="padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--gold3);">Mnemonic: U → M → Sub → Sys → Accept</p>
+    </div>
+  </div>
+
+  <!-- BLOCK 13: RUP -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">13 · RATIONAL UNIFIED PROCESS (RUP)</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>Phase</th><th>Goal</th></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">1. Inception</td><td style="font-size:.92rem;">Establish a <b>business case</b>. Identify all external entities (people and systems).</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">2. Elaboration</td><td style="font-size:.92rem;">Understand the problem domain. Establish <b>architectural framework</b>. Develop project plan. Identify key risks.</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">3. Construction</td><td style="font-size:.92rem;">System design, programming, and testing.</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">4. Transition</td><td style="font-size:.92rem;">Move system from development community to <b>user community</b>. Make it work in the real environment.</td></tr>
+      </table>
+      <div style="padding:14px 20px;background:rgba(232,184,90,0.05);">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--gold3);margin-bottom:8px;">RUP Static Workflows (Figure 2.13):</p>
+        <p style="font-size:.88rem;color:var(--muted);">Business modelling · Requirements · Analysis &amp; design · Implementation · Testing · Deployment · Configuration &amp; change management · Project management · Environment</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 14: CASE TOOLS -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">14 · CASE TOOLS (Computer-Aided Software Engineering)</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        Software used to <b style="color:var(--gold2)">support software development and evolution processes</b>. Includes: graphical system model editors, data dictionaries, GUI builders, debuggers, automated translators.<br><br>
+        <b style="color:var(--gold2)">3 CASE Classification perspectives:</b><br>
+        • <b>Functional</b> — classified by their specific function<br>
+        • <b>Process</b> — classified by the process activities they support<br>
+        • <b>Integration</b> — classified by their organization into integrated units<br><br>
+        <b style="color:var(--gold2)">Key tool types:</b> Planning · Editing · Change management · Configuration management · Prototyping · Method-support · Language-processing · Program analysis · Testing · Debugging · Documentation · Re-engineering.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOCK 15: EXAM TRAPS SUMMARY -->
+  <div style="margin:30px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--red);letter-spacing:3px;margin-bottom:14px;">⚠️ ALL EXAM TRAPS — MEMORIZE THESE</div>
+    <div style="display:grid;gap:10px;">
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-bottom:4px;">WATERFALL</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">"Which is NOT a Waterfall phase?" → <b style="color:var(--gold2)">Iteration</b> — Waterfall has no loops. Requirements gathered in "Requirements Analysis" not "Design".</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-bottom:4px;">AGILE</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">"NOT an Agile Manifesto principle?" → <b style="color:var(--gold2)">Comprehensive documentation</b>. "Breaking requirements into smaller tasks?" → <b style="color:var(--gold2)">Iteration Planning</b> (not plain Planning). "Focus of Planning phase?" → <b style="color:var(--gold2)">Prioritizing user stories &amp; estimating effort</b>.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-bottom:4px;">SPIRAL</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">"Which phase develops prototypes to mitigate risks?" → <b style="color:var(--gold2)">Engineering</b> — NOT Risk Analysis. Risk Analysis only identifies risks; Engineering builds the prototypes.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-bottom:4px;">V-MODEL</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">"NOT a V-Model characteristic?" → <b style="color:var(--gold2)">"Linear sequential model similar to Waterfall"</b>. Testing purpose in V-Model → <b style="color:var(--gold2)">verify software meets specified requirements</b>.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-bottom:4px;">EVOLUTIONARY</p>
+        <p style="font-size:.93rem;color:#d4d0c6;"><b style="color:var(--gold2)">Exploratory</b> starts from well-understood requirements. <b style="color:var(--gold2)">Throw-away prototyping</b> starts from poorly-understood requirements.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-bottom:4px;">GENERAL</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">"NOT a characteristic of an effective process?" → <b style="color:var(--gold2)">Rigidity</b>. Primary goal of software process → <b style="color:var(--gold2)">ensure high-quality software</b>, not cost reduction.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ FINAL ═══════════════ -->
+<section class="chapter" id="final" data-ch="النهاية">
+<div class="inner" style="text-align:center;">
+  <div style="font-size:4rem;margin-bottom:20px;">🏆</div>
+  <h2 style="font-size:2.5rem;font-weight:900;color:var(--gold2);margin-bottom:14px;">اتقنت نماذج البرمجيات</h2>
+  <p style="color:var(--muted);max-width:500px;margin:0 auto 30px;">دلوقتي لما تشوف أي سؤال في الامتحان، هتفهم القصة كاملة وهتعرف الإجابة بثقة.</p>
+
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:28px;margin:0 auto;max-width:560px;text-align:right;">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:2px;margin-bottom:16px;text-align:center;">⚡ الخلاصة في 60 ثانية</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:12px;align-items:center;"><span style="color:var(--gold2);font-weight:700;width:90px;">Waterfall</span><span style="color:var(--muted);font-size:.92rem;">خطي تسلسلي — Iteration مش مرحلة فيه</span></div>
+      <div style="display:flex;gap:12px;align-items:center;"><span style="color:var(--green);font-weight:700;width:90px;">Agile</span><span style="color:var(--muted);font-size:.92rem;">عميل مستمر — documentation مش من مبادئه</span></div>
+      <div style="display:flex;gap:12px;align-items:center;"><span style="color:var(--blue);font-weight:700;width:90px;">Spiral</span><span style="color:var(--muted);font-size:.92rem;">risk-driven — Engineering هي مرحلة الـ prototypes</span></div>
+      <div style="display:flex;gap:12px;align-items:center;"><span style="color:#b07ae8;font-weight:700;width:90px;">V-Model</span><span style="color:var(--muted);font-size:.92rem;">testing لكل مرحلة — مش زي الـ Waterfall</span></div>
+      <div style="display:flex;gap:12px;align-items:center;"><span style="color:var(--gold3);font-weight:700;width:90px;">Effective</span><span style="color:var(--muted);font-size:.92rem;">Flexibility + Predictability + Adaptability — مش Rigidity</span></div>
+    </div>
+  </div>
+
+  <p style="margin-top:40px;color:var(--gold3);font-size:1.1rem;">ربنا يوفقك ويديك أعلى درجة 🌟</p>
+</div>
+</section>
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('bar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+// ── CHAPTER NAV ──
+const chapters=[...document.querySelectorAll('[data-ch]')];
+const nav=document.getElementById('chapterNav');
+chapters.forEach((ch,i)=>{
+  const dot=document.createElement('div');
+  dot.className='cnav';
+  dot.title=ch.dataset.ch;
+  dot.onclick=()=>ch.scrollIntoView({behavior:'smooth'});
+  nav.appendChild(dot);
+});
+const dots=[...nav.querySelectorAll('.cnav')];
+const obs2=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const i=chapters.indexOf(e.target);
+      dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+    }
+  });
+},{threshold:0.4});
+chapters.forEach(ch=>obs2.observe(ch));
+
+// ── REVEAL STORIES ──
+function revealStory(id){
+  const s=document.getElementById(id);
+  if(!s)return;
+  if(s.classList.contains('show')){return;}
+  s.style.display='block';
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      s.classList.add('show');
+      setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),300);
+    });
+  });
+}
+
+</script>
+</body>
+</html>
