@@ -6,7 +6,7 @@
 <title>CSE 302 — Software Engineering Study Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #07070a;
@@ -91,6 +91,53 @@
     width: 100%;
   }
 
+  @media (max-width: 768px) {
+    .menu {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 40px 0 25px 0;
+    width: 100%;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-divider:not(:empty)::before {
+    margin-right: 1.5rem;
+  }
+
+  .section-divider:not(:empty)::after {
+    margin-left: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    color: var(--gold-soft);
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  
+  .section-title .kicker {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+  }
+
   .portal-btn {
     display: flex;
     align-items: center;
@@ -128,9 +175,13 @@
 
   .portal-btn span.arrow {
     color: var(--muted);
-    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: transform 0.25s ease, color 0.25s ease;
   }
+
+
 
   .portal-btn:hover {
     transform: translateY(-2px);
@@ -162,6 +213,218 @@
       transform: translateY(0);
     }
   }
+
+  /* Finished studying button styling */
+  .finish-btn {
+    position: relative;
+    background: linear-gradient(135deg, rgba(232, 184, 90, 0.1), rgba(232, 184, 90, 0.03));
+    border: 2px solid var(--gold);
+    color: var(--gold-soft);
+    padding: 18px 36px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 15px rgba(232, 184, 90, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    outline: none;
+  }
+
+  .finish-btn-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .finish-icon {
+    font-size: 1.3rem;
+    transition: transform 0.4s ease;
+  }
+
+  .finish-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(232, 184, 90, 0.35);
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .finish-btn:hover .finish-icon {
+    transform: rotate(360deg) scale(1.2);
+  }
+
+  .finish-btn:active {
+    transform: scale(0.98);
+  }
+
+  .finish-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+    z-index: 1;
+  }
+
+  .finish-btn:hover::before {
+    left: 100%;
+    transition: 0.6s ease;
+  }
+
+  /* Celebration Overlay Styles */
+  .overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 4, 6, 0.97);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+  }
+
+  #sparkles-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .celebration-card {
+    position: absolute;
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(232, 184, 90, 0.15);
+    border-radius: 24px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+    pointer-events: none;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .celebration-card.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+  }
+
+  .badge-icon {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    animation: floatIcon 3s ease-in-out infinite alternate;
+  }
+
+  .card-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+  }
+
+  .glow-text {
+    color: var(--gold-soft);
+    text-shadow: 0 0 20px rgba(232, 184, 90, 0.6), 0 0 40px rgba(232, 184, 90, 0.2);
+    animation: pulseGlow 2s infinite alternate;
+  }
+
+  .card-desc {
+    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .highlight-text {
+    color: var(--ink);
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .large-desc {
+    font-size: clamp(1.25rem, 3.8vw, 1.6rem);
+    color: var(--ink);
+    line-height: 1.8;
+    font-weight: 600;
+  }
+
+  .gold-highlight {
+    color: var(--gold-soft);
+    font-weight: 800;
+    border-bottom: 2px dashed var(--gold);
+    padding-bottom: 2px;
+  }
+
+  .close-btn {
+    margin-top: 30px;
+    background: var(--gold);
+    border: none;
+    color: #07070a;
+    padding: 12px 35px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(232, 184, 90, 0.4);
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .close-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(232, 184, 90, 0.6);
+    background: #fff;
+  }
+
+  .close-btn:active {
+    transform: translateY(-1px);
+  }
+
+  @keyframes floatIcon {
+    from {
+      transform: translateY(0) scale(1);
+    }
+    to {
+      transform: translateY(-10px) scale(1.05);
+    }
+  }
+
+  @keyframes pulseGlow {
+    from {
+      text-shadow: 0 0 20px rgba(232, 184, 90, 0.5);
+    }
+    to {
+      text-shadow: 0 0 35px rgba(232, 184, 90, 0.8), 0 0 50px rgba(232, 184, 90, 0.3);
+    }
+  }
 </style>
 </head>
 <body>
@@ -180,7 +443,12 @@
         <span class="num">LEC 1</span>
         SE Introduction & Foundations
       </span>
-      <span class="arrow">→</span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
     </a>
 
     <a href="lec 2 se.html" class="portal-btn">
@@ -188,7 +456,12 @@
         <span class="num">LEC 2</span>
         Good Software & Professional Ethics
       </span>
-      <span class="arrow">→</span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
     </a>
 
     <a href="lec 3 se.html" class="portal-btn">
@@ -196,7 +469,12 @@
         <span class="num">LEC 3</span>
         Software Process Models
       </span>
-      <span class="arrow">→</span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
     </a>
 
     <a href="lec 4 se.html" class="portal-btn">
@@ -204,14 +482,288 @@
         <span class="num">LEC 4</span>
         Agile Methods
       </span>
-      <span class="arrow">→</span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
     </a>
+  </div>
+
+  <div class="section-divider">
+    <div class="section-title">
+      <span class="kicker">Practice & Evaluation</span>
+      <span>Sheets</span>
+    </div>
+  </div>
+
+  <div class="menu">
+    <a href="https://herizonapp.com/?tab=quiz&quiz=mq14cky63sil7uo" target="_blank" rel="noopener noreferrer" class="portal-btn">
+      <span class="label">
+        <span class="num">SHEET 1</span>
+        Introduction to Software Engineering Quiz
+      </span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
+    </a>
+
+    <a href="https://herizonapp.com/?tab=quiz&quiz=mq1g6ucb0cs4f55" target="_blank" rel="noopener noreferrer" class="portal-btn">
+      <span class="label">
+        <span class="num">SHEET 2</span>
+        Good Software, Ethics & Case Studies Quiz
+      </span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
+    </a>
+
+    <a href="https://herizonapp.com/?tab=quiz&quiz=mq33fxfg201ori3" target="_blank" rel="noopener noreferrer" class="portal-btn">
+      <span class="label">
+        <span class="num">SHEET 3</span>
+        Software Process Models Quiz
+      </span>
+      <span class="arrow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
+    </a>
+  </div>
+
+  <!-- Done Studying Section -->
+  <div class="section-divider">
+    <div class="section-title">
+      <span class="kicker">Congratulations</span>
+      <span style="font-family: 'Tajawal', sans-serif;">إتمام المذاكرة</span>
+    </div>
+  </div>
+
+  <div style="margin: 30px 0; display: flex; justify-content: center; width: 100%;">
+    <button id="finish-study-btn" class="finish-btn">
+      <span class="finish-btn-content">
+        <span class="finish-icon">🎓</span>
+        <span style="font-family: 'Tajawal', sans-serif; font-weight: 700;">اضغط هنا لو انتهيت من كل المذاكرة</span>
+      </span>
+    </button>
   </div>
 
   <footer>
     FACULTY OF ENGINEERING · 2026
   </footer>
 </div>
+
+<!-- Celebration Overlay System -->
+<div id="celebration-overlay" class="overlay-container">
+  <canvas id="sparkles-canvas"></canvas>
+  
+  <!-- Step 1 Card: عاش اسطورة -->
+  <div class="celebration-card" id="card-step-1">
+    <div class="badge-icon">🔥</div>
+    <h2 class="card-title glow-text">عاااش اسطورة</h2>
+    <p class="card-desc">بطل حقيقي كملت كل المذاكرة بنجاح!</p>
+  </div>
+
+  <!-- Step 2 Card: الدعاء لأبي -->
+  <div class="celebration-card" id="card-step-2">
+    <div class="badge-icon">🤍</div>
+    <h2 class="card-title">لو استفدت</h2>
+    <p class="card-desc highlight-text">لا تنسى الدعاء لأبي بالمغفرة والرحمة</p>
+  </div>
+
+  <!-- Step 3 Card: ابوعيد بيمسي -->
+  <div class="celebration-card" id="card-step-3">
+    <div class="badge-icon">👑</div>
+    <p class="card-desc large-desc">
+      ولا تنسى إذا ضاقت بك الدنيا تذكر أن <span class="gold-highlight">أبو عيد</span> بيمسي عليك دائماً وأبداً حتى يلقى التراب
+    </p>
+    <button id="close-overlay-btn" class="close-btn">إغلاق 💛</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('finish-study-btn').addEventListener('click', function() {
+    const overlay = document.getElementById('celebration-overlay');
+    const canvas = document.getElementById('sparkles-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    overlay.style.display = 'flex';
+    
+    // Canvas sizing
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Particle constructor / class
+    class Particle {
+      constructor(x, y, color, isExplosion = true) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * (isExplosion ? 4 : 2) + 1;
+        this.speedX = isExplosion ? (Math.random() - 0.5) * 14 : (Math.random() - 0.5) * 2;
+        this.speedY = isExplosion ? (Math.random() - 0.7) * 14 - 3 : -Math.random() * 1.5 - 0.5;
+        this.gravity = isExplosion ? 0.18 : 0;
+        this.color = color;
+        this.alpha = 1;
+        this.decay = isExplosion ? (Math.random() * 0.015 + 0.005) : 0.005;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.alpha -= this.decay;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        if (this.size > 2) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = this.color;
+        }
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    
+    let particles = [];
+    const colors = ['#e8b85a', '#f4d28a', '#ffffff', '#e9e6df', '#ffd700'];
+    
+    // Spawn initial explosion from corners and center
+    function burst() {
+      // Left bottom
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle(0, canvas.height, colors[Math.floor(Math.random() * colors.length)]));
+      }
+      // Right bottom
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle(canvas.width, canvas.height, colors[Math.floor(Math.random() * colors.length)]));
+      }
+      // Center
+      for (let i = 0; i < 50; i++) {
+        particles.push(new Particle(canvas.width / 2, canvas.height / 2 + 100, colors[Math.floor(Math.random() * colors.length)]));
+      }
+    }
+    
+    burst();
+    
+    let animationFrameId;
+    let keepSpawning = true;
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      
+      // Periodically spawn floating background stars
+      if (keepSpawning && Math.random() < 0.2) {
+        particles.push(new Particle(
+          Math.random() * canvas.width,
+          canvas.height + 10,
+          colors[Math.floor(Math.random() * colors.length)],
+          false
+        ));
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Mouse trailing interaction
+    function handleMouseMove(e) {
+      for (let i = 0; i < 2; i++) {
+        particles.push(new Particle(
+          e.clientX,
+          e.clientY,
+          colors[Math.floor(Math.random() * colors.length)],
+          false
+        ));
+      }
+    }
+    overlay.addEventListener('mousemove', handleMouseMove);
+    
+    // Sequencing the cards
+    const card1 = document.getElementById('card-step-1');
+    const card2 = document.getElementById('card-step-2');
+    const card3 = document.getElementById('card-step-3');
+    
+    // Reset states
+    card1.classList.remove('active');
+    card2.classList.remove('active');
+    card3.classList.remove('active');
+    
+    // Step 1
+    setTimeout(() => {
+      card1.classList.add('active');
+    }, 200);
+    
+    // Step 2
+    let step2Timeout = setTimeout(() => {
+      card1.classList.remove('active');
+      setTimeout(() => {
+        card2.classList.add('active');
+        // Trigger another light burst
+        for (let i = 0; i < 40; i++) {
+          particles.push(new Particle(canvas.width / 2, canvas.height / 2, colors[Math.floor(Math.random() * colors.length)]));
+        }
+      }, 800);
+    }, 4500); // Show card1 for 4.5 seconds
+    
+    // Step 3
+    let step3Timeout = setTimeout(() => {
+      card2.classList.remove('active');
+      setTimeout(() => {
+        card3.classList.add('active');
+        // Final gold burst
+        burst();
+      }, 800);
+    }, 9500); // Show card2 for 5 seconds
+    
+    // Close handler
+    document.getElementById('close-overlay-btn').addEventListener('click', function() {
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity 0.5s ease';
+      
+      overlay.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(step2Timeout);
+      clearTimeout(step3Timeout);
+      
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.style.opacity = '1';
+        overlay.style.transition = '';
+        card1.classList.remove('active');
+        card2.classList.remove('active');
+        card3.classList.remove('active');
+        keepSpawning = false;
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener('resize', resizeCanvas);
+      }, 500);
+    }, { once: true });
+  });
+</script>
 
 </body>
 </html>
