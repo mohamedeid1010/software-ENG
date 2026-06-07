@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كود زر إتمام المذاكرة الاحتفالي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #07070a;
+      color: #e9e6df;
+      font-family: 'Sora', 'Tajawal', sans-serif;
+      padding: 40px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(232, 184, 90, 0.15);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+
+    h1, h2 {
+      color: #e8b85a;
+      margin-top: 0;
+    }
+
+    pre {
+      background: #0e0e14;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      direction: ltr;
+      text-align: left;
+      font-family: 'Courier New', Courier, monospace;
+      color: #c9d1d9;
+    }
+
+    .demo-box {
+      border: 2px dashed rgba(232, 184, 90, 0.3);
+      padding: 40px;
+      border-radius: 12px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .copy-section {
+      margin-top: 30px;
+    }
+
+    .badge {
+      background: rgba(232, 184, 90, 0.1);
+      color: #e8b85a;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    /* === STYLES NEEDED FOR THE CELEBRATION BUTTON === */
+    :root {
+      --gold: #e8b85a;
+      --gold-soft: #f4d28a;
+      --ink: #e9e6df;
+      --muted: #8c887f;
+      --bg-dark: #07070a;
+    }
+
+    .finish-btn {
+      position: relative;
+      background: linear-gradient(135deg, rgba(232, 184, 90, 0.1), rgba(232, 184, 90, 0.03));
+      border: 2px solid var(--gold);
+      color: var(--gold-soft);
+      padding: 18px 36px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 0 15px rgba(232, 184, 90, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      outline: none;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .finish-btn-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .finish-icon {
+      font-size: 1.3rem;
+      transition: transform 0.4s ease;
+    }
+
+    .finish-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(232, 184, 90, 0.35);
+      border-color: #fff;
+      color: #fff;
+    }
+
+    .finish-btn:hover .finish-icon {
+      transform: rotate(360deg) scale(1.2);
+    }
+
+    .finish-btn:active {
+      transform: scale(0.98);
+    }
+
+    .finish-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+      z-index: 1;
+    }
+
+    .finish-btn:hover::before {
+      left: 100%;
+      transition: 0.6s ease;
+    }
+
+    /* Celebration Overlay Styles */
+    .overlay-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(4, 4, 6, 0.97);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+    }
+
+    #sparkles-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .celebration-card {
+      position: absolute;
+      width: 90%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(232, 184, 90, 0.15);
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      z-index: 2;
+      opacity: 0;
+      transform: scale(0.9) translateY(30px);
+      pointer-events: none;
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .celebration-card.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    .badge-icon {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      animation: floatIcon 3s ease-in-out infinite alternate;
+    }
+
+    .card-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      color: var(--ink);
+      margin-bottom: 15px;
+      letter-spacing: -0.5px;
+    }
+
+    .glow-text {
+      color: var(--gold-soft);
+      text-shadow: 0 0 20px rgba(232, 184, 90, 0.6), 0 0 40px rgba(232, 184, 90, 0.2);
+      animation: pulseGlow 2s infinite alternate;
+    }
+
+    .card-desc {
+      font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+      color: var(--muted);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .highlight-text {
+      color: var(--ink);
+      font-size: clamp(1.3rem, 4vw, 1.7rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .large-desc {
+      font-size: clamp(1.25rem, 3.8vw, 1.6rem);
+      color: var(--ink);
+      line-height: 1.8;
+      font-weight: 600;
+    }
+
+    .gold-highlight {
+      color: var(--gold-soft);
+      font-weight: 800;
+      border-bottom: 2px dashed var(--gold);
+      padding-bottom: 2px;
+    }
+
+    .close-btn {
+      margin-top: 30px;
+      background: var(--gold);
+      border: none;
+      color: #07070a;
+      padding: 12px 35px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(232, 184, 90, 0.4);
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .close-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(232, 184, 90, 0.6);
+      background: #fff;
+    }
+
+    .close-btn:active {
+      transform: translateY(-1px);
+    }
+
+    @keyframes floatIcon {
+      from {
+        transform: translateY(0) scale(1);
+      }
+      to {
+        transform: translateY(-10px) scale(1.05);
+      }
+    }
+
+    @keyframes pulseGlow {
+      from {
+        text-shadow: 0 0 20px rgba(232, 184, 90, 0.5);
+      }
+      to {
+        text-shadow: 0 0 35px rgba(232, 184, 90, 0.8), 0 0 50px rgba(232, 184, 90, 0.3);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>مكون زر إتمام المذاكرة الاحتفالي 🎓</h1>
+    <p>هذا الملف يحتوي على الكود الكامل للزر والتأثير الاحتفالي لتقوم بنسخه لأي موقع آخر.</p>
+    
+    <h2>تجرية الزر (Demo):</h2>
+    <div class="demo-box">
+      <button id="finish-study-btn" class="finish-btn">
+        <span class="finish-btn-content">
+          <span class="finish-icon">🎓</span>
+          <span style="font-weight: 700;">اضغط هنا لو انتهيت من كل المذاكرة</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="container copy-section">
+    <h2>الخطوة 1: كود الـ HTML <span class="badge">انسخ وضعه في جسم الصفحة body</span></h2>
+    <p>ضع هذا الكود في المكان الذي تريد أن يظهر فيه الزر، والـ Overlay في نهاية الـ body.</p>
+    <pre>&lt;!-- الزر الاحتفالي --&gt;
+&lt;div style="display: flex; justify-content: center; width: 100%; margin: 30px 0;"&gt;
+  &lt;button id="finish-study-btn" class="finish-btn"&gt;
+    &lt;span class="finish-btn-content"&gt;
+      &lt;span class="finish-icon"&gt;🎓&lt;/span&gt;
+      &lt;span style="font-family: 'Tajawal', sans-serif; font-weight: 700;"&gt;اضغط هنا لو انتهيت من كل المذاكرة&lt;/span&gt;
+    &lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- شاشة الاحتفال الشفافة --&gt;
+&lt;div id="celebration-overlay" class="overlay-container"&gt;
+  &lt;canvas id="sparkles-canvas"&gt;&lt;/canvas&gt;
+  
+  &lt;!-- البطاقة 1: عاش اسطورة --&gt;
+  &lt;div class="celebration-card" id="card-step-1"&gt;
+    &lt;div class="badge-icon"&gt;🔥&lt;/div&gt;
+    &lt;h2 class="card-title glow-text"&gt;عاااش اسطورة&lt;/h2&gt;
+    &lt;p class="card-desc"&gt;بطل حقيقي كملت كل المذاكرة بنجاح!&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;!-- البطاقة 2: الدعاء لأبي --&gt;
+  &lt;div class="celebration-card" id="card-step-2"&gt;
+    &lt;div class="badge-icon"&gt;🤍&lt;/div&gt;
+    &lt;h2 class="card-title"&gt;لو استفدت&lt;/h2&gt;
+    &lt;p class="card-desc highlight-text"&gt;لا تنسى الدعاء لأبي بالمغفرة والرحمة&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;!-- البطاقة 3: ابوعيد بيمسي --&gt;
+  &lt;div class="celebration-card" id="card-step-3"&gt;
+    &lt;div class="badge-icon"&gt;👑&lt;/div&gt;
+    &lt;p class="card-desc large-desc"&gt;
+      ولا تنسى إذا ضاقت بك الدنيا تذكر أن &lt;span class="gold-highlight"&gt;أبو عيد&lt;/span&gt; بيمسي عليك دائماً وأبداً حتى يلقى التراب
+    &lt;/p&gt;
+    &lt;button id="close-overlay-btn" class="close-btn"&gt;إغلاق 💛&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+  </div>
+
+  <div class="container copy-section">
+    <h2>الخطوة 2: كود الـ CSS <span class="badge">انسخ وضعه في وسم head داخل style</span></h2>
+    <p>تأكد من استدعاء خط "Tajawal" و "Sora" من Google Fonts في موقعك ليعمل الخط بشكل صحيح.</p>
+    <pre>&lt;!-- استدعاء الخطوط من جوجل --&gt;
+&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&amp;family=Sora:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"&gt;
+
+&lt;style&gt;
+  :root {
+    --gold: #e8b85a;
+    --gold-soft: #f4d28a;
+    --ink: #e9e6df;
+    --muted: #8c887f;
+    --bg-dark: #07070a;
+  }
+
+  .finish-btn {
+    position: relative;
+    background: linear-gradient(135deg, rgba(232, 184, 90, 0.1), rgba(232, 184, 90, 0.03));
+    border: 2px solid var(--gold);
+    color: var(--gold-soft);
+    padding: 18px 36px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 15px rgba(232, 184, 90, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    outline: none;
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .finish-btn-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .finish-icon {
+    font-size: 1.3rem;
+    transition: transform 0.4s ease;
+  }
+
+  .finish-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(232, 184, 90, 0.35);
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .finish-btn:hover .finish-icon {
+    transform: rotate(360deg) scale(1.2);
+  }
+
+  .finish-btn:active {
+    transform: scale(0.98);
+  }
+
+  .finish-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+    z-index: 1;
+  }
+
+  .finish-btn:hover::before {
+    left: 100%;
+    transition: 0.6s ease;
+  }
+
+  /* Celebration Overlay Styles */
+  .overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 4, 6, 0.97);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+  }
+
+  #sparkles-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .celebration-card {
+    position: absolute;
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(232, 184, 90, 0.15);
+    border-radius: 24px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+    pointer-events: none;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .celebration-card.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+  }
+
+  .badge-icon {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    animation: floatIcon 3s ease-in-out infinite alternate;
+  }
+
+  .card-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+  }
+
+  .glow-text {
+    color: var(--gold-soft);
+    text-shadow: 0 0 20px rgba(232, 184, 90, 0.6), 0 0 40px rgba(232, 184, 90, 0.2);
+    animation: pulseGlow 2s infinite alternate;
+  }
+
+  .card-desc {
+    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .highlight-text {
+    color: var(--ink);
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .large-desc {
+    font-size: clamp(1.25rem, 3.8vw, 1.6rem);
+    color: var(--ink);
+    line-height: 1.8;
+    font-weight: 600;
+  }
+
+  .gold-highlight {
+    color: var(--gold-soft);
+    font-weight: 800;
+    border-bottom: 2px dashed var(--gold);
+    padding-bottom: 2px;
+  }
+
+  .close-btn {
+    margin-top: 30px;
+    background: var(--gold);
+    border: none;
+    color: #07070a;
+    padding: 12px 35px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(232, 184, 90, 0.4);
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .close-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(232, 184, 90, 0.6);
+    background: #fff;
+  }
+
+  .close-btn:active {
+    transform: translateY(-1px);
+  }
+
+  @keyframes floatIcon {
+    from {
+      transform: translateY(0) scale(1);
+    }
+    to {
+      transform: translateY(-10px) scale(1.05);
+    }
+  }
+
+  @keyframes pulseGlow {
+    from {
+      text-shadow: 0 0 20px rgba(232, 184, 90, 0.5);
+    }
+    to {
+      text-shadow: 0 0 35px rgba(232, 184, 90, 0.8), 0 0 50px rgba(232, 184, 90, 0.3);
+    }
+  }
+&lt;/style&gt;</pre>
+  </div>
+
+  <div class="container copy-section">
+    <h2>الخطوة 3: كود الـ JavaScript <span class="badge">انسخ وضعه قبل وسم الإغلاق body في script</span></h2>
+    <p>هذا الكود يتحكم في تفاعل الزر، تشغيل الأنيميشن والـ Canvas، والتنقل بين بطاقات الاحتفال الثلاثة.</p>
+    <pre>&lt;script&gt;
+  document.getElementById('finish-study-btn').addEventListener('click', function() {
+    const overlay = document.getElementById('celebration-overlay');
+    const canvas = document.getElementById('sparkles-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    overlay.style.display = 'flex';
+    
+    // Canvas sizing
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Particle constructor / class
+    class Particle {
+      constructor(x, y, color, isExplosion = true) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * (isExplosion ? 4 : 2) + 1;
+        this.speedX = isExplosion ? (Math.random() - 0.5) * 14 : (Math.random() - 0.5) * 2;
+        this.speedY = isExplosion ? (Math.random() - 0.7) * 14 - 3 : -Math.random() * 1.5 - 0.5;
+        this.gravity = isExplosion ? 0.18 : 0;
+        this.color = color;
+        this.alpha = 1;
+        this.decay = isExplosion ? (Math.random() * 0.015 + 0.005) : 0.005;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.alpha -= this.decay;
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        if (this.size > 2) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = this.color;
+        }
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    
+    let particles = [];
+    const colors = ['#e8b85a', '#f4d28a', '#ffffff', '#e9e6df', '#ffd700'];
+    
+    // Spawn initial explosion from corners and center
+    function burst() {
+      // Left bottom
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle(0, canvas.height, colors[Math.floor(Math.random() * colors.length)]));
+      }
+      // Right bottom
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle(canvas.width, canvas.height, colors[Math.floor(Math.random() * colors.length)]));
+      }
+      // Center
+      for (let i = 0; i < 50; i++) {
+        particles.push(new Particle(canvas.width / 2, canvas.height / 2 + 100, colors[Math.floor(Math.random() * colors.length)]));
+      }
+    }
+    
+    burst();
+    
+    let animationFrameId;
+    let keepSpawning = true;
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      
+      // Periodically spawn floating background stars
+      if (keepSpawning && Math.random() < 0.2) {
+        particles.push(new Particle(
+          Math.random() * canvas.width,
+          canvas.height + 10,
+          colors[Math.floor(Math.random() * colors.length)],
+          false
+        ));
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Mouse trailing interaction
+    function handleMouseMove(e) {
+      for (let i = 0; i < 2; i++) {
+        particles.push(new Particle(
+          e.clientX,
+          e.clientY,
+          colors[Math.floor(Math.random() * colors.length)],
+          false
+        ));
+      }
+    }
+    overlay.addEventListener('mousemove', handleMouseMove);
+    
+    // Sequencing the cards
+    const card1 = document.getElementById('card-step-1');
+    const card2 = document.getElementById('card-step-2');
+    const card3 = document.getElementById('card-step-3');
+    
+    // Reset states
+    card1.classList.remove('active');
+    card2.classList.remove('active');
+    card3.classList.remove('active');
+    
+    // Step 1
+    setTimeout(() => {
+      card1.classList.add('active');
+    }, 200);
+    
+    // Step 2
+    let step2Timeout = setTimeout(() => {
+      card1.classList.remove('active');
+      setTimeout(() => {
+        card2.classList.add('active');
+        // Trigger another light burst
+        for (let i = 0; i < 40; i++) {
+          particles.push(new Particle(canvas.width / 2, canvas.height / 2, colors[Math.floor(Math.random() * colors.length)]));
+        }
+      }, 800);
+    }, 4500); // Show card1 for 4.5 seconds
+    
+    // Step 3
+    let step3Timeout = setTimeout(() => {
+      card2.classList.remove('active');
+      setTimeout(() => {
+        card3.classList.add('active');
+        // Final gold burst
+        burst();
+      }, 800);
+    }, 9500); // Show card2 for 5 seconds
+    
+    // Close handler
+    document.getElementById('close-overlay-btn').addEventListener('click', function() {
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity 0.5s ease';
+      
+      overlay.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(step2Timeout);
+      clearTimeout(step3Timeout);
+      
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.style.opacity = '1';
+        overlay.style.transition = '';
+        card1.classList.remove('active');
+        card2.classList.remove('active');
+        card3.classList.remove('active');
+        keepSpawning = false;
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener('resize', resizeCanvas);
+      }, 500);
+    }, { once: true });
+  });
+&lt;/script&gt;</pre>
+  </div>
+
+  <!-- Celebration Overlay System (Needed for Demo to work in this preview page) -->
+  <div id="celebration-overlay" class="overlay-container">
+    <canvas id="sparkles-canvas"></canvas>
+    
+    <!-- Step 1 Card -->
+    <div class="celebration-card" id="card-step-1">
+      <div class="badge-icon">🔥</div>
+      <h2 class="card-title glow-text">عاااش اسطورة</h2>
+      <p class="card-desc">بطل حقيقي كملت كل المذاكرة بنجاح!</p>
+    </div>
+
+    <!-- Step 2 Card -->
+    <div class="celebration-card" id="card-step-2">
+      <div class="badge-icon">🤍</div>
+      <h2 class="card-title">لو استفدت</h2>
+      <p class="card-desc highlight-text">لا تنسى الدعاء لأبي بالمغفرة والرحمة</p>
+    </div>
+
+    <!-- Step 3 Card -->
+    <div class="celebration-card" id="card-step-3">
+      <div class="badge-icon">👑</div>
+      <p class="card-desc large-desc">
+        ولا تنسى إذا ضاقت بك الدنيا تذكر أن <span class="gold-highlight">أبو عيد</span> بيمسي عليك دائماً وأبداً حتى يلقى التراب
+      </p>
+      <button id="close-overlay-btn" class="close-btn">إغلاق 💛</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('finish-study-btn').addEventListener('click', function() {
+      const overlay = document.getElementById('celebration-overlay');
+      const canvas = document.getElementById('sparkles-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      overlay.style.display = 'flex';
+      
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      class Particle {
+        constructor(x, y, color, isExplosion = true) {
+          this.x = x;
+          this.y = y;
+          this.size = Math.random() * (isExplosion ? 4 : 2) + 1;
+          this.speedX = isExplosion ? (Math.random() - 0.5) * 14 : (Math.random() - 0.5) * 2;
+          this.speedY = isExplosion ? (Math.random() - 0.7) * 14 - 3 : -Math.random() * 1.5 - 0.5;
+          this.gravity = isExplosion ? 0.18 : 0;
+          this.color = color;
+          this.alpha = 1;
+          this.decay = isExplosion ? (Math.random() * 0.015 + 0.005) : 0.005;
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.speedY += this.gravity;
+          this.alpha -= this.decay;
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.alpha;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          if (this.size > 2) {
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = this.color;
+          }
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+      
+      let particles = [];
+      const colors = ['#e8b85a', '#f4d28a', '#ffffff', '#e9e6df', '#ffd700'];
+      
+      function burst() {
+        for (let i = 0; i < 60; i++) {
+          particles.push(new Particle(0, canvas.height, colors[Math.floor(Math.random() * colors.length)]));
+        }
+        for (let i = 0; i < 60; i++) {
+          particles.push(new Particle(canvas.width, canvas.height, colors[Math.floor(Math.random() * colors.length)]));
+        }
+        for (let i = 0; i < 50; i++) {
+          particles.push(new Particle(canvas.width / 2, canvas.height / 2 + 100, colors[Math.floor(Math.random() * colors.length)]));
+        }
+      }
+      
+      burst();
+      
+      let animationFrameId;
+      let keepSpawning = true;
+      
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.update();
+          p.draw();
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+        
+        if (keepSpawning && Math.random() < 0.2) {
+          particles.push(new Particle(
+            Math.random() * canvas.width,
+            canvas.height + 10,
+            colors[Math.floor(Math.random() * colors.length)],
+            false
+          ));
+        }
+        
+        animationFrameId = requestAnimationFrame(animate);
+      }
+      
+      animate();
+      
+      function handleMouseMove(e) {
+        for (let i = 0; i < 2; i++) {
+          particles.push(new Particle(
+            e.clientX,
+            e.clientY,
+            colors[Math.floor(Math.random() * colors.length)],
+            false
+          ));
+        }
+      }
+      overlay.addEventListener('mousemove', handleMouseMove);
+      
+      const card1 = document.getElementById('card-step-1');
+      const card2 = document.getElementById('card-step-2');
+      const card3 = document.getElementById('card-step-3');
+      
+      card1.classList.remove('active');
+      card2.classList.remove('active');
+      card3.classList.remove('active');
+      
+      setTimeout(() => {
+        card1.classList.add('active');
+      }, 200);
+      
+      let step2Timeout = setTimeout(() => {
+        card1.classList.remove('active');
+        setTimeout(() => {
+          card2.classList.add('active');
+          for (let i = 0; i < 40; i++) {
+            particles.push(new Particle(canvas.width / 2, canvas.height / 2, colors[Math.floor(Math.random() * colors.length)]));
+          }
+        }, 800);
+      }, 4500);
+      
+      let step3Timeout = setTimeout(() => {
+        card2.classList.remove('active');
+        setTimeout(() => {
+          card3.classList.add('active');
+          burst();
+        }, 800);
+      }, 9500);
+      
+      document.getElementById('close-overlay-btn').addEventListener('click', function() {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.5s ease';
+        
+        overlay.removeEventListener('mousemove', handleMouseMove);
+        clearTimeout(step2Timeout);
+        clearTimeout(step3Timeout);
+        
+        setTimeout(() => {
+          overlay.style.display = 'none';
+          overlay.style.opacity = '1';
+          overlay.style.transition = '';
+          card1.classList.remove('active');
+          card2.classList.remove('active');
+          card3.classList.remove('active');
+          keepSpawning = false;
+          cancelAnimationFrame(animationFrameId);
+          window.removeEventListener('resize', resizeCanvas);
+        }, 500);
+      }, { once: true });
+    });
+  </script>
+</body>
+</html>
