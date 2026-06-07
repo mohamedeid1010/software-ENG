@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSE 302 · Lecture 4 — Agile Methods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0c0a;
+  --panel:#161310;
+  --border:rgba(232,184,90,0.14);
+  --gold:#e8b85a;--gold2:#f0c97a;--gold3:rgba(232,184,90,0.55);
+  --ink:#e8e4dc;
+  --muted:#7a7268;
+  --blue:#7ab0e8;
+  --green:#7ac99a;
+  --red:#e07a7a;
+  --purple:#b07ae8;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Tajawal',sans-serif;font-size:1.05rem;line-height:1.8;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;right:22px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:10px;z-index:100;
+}
+.cnav{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(232,184,90,0.2);border:1px solid var(--gold3);
+  cursor:pointer;transition:.3s;position:relative;
+}
+.cnav:hover::after,.cnav.on::after{
+  content:attr(data-label);
+  position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  white-space:nowrap;background:var(--panel);border:1px solid var(--border);
+  padding:4px 10px;border-radius:8px;font-size:.72rem;color:var(--gold2);
+  font-family:'JetBrains Mono',monospace;pointer-events:none;
+}
+.cnav.on{background:var(--gold);box-shadow:0 0 8px var(--gold3);}
+
+/* ── PROGRESS ── */
+#prog{
+  position:fixed;top:0;left:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  width:0%;transition:width .2s;z-index:200;
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:60px 24px;
+  background:radial-gradient(ellipse at 50% 30%,rgba(232,184,90,0.07) 0%,transparent 70%);
+  border-bottom:1px solid var(--border);
+}
+.hero-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  color:var(--gold3);letter-spacing:4px;margin-bottom:24px;
+}
+.hero h1{
+  font-size:clamp(2.4rem,6vw,4.5rem);font-weight:900;line-height:1.15;
+  background:linear-gradient(135deg,var(--gold2) 0%,#fff8e0 50%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:18px;
+}
+.hero-sub{font-size:1.15rem;color:var(--muted);max-width:560px;line-height:1.9;}
+.hero-stats{
+  display:flex;gap:32px;margin-top:48px;flex-wrap:wrap;justify-content:center;
+}
+.stat{text-align:center;}
+.stat-n{
+  font-family:'JetBrains Mono',monospace;font-size:2rem;
+  color:var(--gold2);display:block;
+}
+.stat-l{font-size:.78rem;color:var(--muted);letter-spacing:2px;}
+.scroll-hint{
+  margin-top:60px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--muted);font-size:.85rem;animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+/* ── CHAPTER ── */
+.chapter{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:80px 24px;border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.chnum{
+  position:absolute;left:-10px;top:50%;transform:translateY(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:14rem;font-weight:900;
+  color:rgba(232,184,90,0.04);line-height:1;pointer-events:none;user-select:none;
+}
+.inner{max-width:820px;margin:0 auto;width:100%;position:relative;}
+
+/* ── HOOK ── */
+.hook{
+  cursor:pointer;padding:40px;border-radius:20px;
+  background:rgba(232,184,90,0.03);border:1px solid var(--border);
+  transition:.35s;text-align:center;
+}
+.hook:hover{background:rgba(232,184,90,0.07);border-color:var(--gold3);transform:translateY(-2px);}
+.hook h2{
+  font-size:clamp(1.4rem,3vw,2rem);font-weight:900;
+  color:var(--gold2);line-height:1.4;margin-bottom:16px;
+}
+.hook p{color:var(--muted);font-size:.95rem;}
+.tap{
+  margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  color:var(--gold3);letter-spacing:3px;animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+
+/* ── CHAPTER HEADER (when no hook) ── */
+.ch-title{
+  font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;
+  color:var(--gold2);margin-bottom:10px;line-height:1.3;
+}
+.ch-sub{color:var(--muted);margin-bottom:32px;font-size:.95rem;}
+
+/* ── STORY ── */
+.story{display:none;opacity:0;transform:translateY(20px);transition:.5s;}
+.story.show{opacity:1;transform:none;}
+
+/* ── SCENE ── */
+.scene{
+  background:rgba(255,255,255,0.02);border:1px solid var(--border);
+  border-radius:18px;padding:32px;margin:24px 0;
+}
+.scene-title{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  color:var(--gold3);letter-spacing:3px;margin-bottom:16px;
+}
+
+/* ── DIALOGUE ── */
+.dialogue{display:flex;flex-direction:column;gap:14px;margin:20px 0;}
+.bubble{
+  max-width:80%;padding:14px 18px;border-radius:16px;
+  font-size:.97rem;line-height:1.7;
+}
+.bubble.q{
+  background:rgba(122,176,232,0.08);border:1px solid rgba(122,176,232,0.2);
+  border-radius:16px 16px 16px 4px;align-self:flex-start;color:#c8dff5;
+}
+.bubble.a{
+  background:rgba(122,201,154,0.07);border:1px solid rgba(122,201,154,0.2);
+  border-radius:16px 16px 4px 16px;align-self:flex-end;color:#c5edcf;
+}
+.bubble.narrator{
+  background:rgba(232,184,90,0.05);border:1px solid rgba(232,184,90,0.15);
+  border-radius:12px;align-self:center;text-align:center;
+  color:var(--ink);font-style:italic;max-width:95%;
+}
+
+/* ── REVEAL ── */
+.reveal{
+  background:rgba(232,184,90,0.06);border:1px solid rgba(232,184,90,0.2);
+  border-radius:14px;padding:20px 24px;margin:16px 0;
+}
+.reveal-label{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--gold);letter-spacing:3px;margin-bottom:10px;display:block;
+}
+
+/* ── TRAP ── */
+.trap{
+  background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.25);
+  border-radius:14px;padding:18px 22px;margin:16px 0;
+}
+.trap-label{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--red);letter-spacing:3px;margin-bottom:8px;display:block;
+}
+
+/* ── DING ── */
+.ding{
+  background:rgba(122,201,154,0.06);border:1px solid rgba(122,201,154,0.25);
+  border-radius:14px;padding:18px 22px;margin:16px 0;
+}
+.ding-label{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:var(--green);letter-spacing:3px;margin-bottom:8px;display:block;
+}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;margin:20px 0;}
+th{
+  background:rgba(232,184,90,0.08);color:var(--gold2);
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;letter-spacing:1px;
+  padding:12px 16px;text-align:right;border-bottom:1px solid var(--border);
+}
+td{
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);
+  vertical-align:top;line-height:1.7;
+}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.015);}
+
+/* ── PHASE FLOW ── */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0;}
+.phase-box{
+  background:rgba(232,184,90,0.06);border:1px solid rgba(232,184,90,0.22);
+  border-radius:10px;padding:9px 14px;font-size:.88rem;color:var(--gold2);
+  transition:.2s;cursor:default;
+}
+.phase-box:hover{background:rgba(232,184,90,0.12);border-color:var(--gold);}
+.phase-box.bad{border-color:rgba(224,122,122,0.4);color:var(--red);}
+.arr{color:var(--gold3);font-size:1.2rem;margin:0 2px;}
+
+/* ── MANIFESTO CARD ── */
+.manifesto-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.m-card{
+  background:rgba(0,0,0,0.3);border:1px solid var(--border);
+  border-radius:14px;padding:20px;
+}
+.m-left{color:var(--gold2);font-weight:700;font-size:1.05rem;margin-bottom:4px;}
+.m-over{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:2px;margin:4px 0;}
+.m-right{color:#6a6460;font-size:.9rem;}
+
+/* ── SCORE DISPLAY ── */
+#scoreDisplay{
+  text-align:center;padding:50px 20px;
+}
+
+/* ── BTN ── */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 22px;border-radius:12px;font-family:'Tajawal',sans-serif;
+  font-size:.95rem;cursor:pointer;border:none;transition:.25s;
+}
+.btn.gold{background:var(--gold);color:#1a1500;font-weight:700;}
+.btn.gold:hover{background:var(--gold2);}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn.ghost:hover{border-color:var(--gold3);color:var(--gold2);}
+
+/* ── XP PRACTICES GRID ── */
+.practice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;}
+.p-card{
+  background:rgba(0,0,0,0.3);border:1px solid var(--border);
+  border-radius:14px;padding:18px;transition:.2s;
+}
+.p-card:hover{border-color:var(--gold3);}
+.p-name{color:var(--gold2);font-weight:700;font-size:.95rem;margin-bottom:6px;}
+.p-desc{color:#b8b0a4;font-size:.88rem;line-height:1.7;}
+
+/* ── CHEAT SHEET ── */
+#cheatsheet .inner{max-width:900px;}
+
+/* ── FINAL ── */
+.final-section{
+  min-height:60vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  text-align:center;padding:80px 24px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .manifesto-grid{grid-template-columns:1fr;}
+  .practice-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<nav id="nav"></nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="chapter" id="hero" data-ch="Intro">
+<div class="hero">
+  <div class="hero-tag">CSE 302 · SOFTWARE ENGINEERING · LECTURE 4</div>
+  <h1>Agile Methods</h1>
+  <p class="hero-sub">الـ Manifesto · الـ XP · الـ TDD · الـ Pair Programming — كل حاجة بالقصص، مش بالحفظ.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n">10</span><span class="stat-l">CHAPTERS</span></div>
+    <div class="stat"><span class="stat-n">4</span><span class="stat-l">MANIFESTO VALUES</span></div>
+    <div class="stat"><span class="stat-n">10</span><span class="stat-l">XP PRACTICES</span></div>
+    <div class="stat"><span class="stat-n">5</span><span class="stat-l">AGILE PRINCIPLES</span></div>
+  </div>
+  <div class="scroll-hint">
+    <span>اضغط على أي سؤال عشان تكشف القصة</span>
+    <span>↓</span>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 1: لماذا Agile؟ ═══════════════ -->
+<section class="chapter" id="c1" data-ch="لماذا Agile؟">
+<div class="chnum">1</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s1')">
+    <h2>في التسعينيات كان الـ software بيتأخر سنين... وبيفشل بالملايين. ليه بالظبط؟</h2>
+    <p>وكيف ظهر Agile كـ "إنقاذ" للصناعة كلها؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s1">
+    <div class="scene">
+      <div class="scene-title">📅 مصر، شركة برمجيات، 1997</div>
+      <div class="dialogue">
+        <div class="bubble narrator">المدير جالس بيقرأ ريبورت... وجهه بيتغير من أحمر لأزرق لأصفر.</div>
+        <div class="bubble q">المدير: "التطبيق اللي اشتغلنا عليه 3 سنين... العميل بيقول إنه مش بيحتاجه خالص؟!"</div>
+        <div class="bubble a">المطور: "آه... لأن السوق اتغير. البيزنس اتغير. المتطلبات اتغيرت. بس إحنا كنا شغالين على الـ plan القديم."</div>
+        <div class="bubble q">المدير: "3 سنين وملايين جنيه؟!"</div>
+        <div class="bubble a">المطور: "ده بالظبط المشكلة مع الـ Plan-driven..."</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">💡 المشكلة الحقيقية</span>
+      <p><b style="color:var(--gold2)">Rapid development and delivery</b> is now often the <b style="color:var(--gold2)">most important requirement</b> for software systems.</p>
+      <p style="margin-top:10px;">سببين:</p>
+      <p>• الشركات بتشتغل في بيئة <b style="color:var(--blue)">سريعة التغيير</b> — practically impossible to produce a set of <b>stable</b> software requirements.</p>
+      <p>• الـ software لازم <b style="color:var(--blue)">يتطور بسرعة</b> to reflect changing business needs.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">⚔️ المشكلة مع Plan-Driven</div>
+      <p style="color:#d4d0c6;line-height:1.9;">الـ <b style="color:var(--gold2)">Plan-driven development</b> is essential for some types of system — لكنه <b style="color:var(--red)">does NOT meet these business needs</b> في عالم سريع التغيير.</p>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🚀 الحل: Agile Methods</span>
+      <p><b style="color:var(--gold2)">Agile development methods</b> ظهرت في الـ <b style="color:var(--gold2)">late 1990s</b>.</p>
+      <p style="margin-top:8px;">هدفها: <b style="color:var(--green)">radically reduce the delivery time</b> for working software systems.</p>
+      <p style="margin-top:8px;">مش بتكتمل المتطلبات الأول وبعدين تبني — الاتنين بيحصلوا <b style="color:var(--green)">مع بعض</b>.</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ الامتحان</span>
+      <p>الـ Agile ما اتعملش في الـ 1980s ولا 2000s — اتعمل في الـ <b style="color:var(--gold2)">late 1990s</b> تحديداً.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 2: Agile vs Plan-Driven ═══════════════ -->
+<section class="chapter" id="c2" data-ch="Agile vs Plan">
+<div class="chnum">2</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s2')">
+    <h2>اتنين بيبنوا نفس التطبيق — واحد بـ Plan والتاني بـ Agile. مين هيكسب؟</h2>
+    <p>وإيه الفرق الحقيقي بينهم في الشغل اليومي؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s2">
+    <div class="scene">
+      <div class="scene-title">🏗️ فريق Plan-Driven</div>
+      <div class="dialogue">
+        <div class="bubble q">مدير المشروع: "الأول هنكتب كل المتطلبات. بعدين الـ design. بعدين الـ implementation. بعدين نختبر."</div>
+        <div class="bubble a">المطور: "وبعدين لو العميل غير رأيه؟"</div>
+        <div class="bubble q">المدير: "بنطلع له requirements change request ونقفل عليه بالعقد."</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📋 تعريف Plan-Driven</span>
+      <p>A <b style="color:var(--gold2)">plan-driven approach</b> is based around <b>separate development stages</b> with the outputs to be produced at each stage <b style="color:var(--blue)">planned in advance</b>.</p>
+      <p style="margin-top:10px;">⚠️ Plan-driven is <b style="color:var(--red)">NOT necessarily Waterfall</b> — plan-driven incremental development is also possible.</p>
+      <p style="margin-top:8px;">الـ Iteration occurs <b style="color:var(--gold2)">within activities</b>, not between them.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">⚡ فريق Agile</div>
+      <div class="dialogue">
+        <div class="bubble q">مدير Agile: "هنبني feature صغيرة... نوريها للعميل... ياخد feedback... نبني تاني feature."</div>
+        <div class="bubble a">المطور: "والـ requirements document الكامل؟"</div>
+        <div class="bubble q">المدير: "الـ outputs from the development process are decided through a process of <b>negotiation</b> during the software development process نفسه!"</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">⚡ تعريف Agile</span>
+      <p><b style="color:var(--gold2)">Agile development:</b> Specification, design, implementation and testing are <b style="color:var(--green)">inter-leaved</b>.</p>
+      <p style="margin-top:10px;">خصائص Agile:</p>
+      <p>• <b style="color:var(--blue)">Inter-leaved</b> — الـ specification والـ design والـ implementation بيحصلوا مع بعض</p>
+      <p>• <b style="color:var(--blue)">Series of versions/increments</b> — النظام بيتطور على مراحل</p>
+      <p>• <b style="color:var(--blue)">Stakeholders involved</b> — العميل جزء من التطوير</p>
+      <p>• <b style="color:var(--blue)">Frequent delivery</b> — نسخ متكررة للتقييم</p>
+      <p>• <b style="color:var(--blue)">Extensive tool support</b> — automated testing tools</p>
+      <p>• <b style="color:var(--blue)">Minimal documentation</b> — focus on working code</p>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🎯 The Aim of Agile Methods</span>
+      <p>Agile methods aim to <b style="color:var(--gold2)">reduce overheads</b> in the software process (e.g., by limiting documentation) and to be able to <b style="color:var(--green)">respond quickly to changing requirements</b> without excessive rework.</p>
+      <p style="margin-top:10px;">الـ Agile methods focus on the <b style="color:var(--gold2)">code</b> rather than the design, and are based on an <b style="color:var(--gold2)">iterative approach</b>.</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ الامتحان</span>
+      <p>في الـ Agile، الـ outputs are decided through <b style="color:var(--gold2)">negotiation</b> — مش من الأول من خلال requirements document كامل.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 3: THE MANIFESTO ═══════════════ -->
+<section class="chapter" id="c3" data-ch="The Manifesto">
+<div class="chnum">3</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s3')">
+    <h2>في 2001، 17 مبرمج اجتمعوا في جبال Utah وكتبوا وثيقة غيّرت صناعة البرمجيات كلها.</h2>
+    <p>إيه اللي قالوه بالظبط؟ ولماذا هو مهم جداً للامتحان؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s3">
+    <div class="scene">
+      <div class="scene-title">🏔️ Snowbird, Utah — February 2001</div>
+      <div class="dialogue">
+        <div class="bubble narrator">17 مطوراً من أشهر الـ methodologies اجتمعوا في منتجع تزلج. الهدف: إيجاد أرضية مشتركة بين كل approaches التطوير السريع.</div>
+        <div class="bubble q">أحدهم قال: "إيه اللي بيوحدنا جميعاً؟"</div>
+        <div class="bubble a">الجواب: "إننا كلنا بنؤمن إن الـ code أهم من الـ documentation، والإنسان أهم من الـ process."</div>
+        <div class="bubble narrator">وكتبوا وثيقة من 68 كلمة... بقت أساس صناعة كاملة.</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📜 THE AGILE MANIFESTO — النص الكامل</span>
+      <p style="font-style:italic;color:var(--ink);line-height:2;">"We are uncovering better ways of developing software by doing it and helping others do it. Through this work we have come to value:"</p>
+    </div>
+
+    <div class="manifesto-grid">
+      <div class="m-card">
+        <div class="m-left">Individuals &amp; interactions</div>
+        <div class="m-over">OVER</div>
+        <div class="m-right">Processes and tools</div>
+      </div>
+      <div class="m-card">
+        <div class="m-left">Working software</div>
+        <div class="m-over">OVER</div>
+        <div class="m-right">Comprehensive documentation</div>
+      </div>
+      <div class="m-card">
+        <div class="m-left">Customer collaboration</div>
+        <div class="m-over">OVER</div>
+        <div class="m-right">Contract negotiation</div>
+      </div>
+      <div class="m-card">
+        <div class="m-left">Responding to change</div>
+        <div class="m-over">OVER</div>
+        <div class="m-right">Following a plan</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">💡 الجملة المهمة</span>
+      <p style="color:var(--gold2);font-weight:700;">"That is, while there is value in the items on the right, we value the items on the left MORE."</p>
+      <p style="margin-top:10px;color:#b8b0a4;">الـ Manifesto مش بيرفض الـ documentation أو الـ plan — هو بس بيقول إن الجانب التاني <b>أهم</b>.</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ الامتحان الأشهر</span>
+      <p>"أي من التالي ليس مبدأ من مبادئ الـ Agile Manifesto؟"</p>
+      <p style="margin-top:8px;">الجواب: <b style="color:var(--red)">Comprehensive documentation</b> — لأن الـ manifesto بيقول Working software OVER comprehensive documentation. الـ documentation على اليمين (الأقل أهمية).</p>
+    </div>
+
+    <div class="ding">
+      <span class="ding-label">✅ الحفظ السريع — 4 Values</span>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.88rem;line-height:2;">
+        1️⃣ Individuals &amp; interactions &gt; Processes &amp; tools<br>
+        2️⃣ Working software &gt; Comprehensive documentation<br>
+        3️⃣ Customer collaboration &gt; Contract negotiation<br>
+        4️⃣ Responding to change &gt; Following a plan
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 4: PRINCIPLES ═══════════════ -->
+<section class="chapter" id="c4" data-ch="5 مبادئ Agile">
+<div class="chnum">4</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s4')">
+    <h2>الـ Manifesto فلسفة. لكن الـ Agile عنده 5 مبادئ تانكتيكية تحكم كل قرار في الفريق.</h2>
+    <p>تعرف تحكي عن كل واحد منهم في الامتحان؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s4">
+    <div class="scene">
+      <div class="scene-title">5 مبادئ من الـ slides مباشرةً</div>
+      <table>
+        <tr>
+          <th style="width:30%">المبدأ</th>
+          <th>التعريف الكامل</th>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">1. Customer involvement</td>
+          <td>Customers should be <b>closely involved</b> throughout the development process. Their role is to provide and prioritize new system requirements and to <b>evaluate the iterations</b> of the system.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">2. Incremental delivery</td>
+          <td>The software is developed in <b>increments</b> with the customer specifying the requirements to be included in each increment.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">3. People not process</td>
+          <td>The skills of the development team should be recognized and exploited. Team members should be left to develop their own ways of working <b>without prescriptive processes</b>.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">4. Embrace change</td>
+          <td>Expect the system requirements to change and so <b>design the system to accommodate</b> these changes.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">5. Maintain simplicity</td>
+          <td>Focus on simplicity in both the software and the development process. Wherever possible, <b>actively work to eliminate complexity</b>.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🎯 Agile Applicability — امتى تستخدم Agile؟</span>
+      <p><b style="color:var(--gold2)">1. Product development</b> where a software company is developing a <b style="color:var(--blue)">small or medium-sized product</b> for sale.</p>
+      <p style="margin-top:6px;color:var(--muted);font-size:.9rem;">Virtually all software products and apps are now developed using an agile approach.</p>
+      <p style="margin-top:12px;"><b style="color:var(--gold2)">2. Custom system development</b> within an organization, where there is a clear <b style="color:var(--green)">commitment from the customer</b> to become involved and where there are <b style="color:var(--green)">few external rules and regulations</b>.</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ امتى Agile مش مناسب؟</span>
+      <p>لو الـ system كبير جداً، أو فيه قوانين صارمة (زي aviation أو medical devices)، أو العميل مش مستعد يشارك بجدية — هنا Agile مش الاختيار الصح.</p>
+    </div>
+
+    <div class="ding">
+      <span class="ding-label">✅ الحفظ السريع</span>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:2.2;">
+        C — Customer involvement (مشاركة العميل)<br>
+        I — Incremental delivery (تسليم تدريجي)<br>
+        P — People not process (الناس فوق العملية)<br>
+        E — Embrace change (احتضن التغيير)<br>
+        M — Maintain simplicity (حافظ على البساطة)<br>
+        <span style="color:var(--gold3);">CIPEM = كل المبادئ</span>
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 5: XP ═══════════════ -->
+<section class="chapter" id="c5" data-ch="Extreme Programming">
+<div class="chnum">5</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s5')">
+    <h2>مين أشطر ابن أكلة في الـ Agile universe؟ ولماذا اسمه "Extreme"؟</h2>
+    <p>XP — الـ method اللي بيبني نسخ جديدة من البرنامج عدة مرات في اليوم الواحد!</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s5">
+    <div class="dialogue">
+      <div class="bubble q">طالب: "ليه اسمه Extreme Programming؟"</div>
+      <div class="bubble a">أستاذ: "لأنه بياخد الـ best practices من الـ Agile ويعملها بطريقة متطرفة جداً... مش عادية خالص."</div>
+      <div class="bubble q">طالب: "زي إيه مثلاً؟"</div>
+      <div class="bubble a">أستاذ: "لو الـ code review كويس... XP بيقول: خلي اثنين بيكتبوا كل السطور مع بعض! لو الـ testing مهم... XP بيقول: اكتب الـ test الأول قبل الكود!"</div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📖 تعريف XP</span>
+      <p><b style="color:var(--gold2)">Extreme Programming (XP)</b> is a very influential agile method, developed in the <b style="color:var(--gold2)">late 1990s</b>, that introduced a range of agile development techniques.</p>
+      <p style="margin-top:10px;">XP takes an <b style="color:var(--green)">extreme</b> approach to iterative development.</p>
+      <p style="margin-top:10px;">XP is the <b style="color:var(--blue)">most specific</b> of the agile frameworks regarding appropriate engineering practices.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔥 الأرقام الصاعقة في XP</div>
+      <div class="flow" style="justify-content:center;gap:20px;">
+        <div style="text-align:center;background:rgba(232,184,90,0.06);border:1px solid var(--border);border-radius:14px;padding:16px 22px;">
+          <div style="font-size:2.2rem;font-weight:900;color:var(--gold2);font-family:'JetBrains Mono',monospace;">×many</div>
+          <div style="font-size:.82rem;color:var(--muted);">New versions per day</div>
+        </div>
+        <div style="text-align:center;background:rgba(122,201,154,0.06);border:1px solid rgba(122,201,154,0.2);border-radius:14px;padding:16px 22px;">
+          <div style="font-size:2.2rem;font-weight:900;color:var(--green);font-family:'JetBrains Mono',monospace;">2wks</div>
+          <div style="font-size:.82rem;color:var(--muted);">Increments to customers</div>
+        </div>
+        <div style="text-align:center;background:rgba(122,176,232,0.06);border:1px solid rgba(122,176,232,0.2);border-radius:14px;padding:16px 22px;">
+          <div style="font-size:2.2rem;font-weight:900;color:var(--blue);font-family:'JetBrains Mono',monospace;">100%</div>
+          <div style="font-size:.82rem;color:var(--muted);">Tests must pass per build</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🔄 XP Release Cycle — الدورة الكاملة</span>
+      <div class="flow" style="flex-wrap:wrap;justify-content:center;">
+        <div class="phase-box">Select user stories for this release</div>
+        <span class="arr">→</span>
+        <div class="phase-box">Break down stories to tasks</div>
+        <span class="arr">→</span>
+        <div class="phase-box">Plan release</div>
+        <span class="arr">→</span>
+        <div class="phase-box">Develop / integrate / test software</div>
+        <span class="arr">→</span>
+        <div class="phase-box">Release software</div>
+        <span class="arr">→</span>
+        <div class="phase-box">Evaluate system</div>
+        <span class="arr">→</span>
+        <div class="phase-box" style="border-color:var(--gold3);color:var(--gold);">🔁 back to start</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🔗 XP والـ Agile Principles — العلاقة</span>
+      <p>• <b style="color:var(--gold2)">Incremental development</b> ← through small, frequent system releases</p>
+      <p>• <b style="color:var(--gold2)">Customer involvement</b> ← full-time customer engagement with the team</p>
+      <p>• <b style="color:var(--gold2)">People not process</b> ← through pair programming, collective ownership, avoiding long hours</p>
+      <p>• <b style="color:var(--gold2)">Change</b> ← supported through regular system releases</p>
+      <p>• <b style="color:var(--gold2)">Maintaining simplicity</b> ← through constant refactoring of code</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ ملاحظة مهمة</span>
+      <p>XP has a <b style="color:var(--gold2)">technical focus</b> and is NOT easy to integrate with management practice in most organizations. So while agile development uses practices FROM XP, the method as originally defined is <b style="color:var(--red)">not widely used</b> today in its pure form.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 6: XP PRACTICES ═══════════════ -->
+<section class="chapter" id="c6" data-ch="XP Practices">
+<div class="chnum">6</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s6')">
+    <h2>الـ XP عنده 10 ممارسات يومية محددة جداً. بتعرف تحكي عن كل واحدة منهم؟</h2>
+    <p>ده أكتر جزء بييجي في الامتحان — محتاج تحفظ كل practice وتعريفها.</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s6">
+    <div class="scene">
+      <div class="scene-title">📋 XP Practices (a) — الخمسة الأولى</div>
+      <table>
+        <tr><th style="width:32%">الممارسة</th><th>التعريف</th></tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">1. Incremental planning</td>
+          <td>Requirements are recorded on <b>story cards</b> and the stories included in a release are determined by the time available and their <b>relative priority</b>. Developers break stories into development <b>Tasks</b>.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">2. Small releases</td>
+          <td>The minimal useful set of functionality that provides <b>business value</b> is developed first. Releases are frequent and incrementally add functionality.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">3. Simple design</td>
+          <td>Enough design is carried out to meet the <b>current requirements</b> and no more.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">4. Test-first development</td>
+          <td>An automated unit test framework is used to write tests for a new piece of functionality <b>before</b> that functionality itself is implemented.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">5. Refactoring</td>
+          <td>All developers are expected to refactor the code <b>continuously</b> as soon as possible code improvements are found. This keeps the code simple and maintainable.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📋 XP Practices (b) — الخمسة التانية</div>
+      <table>
+        <tr><th style="width:32%">الممارسة</th><th>التعريف</th></tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">6. Pair programming</td>
+          <td>Developers work in <b>pairs</b>, checking each other's work and providing the support to always do a good job.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">7. Collective ownership</td>
+          <td>The pairs work on <b>all areas</b> of the system, so no islands of expertise develop and all developers take responsibility for all code. <b>Anyone can change anything</b>.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">8. Continuous integration</td>
+          <td>As soon as the work on a task is complete, it is <b>integrated into the whole system</b>. After integration, <b>all the unit tests</b> in the system must pass.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">9. Sustainable pace</td>
+          <td>Large amounts of <b>overtime are NOT acceptable</b> as the net effect is often to reduce code quality and medium-term productivity.</td>
+        </tr>
+        <tr>
+          <td style="color:var(--gold2);font-weight:700;">10. On-site customer</td>
+          <td>A representative of the end-user should be <b>available full-time</b> for the XP team. The customer is a <b>member of the development team</b> and is responsible for bringing system requirements.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🔑 أهم 4 ممارسات (Influential XP practices)</span>
+      <div class="flow" style="flex-wrap:wrap;">
+        <div class="phase-box">User stories for specification</div>
+        <div class="phase-box">Refactoring</div>
+        <div class="phase-box">Test-first development</div>
+        <div class="phase-box">Pair programming</div>
+      </div>
+    </div>
+
+    <div class="ding">
+      <span class="ding-label">✅ حفظ الـ 10 practices</span>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2.2;">
+        (a): Incremental planning · Small releases · Simple design · Test-first · Refactoring<br>
+        (b): Pair programming · Collective ownership · Continuous integration · Sustainable pace · On-site customer
+      </p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ Sustainable Pace</span>
+      <p>Sustainable pace = <b style="color:var(--red)">لا للـ overtime</b> — لأن الـ overtime يقلل جودة الكود والإنتاجية على المدى المتوسط.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 7: USER STORIES ═══════════════ -->
+<section class="chapter" id="c7" data-ch="User Stories">
+<div class="chnum">7</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s7')">
+    <h2>في الـ XP، المتطلبات مش بتُكتب في requirements document ضخم... بتُكتب على كروت صغيرة!</h2>
+    <p>إيه هي الـ User Stories وإزاي بتتحول لـ tasks حقيقية؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s7">
+    <div class="dialogue">
+      <div class="bubble q">العميل: "أنا عايز الدكتور يقدر يكتب وصفة دوا من النظام."</div>
+      <div class="bubble a">المطور: "تمام — هنكتب ده على كارت: 'Prescribing medication' — وده هو الـ user story."</div>
+      <div class="bubble q">العميل: "وبعدين؟"</div>
+      <div class="bubble a">المطور: "بنكسره لـ tasks: Task 1: Change dose. Task 2: Formulary selection. Task 3: Dose checking. وكل task بيتعمله تقدير وقت."</div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📖 User Stories — التعريف الكامل</span>
+      <p>في XP، الـ customer or user is part of the XP team and is responsible for <b style="color:var(--gold2)">making decisions on requirements</b>.</p>
+      <p style="margin-top:10px;">User requirements are expressed as <b style="color:var(--gold2)">user stories or scenarios</b> — written on cards.</p>
+      <p style="margin-top:10px;">The development team break them down into <b style="color:var(--blue)">implementation tasks</b>. These tasks are the basis of <b style="color:var(--blue)">schedule and cost estimates</b>.</p>
+      <p style="margin-top:10px;">The customer chooses the stories for inclusion in the next release based on <b style="color:var(--green)">their priorities</b> and the schedule estimates.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📝 مثال حقيقي من الـ Slides: Prescribing Medication</div>
+      <div style="background:rgba(122,176,232,0.04);border:1px solid rgba(122,176,232,0.15);border-radius:14px;padding:20px;font-size:.9rem;line-height:1.9;color:#c8dff5;">
+        <b>Prescribing medication (User Story)</b><br><br>
+        The record of the patient must be open for input. Click on the medication field and select either 'current medication', 'new medication' or 'formulary'.<br><br>
+        → If 'current medication': check the dose, enter new dose, confirm prescription.<br>
+        → If 'new medication': type first letters of drug name, select from list, confirm dose.<br>
+        → If 'formulary': search for drug, select, check and confirm dose.<br><br>
+        In all cases, the system checks the dose is within the approved range.
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📌 Task Cards من نفس الـ Story</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:.85rem;">
+          <div style="color:var(--gold2);font-weight:700;margin-bottom:6px;">Task 1</div>
+          Change dose of prescribed drug
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:.85rem;">
+          <div style="color:var(--gold2);font-weight:700;margin-bottom:6px;">Task 2</div>
+          Formulary selection
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:.85rem;">
+          <div style="color:var(--gold2);font-weight:700;margin-bottom:6px;">Task 3</div>
+          Dose checking (safety precaution)
+        </div>
+      </div>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ مهم</span>
+      <p>الـ User Stories مش requirements document — هي <b style="color:var(--gold2)">scenarios/stories</b> مكتوبة بلغة بسيطة، وبعدين الفريق يكسرها لـ tasks تقنية.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 8: REFACTORING ═══════════════ -->
+<section class="chapter" id="c8" data-ch="Refactoring">
+<div class="chnum">8</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s8')">
+    <h2>الـ Software Engineering التقليدي بيقول: "صمّم كودك للتغيير من الأول." الـ XP بيقول: "ده غلط كامل!"</h2>
+    <p>فمين الصح؟ وإيه هو الـ Refactoring بالظبط؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s8">
+    <div class="dialogue">
+      <div class="bubble q">مطور تقليدي: "لازم من أول يوم نصمم الـ architecture بطريقة تستوعب كل التغييرات المستقبلية."</div>
+      <div class="bubble a">مطور XP: "محدش يعرف إيه هي التغييرات المستقبلية! ده مجرد تخمين غالي."</div>
+      <div class="bubble q">مطور تقليدي: "طيب نعمل إيه؟"</div>
+      <div class="bubble a">مطور XP: "نكتب أبسط كود يشتغل دلوقتي. وبعدين نـ refactor باستمرار لما نشوف فرص للتحسين."</div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📖 التعريف الرسمي</span>
+      <p><b style="color:var(--gold2)">Conventional wisdom:</b> design for change — spend time anticipating changes as this reduces costs later.</p>
+      <p style="margin-top:10px;"><b style="color:var(--red)">XP view:</b> This is NOT worthwhile as changes cannot be reliably anticipated.</p>
+      <p style="margin-top:10px;"><b style="color:var(--green)">XP proposes:</b> Constant code improvement (<b>refactoring</b>) to make changes easier when they have to be implemented.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔧 الـ Refactoring في العمل اليومي</div>
+      <p style="color:#d4d0c6;line-height:1.9;">الفريق بيعمل refactoring حتى لو <b style="color:var(--gold2)">مفيش سبب فوري</b> — بيدوروا على improvements وبيعملوها على طول.</p>
+      <p style="margin-top:10px;">النتيجة:</p>
+      <p>• Improves the <b style="color:var(--green)">understandability</b> of software → reduces need for documentation</p>
+      <p>• Changes are <b style="color:var(--green)">easier to make</b> because code is well-structured</p>
+      <p style="margin-top:10px;color:var(--red);">⚠️ لكن: بعض التغييرات بتتطلب <b>architecture refactoring</b> وده بيكون أغلى بكتير.</p>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📋 أمثلة على الـ Refactoring</span>
+      <p>• <b style="color:var(--gold2)">Re-organization</b> of a class hierarchy to remove duplicate code</p>
+      <p>• <b style="color:var(--gold2)">Tidying up and renaming</b> attributes and methods to make them easier to understand</p>
+      <p>• <b style="color:var(--gold2)">Replacement</b> of inline code with calls to methods in a program library</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ الامتحان</span>
+      <p>Refactoring = تحسين الكود <b style="color:var(--red)">بدون تغيير وظيفته</b>. مش إضافة features جديدة — مجرد تحسين structure وقراءة الكود.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 9: TEST-FIRST DEVELOPMENT ═══════════════ -->
+<section class="chapter" id="c9" data-ch="Test-First (TDD)">
+<div class="chnum">9</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s9')">
+    <h2>اكتب الـ test... قبل ما تكتب أي كود؟ ده منطقي ولا جنان؟</h2>
+    <p>الـ Test-First Development — أغرب وأذكى ممارسة في الـ XP.</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s9">
+    <div class="dialogue">
+      <div class="bubble q">طالب: "إزاي أكتب test لكود مش موجود؟"</div>
+      <div class="bubble a">المطور: "الـ test بيحدد إيه المفروض الكود يعمله. لما تكتب الـ test أولاً — بتعرف بالظبط إيه اللي هتبنيه."</div>
+      <div class="bubble q">طالب: "وبعدين؟"</div>
+      <div class="bubble a">المطور: "بتكتب أبسط كود ممكن عشان الـ test يعدي. وبعدين تـ refactor. وبعدين تكتب test جديد. وهكذا."</div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📖 Test-First Development</span>
+      <p>Testing is <b style="color:var(--gold2)">central to XP</b> — the program is tested after <b>every change</b> has been made.</p>
+      <p style="margin-top:12px;"><b style="color:var(--gold2)">XP testing features:</b></p>
+      <p>• <b>Test-first development</b> — write tests before code</p>
+      <p>• <b>Incremental test development</b> from scenarios</p>
+      <p>• <b>User involvement</b> in test development and validation</p>
+      <p>• <b>Automated test harnesses</b> — run all component tests each time a new release is built</p>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🔄 Test-Driven Development (TDD)</span>
+      <p>• Writing tests before code <b style="color:var(--gold2)">clarifies the requirements</b> to be implemented.</p>
+      <p>• Tests are written as <b style="color:var(--blue)">programs</b> (not data) so they can be executed automatically.</p>
+      <p>• All previous and new tests run automatically when new functionality is added — checking that new functionality has <b style="color:var(--green)">not introduced errors</b>.</p>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">🤖 Test Automation</span>
+      <p><b style="color:var(--gold2)">Test automation</b> means tests are written as <b>executable components</b> before the task is implemented.</p>
+      <p style="margin-top:10px;">Testing components should be:</p>
+      <p>• Stand-alone</p>
+      <p>• Simulate the submission of input</p>
+      <p>• Check that the result meets the output specification</p>
+      <p style="margin-top:10px;">An <b style="color:var(--blue)">automated test framework</b> makes it easy to write executable tests and submit them for execution.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🧪 مثال Test Case: Dose Checking</div>
+      <div style="background:rgba(122,176,232,0.04);border:1px solid rgba(122,176,232,0.15);border-radius:14px;padding:20px;font-size:.88rem;line-height:1.9;color:#c8dff5;">
+        <b>Test 4: Dose checking</b><br><br>
+        <b>Input:</b> dose (mg) + number of doses per day<br><br>
+        <b>Tests:</b><br>
+        1. Single dose correct, but frequency too high<br>
+        2. Single dose too high / too low<br>
+        3. Single dose × frequency too high / too low<br>
+        4. Single dose × frequency in permitted range<br><br>
+        <b>Output:</b> OK or error message (dose outside safe range)
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">👥 Customer involvement في الـ Testing</div>
+      <p style="color:#d4d0c6;line-height:1.9;">The role of the customer is to help develop <b style="color:var(--gold2)">acceptance tests</b> for the stories to be implemented in the next release.</p>
+      <p style="margin-top:10px;color:var(--muted);">⚠️ Problem: People adopting the customer role have limited time and may be reluctant to get fully involved in testing.</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ Problems with Test-First Development</span>
+      <p>1. <b style="color:var(--red)">Programmers prefer programming</b> to testing — may take shortcuts and write incomplete tests.</p>
+      <p style="margin-top:8px;">2. Some tests are <b style="color:var(--red)">difficult to write incrementally</b> — e.g., complex UIs and display logic.</p>
+      <p style="margin-top:8px;">3. It's <b style="color:var(--red)">difficult to judge the completeness</b> of a set of tests — may not provide complete coverage.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CH 10: PAIR PROGRAMMING ═══════════════ -->
+<section class="chapter" id="c10" data-ch="Pair Programming">
+<div class="chnum">10</div>
+<div class="inner">
+  <div class="hook" onclick="revealStory('s10')">
+    <h2>مبرمجين اتنين على كمبيوتر واحد = نص الإنتاجية... أو ضعف؟</h2>
+    <p>الـ Pair Programming — الممارسة اللي بيتجادل فيها الكل. إيه الحقيقة؟</p>
+    <div class="tap">اضغط لتكتشف القصة ↓</div>
+  </div>
+
+  <div class="story" id="s10">
+    <div class="dialogue">
+      <div class="bubble q">مدير تقليدي: "2 مطورين على كمبيوتر واحد؟! ده هدر موارد صح؟"</div>
+      <div class="bubble a">مطور XP: "أبداً. كل سطر كود بيشوفه 2 أعين — بيمنع الأخطاء من الأول. والـ knowledge بتتوزع على الفريق كله."</div>
+      <div class="bubble q">مدير: "بس الدراسات..."</div>
+      <div class="bubble a">مطور XP: "فيه evidence إن pair working together أكثر كفاءة من 2 developers شغالين منفصلين!"</div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">📖 تعريف Pair Programming</span>
+      <p><b style="color:var(--gold2)">Pair programming</b> involves programmers working in pairs, developing code together.</p>
+      <p style="margin-top:12px;"><b style="color:var(--gold2)">الفوائد الأربعة:</b></p>
+      <p>1. Develops <b style="color:var(--blue)">common ownership</b> of code and spreads knowledge across the team</p>
+      <p>2. Serves as an <b style="color:var(--blue)">informal review process</b> — each line looked at by more than one person</p>
+      <p>3. Encourages <b style="color:var(--blue)">refactoring</b> — whole team can benefit</p>
+      <p>4. Reduces risk when team members <b style="color:var(--blue)">leave</b> — knowledge is shared</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔧 كيف يعمل الـ Pair Programming؟</div>
+      <p style="color:#d4d0c6;line-height:1.9;">• Programmers sit together at the <b style="color:var(--gold2)">same computer</b>.</p>
+      <p>• Pairs are created <b style="color:var(--gold2)">dynamically</b> — all team members work with each other during development.</p>
+      <p>• The sharing of knowledge that happens is very important — it reduces the <b style="color:var(--green)">overall risks</b> when team members leave.</p>
+      <p style="margin-top:12px;color:var(--muted);">There is some evidence that a pair working together is <b style="color:var(--gold2)">MORE efficient</b> than 2 programmers working separately.</p>
+    </div>
+
+    <div class="ding">
+      <span class="ding-label">✅ الفرق بين Pair Programming و Collective Ownership</span>
+      <p>• <b style="color:var(--gold2)">Pair Programming</b> = اتنين بيشتغلوا معاً على نفس الكمبيوتر</p>
+      <p>• <b style="color:var(--gold2)">Collective Ownership</b> = أي حد في الفريق يقدر يغير أي جزء في الكود — مفيش "مالك" معين لأي file</p>
+    </div>
+
+    <div class="trap">
+      <span class="trap-label">⚠️ فخ الامتحان</span>
+      <p>Pair programming is <b style="color:var(--red)">NOT necessarily inefficient</b> — هو مش بالضرورة بطيء أو مهدر. فيه evidence إنه ممكن يكون أكتر كفاءة.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════ CHEAT SHEET ═══════════════ -->
+<section class="chapter" id="cheatsheet" data-ch="Cheat Sheet ★">
+<div class="chnum" style="color:rgba(232,184,90,0.06);">★</div>
+<div class="inner" style="max-width:920px;">
+
+  <div class="ch-title">Full Lecture 4 <em>Cheat Sheet</em></div>
+  <div class="ch-sub">Every concept from Lecture 4 — condensed, exam-ready, in English.</div>
+
+  <!-- Block 1 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">01 · WHY AGILE? — RAPID DEVELOPMENT</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        <b style="color:var(--gold2)">Why Agile?</b> Businesses operate in a fast-changing environment. Practically impossible to produce stable requirements. Software must evolve quickly.<br>
+        <b style="color:var(--gold2)">Plan-driven:</b> Essential for some systems but does NOT meet fast-changing business needs.<br>
+        <b style="color:var(--gold2)">Agile appeared:</b> Late 1990s. Aim = radically reduce delivery time for working software.
+      </p>
+    </div>
+  </div>
+
+  <!-- Block 2 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">02 · PLAN-DRIVEN vs AGILE ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>Dimension</th><th style="color:var(--blue);">Plan-Driven</th><th style="color:var(--green);">Agile</th></tr>
+        <tr><td>Activities</td><td>Separate, planned in advance</td><td>Inter-leaved (spec + design + impl + test together)</td></tr>
+        <tr><td>Requirements</td><td>Agreed upfront, change via formal requests</td><td>Decided through negotiation during development</td></tr>
+        <tr><td>Iteration</td><td>Occurs within activities</td><td>Occurs between activities (sprint cycles)</td></tr>
+        <tr><td>Documentation</td><td>Comprehensive</td><td>Minimal — focus on working code</td></tr>
+        <tr><td>Customer role</td><td>Mainly at start &amp; end</td><td>Continuous involvement</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Block 3 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">03 · THE AGILE MANIFESTO — 4 VALUES ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>We VALUE more</th><th>OVER</th><th style="color:var(--muted);">We value less</th></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Individuals &amp; interactions</td><td style="color:var(--muted);font-size:.8rem;">over</td><td style="color:var(--muted);">Processes and tools</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Working software</td><td style="color:var(--muted);font-size:.8rem;">over</td><td style="color:var(--muted);">Comprehensive documentation ←⚠️ TRAP</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Customer collaboration</td><td style="color:var(--muted);font-size:.8rem;">over</td><td style="color:var(--muted);">Contract negotiation</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Responding to change</td><td style="color:var(--muted);font-size:.8rem;">over</td><td style="color:var(--muted);">Following a plan</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Block 4 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">04 · 5 AGILE PRINCIPLES ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>Principle</th><th>Key Idea</th></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Customer involvement</td><td>Closely involved throughout; provide &amp; prioritize requirements; evaluate iterations</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Incremental delivery</td><td>Developed in increments; customer specifies each increment's requirements</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">People not process</td><td>Skills recognized &amp; exploited; no prescriptive processes</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Embrace change</td><td>Expect requirements to change; design to accommodate changes</td></tr>
+        <tr><td style="color:var(--gold2);font-weight:700;">Maintain simplicity</td><td>Actively eliminate complexity from software and process</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Block 5 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">05 · XP — EXTREME PROGRAMMING ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;padding:22px 28px;">
+      <p style="color:#d4d0c6;font-size:.95rem;line-height:1.9;">
+        Developed in <b style="color:var(--gold2)">late 1990s</b>. Most specific Agile framework. Takes extreme approach to iterative development.<br>
+        New versions may be built <b style="color:var(--gold2)">several times per day</b>. Increments delivered to customers every <b style="color:var(--gold2)">2 weeks</b>. All tests must pass for every build.<br><br>
+        <b style="color:var(--gold2)">Release Cycle:</b> Select stories → Break to tasks → Plan release → Develop/integrate/test → Release software → Evaluate → repeat<br><br>
+        <b style="color:var(--gold2)">4 Influential XP Practices:</b> User stories · Refactoring · Test-first development · Pair programming
+      </p>
+    </div>
+  </div>
+
+  <!-- Block 6 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">06 · ALL 10 XP PRACTICES ★★★</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+      <table style="margin:0;">
+        <tr><th>#</th><th>Practice</th><th>Key Point</th></tr>
+        <tr><td style="color:var(--gold3);">1</td><td style="color:var(--gold2);font-weight:700;">Incremental planning</td><td style="font-size:.88rem;">Requirements on story cards; determined by time &amp; priority; broken into Tasks</td></tr>
+        <tr><td style="color:var(--gold3);">2</td><td style="color:var(--gold2);font-weight:700;">Small releases</td><td style="font-size:.88rem;">Minimal useful functionality first; frequent releases</td></tr>
+        <tr><td style="color:var(--gold3);">3</td><td style="color:var(--gold2);font-weight:700;">Simple design</td><td style="font-size:.88rem;">Enough design for current requirements — no more</td></tr>
+        <tr><td style="color:var(--gold3);">4</td><td style="color:var(--gold2);font-weight:700;">Test-first development</td><td style="font-size:.88rem;">Write automated test BEFORE implementing the functionality</td></tr>
+        <tr><td style="color:var(--gold3);">5</td><td style="color:var(--gold2);font-weight:700;">Refactoring</td><td style="font-size:.88rem;">Continuously improve code structure; keeps code simple &amp; maintainable</td></tr>
+        <tr><td style="color:var(--blue);">6</td><td style="color:var(--gold2);font-weight:700;">Pair programming</td><td style="font-size:.88rem;">Two developers, one computer; check each other's work</td></tr>
+        <tr><td style="color:var(--blue);">7</td><td style="color:var(--gold2);font-weight:700;">Collective ownership</td><td style="font-size:.88rem;">Anyone can change any part of the code; no isolated expertise</td></tr>
+        <tr><td style="color:var(--blue);">8</td><td style="color:var(--gold2);font-weight:700;">Continuous integration</td><td style="font-size:.88rem;">Integrate task immediately when complete; all unit tests must pass</td></tr>
+        <tr><td style="color:var(--blue);">9</td><td style="color:var(--gold2);font-weight:700;">Sustainable pace</td><td style="font-size:.88rem;">No excessive overtime — reduces code quality &amp; productivity</td></tr>
+        <tr><td style="color:var(--blue);">10</td><td style="color:var(--gold2);font-weight:700;">On-site customer</td><td style="font-size:.88rem;">Customer available FULL-TIME; is a member of the dev team</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Block 7 -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:3px;margin-bottom:14px;">07 · USER STORIES, REFACTORING, TDD, PAIR PROGRAMMING</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:14px;padding:18px 20px;">
+        <p style="color:var(--gold2);font-weight:700;margin-bottom:8px;">User Stories</p>
+        <p style="font-size:.88rem;color:#d4d0c6;line-height:1.8;">Requirements expressed as stories/scenarios written on cards. Customer decides priorities. Team breaks into implementation tasks → schedule &amp; cost estimates.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:14px;padding:18px 20px;">
+        <p style="color:var(--gold2);font-weight:700;margin-bottom:8px;">Refactoring</p>
+        <p style="font-size:.88rem;color:#d4d0c6;line-height:1.8;">Continuous code improvement even without immediate need. Improves understandability, reduces documentation, makes changes easier. Examples: reorganize class hierarchy, rename, replace inline code.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:14px;padding:18px 20px;">
+        <p style="color:var(--gold2);font-weight:700;margin-bottom:8px;">Test-First / TDD</p>
+        <p style="font-size:.88rem;color:#d4d0c6;line-height:1.8;">Write test BEFORE code. Tests are executable programs (not data). All previous tests run when new functionality added. Test automation = executable components run automatically.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:14px;padding:18px 20px;">
+        <p style="color:var(--gold2);font-weight:700;margin-bottom:8px;">Pair Programming</p>
+        <p style="font-size:.88rem;color:#d4d0c6;line-height:1.8;">Two developers, one computer. Pairs created dynamically. Spreads knowledge, informal review, encourages refactoring. NOT necessarily inefficient — evidence suggests pair &gt; 2 separate developers.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 8: Exam Traps -->
+  <div style="margin:28px 0;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--red);letter-spacing:3px;margin-bottom:14px;">⚠️ ALL EXAM TRAPS — LECTURE 4</div>
+    <div style="display:grid;gap:10px;">
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">MANIFESTO</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">"NOT an Agile Manifesto principle?" → <b style="color:var(--gold2)">Comprehensive documentation</b> — it's on the "less valued" right side.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">XP TIMING</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">Agile/XP appeared in the <b style="color:var(--gold2)">late 1990s</b> — NOT 1980s, NOT early 2000s.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">PLAN-DRIVEN</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">Plan-driven is NOT necessarily Waterfall — plan-driven incremental development is also possible. Iteration occurs <b style="color:var(--gold2)">within activities</b>.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">PAIR PROGRAMMING</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">Pair programming is <b style="color:var(--gold2)">NOT necessarily inefficient</b> — evidence suggests it can be MORE efficient than 2 separate developers.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">SUSTAINABLE PACE</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">Large amounts of overtime are <b style="color:var(--gold2)">NOT acceptable</b> — they reduce code quality and medium-term productivity.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">REFACTORING</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">XP says design for change is NOT worthwhile because changes cannot be reliably anticipated. XP proposes <b style="color:var(--gold2)">constant code improvement (refactoring)</b> instead.</p>
+      </div>
+      <div style="background:rgba(224,122,122,0.06);border:1px solid rgba(224,122,122,0.2);border-radius:12px;padding:14px 18px;">
+        <p style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:.78rem;margin-bottom:4px;">TDD PROBLEMS</p>
+        <p style="font-size:.93rem;color:#d4d0c6;">3 problems: (1) Programmers prefer programming over testing, (2) Some tests difficult to write incrementally (complex UIs), (3) Difficult to judge completeness of test set.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════ FINAL ═══════════════ -->
+<section class="chapter" id="final" data-ch="النهاية">
+<div class="inner">
+  <div class="final-section">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:4px;margin-bottom:24px;">LECTURE 4 — COMPLETE</div>
+    <h2 style="font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:var(--gold2);margin-bottom:16px;">خلصت المحاضرة الرابعة 🎉</h2>
+    <p style="color:var(--muted);max-width:480px;line-height:1.9;margin-bottom:40px;">
+      Agile Manifesto، الـ 5 Principles، الـ 10 XP Practices، User Stories، Refactoring، TDD، Pair Programming — كلها في دماغك دلوقتي. ما تخافش من الفينال.
+    </p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+      <button class="btn gold" onclick="document.getElementById('c1').scrollIntoView({behavior:'smooth'})">أعد القراءة من الأول 🔄</button>
+      <button class="btn ghost" onclick="document.getElementById('cheatsheet').scrollIntoView({behavior:'smooth'})">اذهب للـ Cheat Sheet ★</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll',()=>{
+  const p=document.getElementById('prog');
+  const h=document.documentElement;
+  const pct=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  p.style.width=pct+'%';
+});
+
+// ── NAV ──
+const chapters=[...document.querySelectorAll('.chapter')];
+const nav=document.getElementById('nav');
+chapters.forEach(ch=>{
+  const dot=document.createElement('div');
+  dot.className='cnav';
+  dot.setAttribute('data-label',ch.dataset.ch||'');
+  dot.onclick=()=>ch.scrollIntoView({behavior:'smooth'});
+  nav.appendChild(dot);
+});
+const dots=[...nav.querySelectorAll('.cnav')];
+const obs2=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const i=chapters.indexOf(e.target);
+      dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+    }
+  });
+},{threshold:0.4});
+chapters.forEach(ch=>obs2.observe(ch));
+
+// ── REVEAL STORIES ──
+function revealStory(id){
+  const s=document.getElementById(id);
+  if(!s)return;
+  if(s.classList.contains('show'))return;
+  s.style.display='block';
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      s.classList.add('show');
+      setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),300);
+    });
+  });
+}
+</script>
+</body>
+</html>

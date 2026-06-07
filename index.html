@@ -44,7 +44,7 @@
   }
 
   .portal {
-    max-width: 550px;
+    max-width: 900px;
     width: 100%;
     text-align: center;
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -85,8 +85,8 @@
   }
 
   .menu {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     width: 100%;
   }
@@ -98,11 +98,11 @@
     background: var(--panel);
     border: 1px solid var(--border);
     color: var(--ink);
-    padding: 20px 28px;
+    padding: 20px 22px;
     border-radius: 16px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     overflow: hidden;
@@ -195,6 +195,14 @@
       <span class="label">
         <span class="num">LEC 3</span>
         Software Process Models
+      </span>
+      <span class="arrow">→</span>
+    </a>
+
+    <a href="lec 4 se.html" class="portal-btn">
+      <span class="label">
+        <span class="num">LEC 4</span>
+        Agile Methods
       </span>
       <span class="arrow">→</span>
     </a>
