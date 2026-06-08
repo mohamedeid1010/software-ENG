@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lec 8 — System Modeling 📐</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #e8b85a;
+    --gold2: #f5d08a;
+    --bg: #0a0c0e;
+    --card: #111418;
+    --card2: #161b22;
+    --red: #e05252;
+    --green: #52c78a;
+    --blue: #5298e0;
+    --purple: #9b5de5;
+    --teal: #38b2ac;
+    --orange: #e8935a;
+    --border: #2a2f3a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:#dde3ee; font-family:'Tajawal',sans-serif; overflow-x:hidden; }
+  #progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--gold); transition:width .3s; z-index:999; }
+  #nav { position:fixed; right:18px; top:50%; transform:translateY(-50%); z-index:998; display:flex; flex-direction:column; gap:10px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#2a2f3a; cursor:pointer; transition:.3s; border:2px solid transparent; }
+  .dot.active { background:var(--gold); border-color:var(--gold2); transform:scale(1.4); }
+  .dot:hover { background:var(--gold2); }
+
+  header { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:60px 20px; background:radial-gradient(ellipse at 50% 30%, #0e1520 0%, var(--bg) 70%); position:relative; overflow:hidden; }
+  header::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='%235298e011'/%3E%3C/svg%3E"); }
+  .lec-badge { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--blue); border:1px solid var(--blue); padding:6px 16px; border-radius:20px; margin-bottom:24px; letter-spacing:3px; }
+  header h1 { font-size:clamp(2.2rem,6vw,4rem); font-weight:900; color:#fff; line-height:1.15; }
+  header h1 span { color:var(--gold); }
+  .hero-sub { color:#8892a4; margin-top:16px; font-size:1.1rem; max-width:520px; line-height:1.7; }
+  .hero-meta { margin-top:32px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .meta-chip { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:8px 16px; font-size:.82rem; color:var(--gold2); font-family:'JetBrains Mono',monospace; }
+  .scroll-hint { margin-top:48px; color:#444; font-size:.85rem; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+  section { min-height:100vh; padding:80px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ch-label { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  .ch-num { font-size:5rem; font-weight:900; color:#1a1e26; line-height:1; margin-bottom:-10px; font-family:'JetBrains Mono',monospace; }
+
+  .hook { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; max-width:760px; width:100%; cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
+  .hook::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold),var(--gold2)); }
+  .hook:hover { border-color:var(--gold); transform:translateY(-3px); box-shadow:0 12px 40px rgba(232,184,90,.12); }
+  .hook h2 { font-size:clamp(1.3rem,3vw,1.8rem); color:#fff; font-weight:900; line-height:1.3; margin-bottom:12px; }
+  .hook .sub { color:#8892a4; line-height:1.7; margin-bottom:20px; }
+  .hook .tap { display:inline-block; background:rgba(232,184,90,.12); color:var(--gold); border:1px solid rgba(232,184,90,.3); border-radius:8px; padding:8px 20px; font-size:.9rem; font-family:'JetBrains Mono',monospace; transition:.3s; }
+  .hook:hover .tap { background:rgba(232,184,90,.22); }
+
+  .story { display:none; max-width:760px; width:100%; margin-top:20px; direction:rtl; text-align:right; }
+  .story.open { display:block; animation:fadeUp .4s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .scene { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:28px; margin-bottom:16px; }
+  .scene-title { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); letter-spacing:2px; margin-bottom:14px; }
+  .scene p { line-height:1.9; color:#c8d0de; margin-bottom:10px; font-size:1.05rem; }
+  .scene p:last-child { margin-bottom:0; }
+
+  .en { font-family:'JetBrains Mono',monospace; color:var(--gold2); font-size:.9em; background:rgba(232,184,90,.08); padding:1px 5px; border-radius:4px; direction:ltr; display:inline-block; }
+  .ar { direction:rtl; text-align:right; }
+
+  .reveal { background:linear-gradient(135deg,#1a1f0a,#0f1a0a); border:1px solid #52c78a44; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .reveal .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--green); letter-spacing:2px; margin-bottom:8px; }
+  .trap { background:linear-gradient(135deg,#1a0a0a,#1a0f0f); border:1px solid #e0525244; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .trap .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--red); letter-spacing:2px; margin-bottom:8px; }
+  .ding { background:linear-gradient(135deg,#0a0f1a,#0a1220); border:1px solid #5298e044; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .ding .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--blue); letter-spacing:2px; margin-bottom:8px; }
+  .warn { background:linear-gradient(135deg,#1a0f00,#1a1200); border:1px solid #e8935a44; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .warn .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--orange); letter-spacing:2px; margin-bottom:8px; }
+
+  .stbl { width:100%; border-collapse:collapse; margin:16px 0; font-size:.9rem; }
+  .stbl th { background:rgba(232,184,90,.12); color:var(--gold); padding:10px 14px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px; border-bottom:2px solid rgba(232,184,90,.2); }
+  .stbl td { padding:10px 14px; border-bottom:1px solid var(--border); color:#c8d0de; vertical-align:top; }
+  .stbl tr:last-child td { border-bottom:none; }
+  .stbl td.ar { direction:rtl; text-align:right; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:16px 0; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:16px 0; }
+  @media(max-width:600px) { .grid2,.grid3,.grid4 { grid-template-columns:1fr; } }
+  .gcard { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; }
+  .gcard .gtitle { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); margin-bottom:8px; letter-spacing:1px; }
+  .gcard p { font-size:.9rem; line-height:1.7; color:#aab4c4; }
+  .gcard.red { border-color:#e0525244; } .gcard.red .gtitle { color:var(--red); }
+  .gcard.green { border-color:#52c78a44; } .gcard.green .gtitle { color:var(--green); }
+  .gcard.blue { border-color:#5298e044; } .gcard.blue .gtitle { color:var(--blue); }
+  .gcard.purple { border-color:#9b5de544; } .gcard.purple .gtitle { color:var(--purple); }
+  .gcard.teal { border-color:#38b2ac44; } .gcard.teal .gtitle { color:var(--teal); }
+  .gcard.orange { border-color:#e8935a44; } .gcard.orange .gtitle { color:var(--orange); }
+
+  .hbox { border-radius:10px; padding:16px 20px; margin:12px 0; }
+  .hbox.gold { background:rgba(232,184,90,.1); border:1px solid rgba(232,184,90,.25); }
+  .hbox.red { background:rgba(224,82,82,.1); border:1px solid rgba(224,82,82,.25); }
+  .hbox.blue { background:rgba(82,152,224,.1); border:1px solid rgba(82,152,224,.25); }
+  .hbox.green { background:rgba(82,199,138,.1); border:1px solid rgba(82,199,138,.25); }
+  .hbox p { line-height:1.8; color:#c8d0de; }
+
+  .flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin:16px 0; direction:ltr; }
+  .fbox { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:.82rem; color:#c8d0de; text-align:center; font-family:'JetBrains Mono',monospace; }
+  .farrow { color:var(--gold); font-size:1.2rem; }
+
+  /* UML CLASS BOX */
+  .uml-class { border:2px solid var(--blue); border-radius:4px; overflow:hidden; display:inline-block; min-width:160px; font-family:'JetBrains Mono',monospace; font-size:.82rem; direction:ltr; text-align:left; }
+  .uml-class .uml-name { background:rgba(82,152,224,.15); padding:8px 12px; text-align:center; font-weight:700; color:var(--blue); border-bottom:1px solid var(--blue); }
+  .uml-class .uml-attrs { padding:8px 12px; border-bottom:1px solid var(--border); color:#c8d0de; line-height:1.8; }
+  .uml-class .uml-methods { padding:8px 12px; color:#aab4c4; line-height:1.8; }
+
+  /* CONTEXT MAP */
+  .ctx-map { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin:16px 0; direction:ltr; }
+  .ctx-center { background:rgba(232,184,90,.15); border:2px solid var(--gold); border-radius:8px; padding:12px 24px; text-align:center; font-family:'JetBrains Mono',monospace; color:var(--gold); font-weight:700; display:inline-block; }
+  .ctx-surrounding { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .ctx-sys { background:rgba(82,152,224,.08); border:1px solid rgba(82,152,224,.25); border-radius:6px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:.78rem; color:#c8d0de; text-align:center; }
+  .ctx-sys .ctx-tag { font-size:.65rem; color:var(--blue); display:block; margin-bottom:2px; }
+
+  /* SEQUENCE MINI */
+  .seq-wrap { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:20px; margin:16px 0; direction:ltr; overflow-x:auto; }
+  .seq-actors { display:flex; gap:20px; justify-content:flex-start; flex-wrap:nowrap; }
+  .seq-actor { text-align:center; min-width:100px; font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); }
+  .seq-lifeline { width:2px; background:var(--border); height:100px; margin:0 auto; }
+  .seq-msg { display:flex; align-items:center; gap:6px; margin:8px 0; font-size:.8rem; color:#aab4c4; font-family:'JetBrains Mono',monospace; }
+  .seq-msg .arrow { color:var(--blue); }
+
+  /* HIERARCHY TREE */
+  .tree { direction:ltr; text-align:left; background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:20px; margin:16px 0; font-family:'JetBrains Mono',monospace; font-size:.85rem; line-height:2; }
+  .tree .t0 { color:var(--gold); font-weight:700; }
+  .tree .t1 { color:var(--blue); margin-right:20px; }
+  .tree .t2 { color:var(--green); margin-right:40px; }
+  .tree .t3 { color:#aab4c4; margin-right:60px; }
+
+  /* CHEAT SHEET */
+  #cheat { background:linear-gradient(135deg,#0d1117,#111820); }
+  .cheat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; max-width:1000px; width:100%; margin-top:32px; }
+  .cheat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px; }
+  .cheat-card h3 { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); letter-spacing:2px; margin-bottom:14px; }
+  .cheat-card ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .cheat-card ul li { font-size:.85rem; color:#aab4c4; line-height:1.5; }
+  .cheat-card ul li::before { content:'› '; color:var(--gold); }
+
+  #finale { min-height:60vh; text-align:center; background:radial-gradient(ellipse at 50% 60%, #0e1520 0%, var(--bg) 70%); }
+  #finale h2 { font-size:clamp(1.8rem,4vw,2.8rem); color:#fff; font-weight:900; }
+  #finale p { color:#8892a4; margin-top:12px; line-height:1.7; max-width:500px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<nav id="nav">
+  <div class="dot active" title="Intro"></div>
+  <div class="dot" title="System Modeling + UML"></div>
+  <div class="dot" title="4 Perspectives"></div>
+  <div class="dot" title="Graphical Models"></div>
+  <div class="dot" title="Context Models"></div>
+  <div class="dot" title="Interaction Models"></div>
+  <div class="dot" title="Sequence Diagrams"></div>
+  <div class="dot" title="Structural Models"></div>
+  <div class="dot" title="Generalization"></div>
+  <div class="dot" title="Aggregation + Behavioral"></div>
+  <div class="dot" title="Cheat Sheet"></div>
+</nav>
+
+<!-- HEADER -->
+<header id="sec0">
+  <div class="lec-badge">CSE 302 · LECTURE 8</div>
+  <h1>System<br><span>Modeling</span></h1>
+  <p class="hero-sub">قبل ما تبني أي نظام، لازم ترسمه. الـ UML هو لغة الرسم العالمية — وده الـ chapter اللي بيشرح كيف تفكر بصرياً في أي نظام برمجي.</p>
+  <div class="hero-meta">
+    <span class="meta-chip">📐 UML Diagrams</span>
+    <span class="meta-chip">🗺 Context Models</span>
+    <span class="meta-chip">🔗 Class Diagrams</span>
+    <span class="meta-chip">🧬 Generalization</span>
+    <span class="meta-chip">⚡ Behavioral Models</span>
+  </div>
+  <p class="scroll-hint">scroll to begin ↓</p>
+</header>
+
+<!-- CH 1: SYSTEM MODELING + UML -->
+<section id="sec1">
+  <div class="ch-label">Chapter 01</div>
+  <div class="ch-num">01</div>
+  <div class="hook" onclick="revealStory('s1')">
+    <h2>📐 System Modeling — ليه نرسم قبل ما نكود؟</h2>
+    <div class="sub">الـ System Modeling هو فن رسم النظام من زوايا مختلفة. وUML أصبح اللغة الرسمية لهذا الرسم. ليه مهم جداً؟</div>
+    <div class="tap">Reveal the modeling world →</div>
+  </div>
+  <div class="story" id="s1">
+    <div class="scene">
+      <div class="scene-title">🧠 WHAT IS SYSTEM MODELING?</div>
+      <div class="hbox gold">
+        <p>الـ <span class="en">System Modeling</span> هو عملية تطوير نماذج مجردة (<span class="en">abstract models</span>) للنظام، كل model بيقدم view أو perspective مختلفة.</p>
+      </div>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">GRAPHICAL NOTATION</div>
+          <p>الـ modeling بقى يعتمد على الرسم البياني — وUML أصبح الـ standard لهذا الرسم</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">HELP ANALYSTS</div>
+          <p>بتساعد الـ analyst يفهم وظيفة النظام ويتواصل مع العملاء</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">COMMUNICATE IDEAS</div>
+          <p>Models هي لغة التواصل بين الـ developers والـ stakeholders</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔷 UML — Unified Modeling Language</div>
+      <p>الـ <span class="en">UML</span> هو لغة بصرية <span class="en">standardized</span> لـ model وdesign وdocument الأنظمة البرمجية:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">WHAT UML SHOWS</div>
+          <p>System architecture · Functional flow · Object interactions · Database design · Code structure</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">WHY USE UML?</div>
+          <p>Visualize before coding · Communicate design · Reduce ambiguity · Support future maintenance documentation</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="label">📌 TWO MAIN CATEGORIES</div>
+        <p><strong style="color:var(--blue);">1. Structural Diagrams</strong> — بتوصف الـ static structure: Class, Object, Component, Deployment, Package diagrams<br><br>
+        <strong style="color:var(--green);">2. Behavioral Diagrams</strong> — بتوصف الـ dynamic behavior: Use Case, Sequence, Activity, State, Communication diagrams</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🗂 EXISTING vs PLANNED SYSTEM MODELS</div>
+      <table class="stbl">
+        <tr><th>Model Type</th><th class="ar">متى تستخدمه؟</th><th class="ar">الهدف</th></tr>
+        <tr>
+          <td><strong style="color:var(--blue);">Existing System</strong></td>
+          <td class="ar">أثناء الـ requirements engineering</td>
+          <td class="ar">توضيح ما يفعله النظام الحالي — strengths وweaknesses</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green);">New System</strong></td>
+          <td class="ar">أثناء الـ requirements engineering وDesign</td>
+          <td class="ar">شرح المتطلبات المقترحة لباقي الـ stakeholders وتوثيق النظام للـ implementation</td>
+        </tr>
+      </table>
+      <div class="ding">
+        <div class="label">📌 MODEL-DRIVEN ENGINEERING</div>
+        <p>في الـ <span class="en">model-driven engineering</span>، ممكن تولّد implementation كاملة أو جزئية من الـ system model تلقائياً!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 2: 4 PERSPECTIVES -->
+<section id="sec2">
+  <div class="ch-label">Chapter 02</div>
+  <div class="ch-num">02</div>
+  <div class="hook" onclick="revealStory('s2')">
+    <h2>👁 4 System Perspectives — النظام من 4 زوايا مختلفة</h2>
+    <div class="sub">أي نظام تقدر تشوفه من 4 زوايا: من برّه، من التفاعلات، من الهيكل، ومن السلوك. كل زاوية بترسم بـ diagram مختلف.</div>
+    <div class="tap">Reveal the 4 perspectives →</div>
+  </div>
+  <div class="story" id="s2">
+    <div class="scene">
+      <div class="scene-title">🔭 THE 4 SYSTEM PERSPECTIVES</div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">① EXTERNAL PERSPECTIVE</div>
+          <p>بترسم الـ <strong>context أو environment</strong> للنظام — النظام بالنسبة لما حواليه. الـ <span class="en">Context Model</span> هنا.</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">② INTERACTION PERSPECTIVE</div>
+          <p>بترسم الـ <strong>interactions</strong> بين النظام وبيئته، أو بين مكونات النظام. الـ <span class="en">Use Case</span> و<span class="en">Sequence</span> هنا.</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">③ STRUCTURAL PERSPECTIVE</div>
+          <p>بترسم <strong>تنظيم النظام</strong> أو هيكل البيانات اللي بيعالجها. الـ <span class="en">Class Diagram</span> هنا.</p>
+        </div>
+        <div class="gcard orange">
+          <div class="gtitle">④ BEHAVIORAL PERSPECTIVE</div>
+          <p>بترسم <strong>السلوك الديناميكي</strong> للنظام وكيف يستجيب للأحداث. الـ <span class="en">State</span> و<span class="en">Activity Diagram</span> هنا.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 5 KEY UML DIAGRAM TYPES</div>
+      <table class="stbl">
+        <tr><th>Diagram</th><th class="ar">بيعرض ايه؟</th><th>Perspective</th></tr>
+        <tr>
+          <td><strong style="color:var(--blue);">Activity Diagram</strong></td>
+          <td class="ar">الأنشطة في process أو data processing</td>
+          <td style="font-family:monospace; font-size:.8rem;">Behavioral</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green);">Use Case Diagram</strong></td>
+          <td class="ar">التفاعلات بين النظام وبيئته</td>
+          <td style="font-family:monospace; font-size:.8rem;">Interaction</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--purple);">Sequence Diagram</strong></td>
+          <td class="ar">التفاعلات بين الـ actors والنظام وبين مكونات النظام</td>
+          <td style="font-family:monospace; font-size:.8rem;">Interaction</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--gold);">Class Diagram</strong></td>
+          <td class="ar">الـ object classes في النظام والعلاقات بينها</td>
+          <td style="font-family:monospace; font-size:.8rem;">Structural</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--orange);">State Diagram</strong></td>
+          <td class="ar">كيف يستجيب النظام للـ internal وexternal events</td>
+          <td style="font-family:monospace; font-size:.8rem;">Behavioral</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CH 3: USE OF GRAPHICAL MODELS -->
+<section id="sec3">
+  <div class="ch-label">Chapter 03</div>
+  <div class="ch-num">03</div>
+  <div class="hook" onclick="revealStory('s3')">
+    <h2>🖼 Use of Graphical Models — متى يكون الـ Model صح؟</h2>
+    <div class="sub">مش كل model لازم يكون perfect. الـ purpose بيحدد مستوى الدقة المطلوب. 3 استخدامات مختلفة = 3 مستويات دقة مختلفة.</div>
+    <div class="tap">Reveal the 3 uses →</div>
+  </div>
+  <div class="story" id="s3">
+    <div class="scene">
+      <div class="scene-title">🎯 3 USES OF GRAPHICAL MODELS</div>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">① FACILITATE DISCUSSION</div>
+          <p>لتسهيل النقاش عن نظام موجود أو مقترح — الـ models ممكن تكون <strong>incomplete وincorrect</strong> — مهمتها فقط دعم النقاش</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">② DOCUMENT EXISTING SYSTEM</div>
+          <p>كطريقة توثيق نظام موجود — الـ models لازم تكون <strong>accurate</strong> لكن مش لازم complete</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">③ GENERATE IMPLEMENTATION</div>
+          <p>كوصف تفصيلي للـ system implementation — الـ models لازم تكون <strong>correct AND complete</strong> لأن هتولّد code منها</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="label">✅ KEY TAKEAWAY</div>
+        <p>نفس الـ model ممكن يكون "ناقص ومقبول" في discussion، و"ناقص وغير مقبول" لو مستخدم لـ code generation. الـ <strong>context</strong> هو اللي بيحدد المعيار.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 4: CONTEXT MODELS -->
+<section id="sec4">
+  <div class="ch-label">Chapter 04</div>
+  <div class="ch-num">04</div>
+  <div class="hook" onclick="revealStory('s4')">
+    <h2>🗺 Context Models — رسم حدود النظام</h2>
+    <div class="sub">قبل ما تبدأ أي نظام، لازم تقرر: ايه داخل النظام وايه خارجه؟ ده قرار "سياسي" وأكبر من كونه تقني.</div>
+    <div class="tap">Reveal context modeling →</div>
+  </div>
+  <div class="story" id="s4">
+    <div class="scene">
+      <div class="scene-title">🏛 SYSTEM BOUNDARIES</div>
+      <div class="hbox gold">
+        <p>الـ <span class="en">System Boundaries</span> بتحدد ايه الداخل وايه الخارج — وبتأثر على الـ system requirements مباشرة.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard orange">
+          <div class="gtitle">BOUNDARY IS POLITICAL</div>
+          <p>تحديد الـ boundary هو قرار سياسي — فيه ضغوط لزيادة أو تقليل نفوذ أجزاء مختلفة من المنظمة</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">CONTEXT MODEL</div>
+          <p>بيعرض الأنظمة التانية في البيئة — <strong>مش</strong> كيف النظام المطوّر يُستخدم في البيئة دي (ده شغل الـ Process Model)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🏥 MENTCARE SYSTEM CONTEXT</div>
+      <p>الـ <span class="en">Mentcare</span> نظام إدارة الصحة النفسية، وهو في المنتصف ومحاط بـ 5 أنظمة:</p>
+      <div class="ctx-map">
+        <div style="text-align:center; margin-bottom:14px;">
+          <div class="ctx-center">«system» Mentcare</div>
+        </div>
+        <div class="ctx-surrounding">
+          <div class="ctx-sys"><span class="ctx-tag">«system»</span>Patient record system</div>
+          <div class="ctx-sys"><span class="ctx-tag">«system»</span>Admissions system</div>
+          <div class="ctx-sys"><span class="ctx-tag">«system»</span>Management reporting system</div>
+          <div class="ctx-sys"><span class="ctx-tag">«system»</span>Prescription system</div>
+          <div class="ctx-sys" style="grid-column:1/-1;"><span class="ctx-tag">«system»</span>HC statistics system · Appointments system</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">⚙️ PROCESS PERSPECTIVE — Activity Diagrams</div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">CONTEXT MODEL</div>
+          <p>بيعرض الأنظمة التانية في البيئة فقط — مش كيف Mentcare يُستخدم فيها</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">PROCESS MODEL</div>
+          <p>بيكشف كيف النظام المطوّر مستخدم في العمليات التجارية الأوسع — يستخدم <span class="en">UML Activity Diagrams</span></p>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 EXAMPLE — INVOLUNTARY DETENTION PROCESS</div>
+        <p>في الـ Mentcare system، لما مريض يحتاج احتجاز قسري، الـ activity diagram يعرض: Confirm decision → Inform patient of rights → Record decision → Find secure place → [if dangerous: Transfer to secure hospital, else: Admit to hospital] → Inform social care → Inform next of kin → Update register. النظامان المستخدمان: <span class="en">Mentcare</span> و<span class="en">Admissions system</span>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 5: INTERACTION MODELS -->
+<section id="sec5">
+  <div class="ch-label">Chapter 05</div>
+  <div class="ch-num">05</div>
+  <div class="hook" onclick="revealStory('s5')">
+    <h2>🤝 Interaction Models — Use Cases وطريقة تفصيلها</h2>
+    <div class="sub">التفاعل بين المستخدم والنظام يُرسم بـ Use Case Diagram. وكل Use Case ليه جدول تفصيلي. إزاي بالضبط؟</div>
+    <div class="tap">Reveal interaction modeling →</div>
+  </div>
+  <div class="story" id="s5">
+    <div class="scene">
+      <div class="scene-title">🔗 WHY MODEL INTERACTIONS?</div>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">USER INTERACTION</div>
+          <p>مهم لأنه بيساعد في تحديد الـ user requirements — ايه اللي المستخدم محتاج يعمله</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">SYSTEM-TO-SYSTEM</div>
+          <p>يكشف مشاكل الـ communication اللي ممكن تحصل بين الأنظمة المختلفة</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">COMPONENT INTERACTION</div>
+          <p>يساعد نفهم لو الـ proposed system structure هتحقق الـ performance والـ dependability المطلوبة</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📋 USE CASE MODELING</div>
+      <div class="hbox blue">
+        <p>الـ <span class="en">Use Cases</span> اتطوّرت في الأصل لدعم الـ requirements elicitation ثم اندمجت في الـ UML. كل use case بيمثّل مهمة منفصلة (<span class="en">discrete task</span>) تشمل <span class="en">external interaction</span> مع النظام.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">ACTORS</div>
+          <p>ممكن يكونوا بشر أو أنظمة تانية — أي حاجة خارج النظام بتتفاعل معه</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">REPRESENTATION</div>
+          <p>بيتمثل رسومياً لإعطاء overview، أو بشكل نصي تفصيلي (<span class="en">tabular form</span>)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 TABULAR USE CASE — Transfer Data (MHC-PMS)</div>
+      <table class="stbl">
+        <tr><th>Field</th><th class="ar">القيمة</th></tr>
+        <tr>
+          <td><strong style="color:var(--gold);">MHC-PMS: Transfer data</strong></td>
+          <td class="ar">—</td>
+        </tr>
+        <tr>
+          <td>Actors</td>
+          <td class="ar">Medical receptionist, Patient records system (PRS)</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td class="ar">الـ receptionist ممكن تنقل بيانات من Mentcare لـ general patient record database تابعة لـ health authority — المعلومات: عنوان، تليفون، ملخص تشخيص وعلاج</td>
+        </tr>
+        <tr>
+          <td>Data</td>
+          <td class="ar">Patient's personal information, treatment summary</td>
+        </tr>
+        <tr>
+          <td>Stimulus</td>
+          <td class="ar">User command issued by medical receptionist</td>
+        </tr>
+        <tr>
+          <td>Response</td>
+          <td class="ar">Confirmation that PRS has been updated</td>
+        </tr>
+        <tr>
+          <td>Comments</td>
+          <td class="ar">الـ receptionist لازم يكون عنده appropriate security permissions للوصول لمعلومات المريض والـ PRS</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">👩‍💼 MEDICAL RECEPTIONIST USE CASES</div>
+      <p>الـ Medical Receptionist في الـ Mentcare system عنده 5 use cases:</p>
+      <div class="flow" style="flex-wrap:wrap; gap:10px; justify-content:flex-start; direction:ltr;">
+        <div class="fbox" style="border-color:var(--gold); color:var(--gold);">Medical Receptionist</div>
+        <div class="farrow">→</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="fbox">Register patient</div>
+          <div class="fbox">Unregister patient</div>
+          <div class="fbox">View patient info.</div>
+          <div class="fbox">Transfer data</div>
+          <div class="fbox">Contact patient</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 6: SEQUENCE DIAGRAMS -->
+<section id="sec6">
+  <div class="ch-label">Chapter 06</div>
+  <div class="ch-num">06</div>
+  <div class="hook" onclick="revealStory('s6')">
+    <h2>⏱ Sequence Diagrams — من يكلّم من؟ ومتى؟</h2>
+    <div class="sub">الـ Sequence Diagram بيعرض تسلسل الرسائل بين الـ objects. أداة قوية لفهم الـ runtime interactions.</div>
+    <div class="tap">Reveal sequence diagrams →</div>
+  </div>
+  <div class="story" id="s6">
+    <div class="scene">
+      <div class="scene-title">📖 SEQUENCE DIAGRAMS — DEFINITION</div>
+      <div class="hbox blue">
+        <p>الـ <span class="en">Sequence Diagrams</span> هي جزء من الـ UML بتُستخدم لتمثيل التفاعلات بين الـ actors والـ objects والمكونات داخل النظام.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">LAYOUT</div>
+          <p>الـ objects والـ actors مرتبين في أعلى الـ diagram مع <span class="en">dotted lifeline</span> رأسية منهم للأسفل</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">MESSAGES</div>
+          <p>التفاعلات بين الـ objects تتمثل بـ <span class="en">annotated arrows</span> أفقية بين الـ lifelines</p>
+        </div>
+      </div>
+      <p style="margin-top:12px; line-height:1.8;">بيعرض <strong>تسلسل التفاعلات</strong> اللي بتحصل أثناء use case معين أو instance منه.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔍 VIEW PATIENT INFORMATION — SEQUENCE</div>
+      <p>لما الـ Medical Receptionist يطلب عرض بيانات مريض:</p>
+      <div class="seq-wrap">
+        <div style="direction:ltr; font-family:'JetBrains Mono',monospace; font-size:.8rem; line-height:2;">
+          <div style="display:flex; gap:40px; color:var(--gold); font-weight:700; margin-bottom:8px;">
+            <span>Medical Receptionist</span>
+            <span>P: PatientInfo</span>
+            <span>D: Mentcare-DB</span>
+            <span>AS: Authorization</span>
+          </div>
+          <div class="seq-msg"><span class="arrow">→→→</span><span>ViewInfo(PID)</span></div>
+          <div class="seq-msg" style="padding-right:80px;"><span class="arrow">→→</span><span>report(Info, PID, UID)</span></div>
+          <div class="seq-msg" style="padding-right:40px;"><span class="arrow">→→→</span><span>authorize(Info, UID)</span></div>
+          <div class="seq-msg" style="padding-right:40px;"><span class="arrow">←←←</span><span>authorization</span></div>
+          <div style="border-left:2px solid var(--border); padding-right:12px; margin:6px 0; color:#8892a4; font-size:.78rem;">alt [authorization OK] → Patient info | [authorization fail] → Error (no access)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📤 TRANSFER DATA — SEQUENCE</div>
+      <p>لما الـ receptionist ينقل بيانات للـ PRS — أكثر تعقيداً:</p>
+      <div class="ding">
+        <div class="label">📌 FLOW SUMMARY</div>
+        <p style="direction:ltr; text-align:left; line-height:2; font-family:'JetBrains Mono',monospace; font-size:.8rem;">
+          login() →<br>
+          [sendInfo]: updateInfo() → updatePRS(UID) → authorize(TI,UID) → authentication → update(PID) → update OK → Message(OK)<br>
+          [sendSummary]: UpdateSummary() → summaries(UID) → authorize(TI,UID) → summary → update(PID) → update OK → Message(OK)<br>
+          logout()
+        </p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🛒 ORDER PROCESSING — SEQUENCE EXAMPLE</div>
+      <p>مثال آخر على الـ Sequence Diagram — Order processing:</p>
+      <div class="seq-wrap">
+        <div style="direction:ltr; font-family:'JetBrains Mono',monospace; font-size:.8rem; line-height:2.2;">
+          <div style="display:flex; gap:40px; color:var(--gold); font-weight:700; margin-bottom:8px;">
+            <span>Purchase officer</span><span>:Order</span><span>Budget</span><span>«datastore» Orders</span><span>Supplier</span>
+          </div>
+          <div class="seq-msg"><span class="arrow">→</span><span>Fillin()</span></div>
+          <div class="seq-msg" style="padding-right:40px;"><span class="arrow">→</span><span>Validate()</span></div>
+          <div class="seq-msg" style="padding-right:40px;"><span class="arrow">←</span><span>[validation ok]</span></div>
+          <div class="seq-msg" style="padding-right:20px;"><span class="arrow">→</span><span>Update(amount)</span></div>
+          <div class="seq-msg"><span class="arrow">→→→</span><span>Save()</span></div>
+          <div class="seq-msg"><span class="arrow">→→→→</span><span>Send()</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 7: STRUCTURAL MODELS -->
+<section id="sec7">
+  <div class="ch-label">Chapter 07</div>
+  <div class="ch-num">07</div>
+  <div class="hook" onclick="revealStory('s7')">
+    <h2>🏗 Structural Models — الهيكل الداخلي للنظام</h2>
+    <div class="sub">الـ Class Diagram هو العمود الفقري للـ structural modeling. Classes وAttributes وMethods والـ associations بينهم — إزاي بالضبط؟</div>
+    <div class="tap">Reveal structural models →</div>
+  </div>
+  <div class="story" id="s7">
+    <div class="scene">
+      <div class="scene-title">🏛 STRUCTURAL MODELS — DEFINITION</div>
+      <div class="hbox gold">
+        <p>الـ <span class="en">Structural Models</span> بتعرض تنظيم النظام من حيث المكونات (&quot;components&quot;) وعلاقاتها.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">STATIC MODELS</div>
+          <p>بتعرض structure الـ system design — مثل الـ Class Diagram. الـ "صورة ساكنة" للنظام.</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">DYNAMIC MODELS</div>
+          <p>بتعرض تنظيم النظام أثناء التنفيذ — كيف يتغير أثناء الـ runtime.</p>
+        </div>
+      </div>
+      <p style="margin-top:12px;">بتستخدم الـ structural models لما تكون بتناقش وتصمم الـ <span class="en">system architecture</span>.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📦 CLASS DIAGRAMS — BASICS</div>
+      <p>الـ <span class="en">Class Diagrams</span> تستخدم في تطوير الـ <span class="en">object-oriented system</span> لعرض الـ classes والـ associations بينها:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">OBJECT CLASS</div>
+          <p>تعريف عام لنوع من الـ system objects — مثل Patient، Doctor، Consultation</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">ASSOCIATION</div>
+          <p>رابط بين الـ classes يشير لوجود علاقة ما — مثل Patient "has" PatientRecord</p>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 EARLY STAGES</div>
+        <p>في المراحل الأولى من الـ software engineering process، الـ objects بتمثل حاجات في العالم الحقيقي — patient، prescription، doctor، إلخ.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔗 MHC-PMS — CLASSES & ASSOCIATIONS</div>
+      <p>الـ classes الرئيسية في الـ MHC-PMS وعلاقاتها:</p>
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:20px; margin:12px 0; direction:ltr; text-align:left; overflow-x:auto;">
+        <table style="border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.78rem; min-width:500px;">
+          <tr>
+            <td style="text-align:center; padding:8px;"><div style="border:2px solid var(--blue); padding:6px 14px; border-radius:4px; color:var(--blue);">Consultant</div></td>
+            <td style="padding:8px; color:#8892a4;">1 — referred-to →</td>
+            <td style="text-align:center; padding:8px;" rowspan="3"><div style="border:2px solid var(--gold); padding:6px 14px; border-radius:4px; color:var(--gold);">Patient</div></td>
+            <td style="padding:8px; color:#8892a4;">1..* referred-by →</td>
+            <td style="text-align:center; padding:8px;"><div style="border:2px solid var(--green); padding:6px 14px; border-radius:4px; color:var(--green);">General practitioner</div></td>
+          </tr>
+          <tr>
+            <td style="text-align:center; padding:8px;"><div style="border:2px solid var(--red); padding:6px 14px; border-radius:4px; color:var(--red);">Condition</div></td>
+            <td style="padding:8px; color:#8892a4; font-size:.7rem;">1..* diagnosed-with 1..*</td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td style="padding:8px; color:#8892a4;">1..* attends 1..* →</td>
+            <td style="text-align:center; padding:8px;"><div style="border:2px solid var(--purple); padding:6px 14px; border-radius:4px; color:var(--purple);">Consultation</div></td>
+          </tr>
+          <tr>
+            <td colspan="3"></td>
+            <td colspan="2" style="padding:8px;">
+              <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                <div style="color:#8892a4; font-size:.75rem;">prescribes 1..* → <span style="border:1px solid var(--teal); padding:4px 8px; border-radius:4px; color:var(--teal);">Medication</span></div>
+                <div style="color:#8892a4; font-size:.75rem;">prescribes 1..* → <span style="border:1px solid var(--orange); padding:4px 8px; border-radius:4px; color:var(--orange);">Treatment</span></div>
+                <div style="color:#8892a4; font-size:.75rem;">runs 1..4 → <span style="border:1px solid #5298e0; padding:4px 8px; border-radius:4px; color:var(--blue);">Hospital Doctor</span></div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📋 THE CONSULTATION CLASS — FULL DETAIL</div>
+      <div style="display:flex; justify-content:center; margin:12px 0;">
+        <div class="uml-class">
+          <div class="uml-name">Consultation</div>
+          <div class="uml-attrs">
+            Doctors<br>Date<br>Time<br>Clinic<br>Reason<br>Medication prescribed<br>Treatment prescribed<br>Voice notes<br>Transcript<br>...
+          </div>
+          <div class="uml-methods">
+            New ( )<br>Prescribe ( )<br>RecordNotes ( )<br>Transcribe ( )<br>...
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:12px; text-align:center; font-size:.9rem; color:#8892a4; direction:ltr;">3 sections: Class Name | Attributes | Methods(Operations)</p>
+    </div>
+  </div>
+</section>
+
+<!-- CH 8: GENERALIZATION -->
+<section id="sec8">
+  <div class="ch-label">Chapter 08</div>
+  <div class="ch-num">08</div>
+  <div class="hook" onclick="revealStory('s8')">
+    <h2>🧬 Generalization — الـ Inheritance في الـ UML</h2>
+    <div class="sub">بدل ما تتعلم كل حاجة عن كل كيان، بنجمّع الخصائص المشتركة في class أعلى. ده الـ Generalization — وهو الـ Inheritance في OOP.</div>
+    <div class="tap">Reveal generalization →</div>
+  </div>
+  <div class="story" id="s8">
+    <div class="scene">
+      <div class="scene-title">🌐 WHAT IS GENERALIZATION?</div>
+      <div class="hbox gold">
+        <p>الـ <span class="en">Generalization</span> أسلوب يومي لإدارة التعقيد — بدل ما تتعلم خصائص كل كيان، بتجمّع الكيانات في <span class="en">general classes</span> وبتتعلم خصائص الـ class. مثلاً: السناجب والفئران هم rodents — فبيرثوا الخصائص المشتركة.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">IN MODELING</div>
+          <p>لو في تغييرات مقترحة، مش محتاج تراجع كل الـ classes — بس الـ class العام اللي بيتأثر</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">IN OOP</div>
+          <p>الـ Generalization بيُنفَّذ بـ <span class="en">class inheritance</span> — الـ lower-level classes بترث الـ attributes والـ operations من الـ superclass</p>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 HOW IT WORKS</div>
+        <p>الـ <strong>higher-level classes</strong> لها attributes وoperations مرتبطة بها. الـ <strong>lower-level classes (subclasses)</strong> بترث كل ده وبتضيف attributes وoperations خاصة بيها.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🏥 DOCTOR GENERALIZATION HIERARCHY</div>
+      <div class="tree">
+        <div class="t0">Doctor (Name, Phone#, Email | register(), de-register())</div>
+        <div class="t1">├─ Hospital doctor (Staff#, Pager#)</div>
+        <div class="t2">│  ├─ Consultant</div>
+        <div class="t2">│  └─ Team doctor</div>
+        <div class="t3">│     ├─ Trainee doctor</div>
+        <div class="t3">│     └─ Qualified doctor</div>
+        <div class="t1">└─ General practitioner (Practice, Address)</div>
+      </div>
+      <div class="reveal">
+        <div class="label">✅ INHERITANCE RULE</div>
+        <p>الـ <span class="en">Hospital doctor</span> بيرث <span class="en">Name + Phone + Email + register() + de-register()</span> من الـ <span class="en">Doctor</span>، وبيضيف ليهم <span class="en">Staff# + Pager#</span> الخاصة بيه.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 9: AGGREGATION + BEHAVIORAL -->
+<section id="sec9">
+  <div class="ch-label">Chapter 09</div>
+  <div class="ch-num">09</div>
+  <div class="hook" onclick="revealStory('s9')">
+    <h2>🧩 Aggregation + Behavioral Models — المجموعات والسلوك</h2>
+    <div class="sub">الـ Aggregation بيقول "ده مكوّن من ده". والـ Behavioral Models بتقول "ده بيتصرف إزاي لما يحصل حدث". الـ Activity Diagram مثال عملي.</div>
+    <div class="tap">Reveal aggregation & behavior →</div>
+  </div>
+  <div class="story" id="s9">
+    <div class="scene">
+      <div class="scene-title">🧩 AGGREGATION MODELS</div>
+      <div class="hbox gold">
+        <p>الـ <span class="en">Aggregation</span> بيعرض إزاي الـ classes اللي هي collections بتكون مكوّنة من classes تانية. شبيه بـ "<span class="en">part-of relationship</span>" في الـ semantic data models.</p>
+      </div>
+      <div class="scene" style="margin-bottom:0;">
+        <div class="scene-title">EXAMPLE — PATIENT RECORD AGGREGATION</div>
+        <p>الـ <span class="en">Patient record</span> مكوّن من:</p>
+        <div style="display:flex; justify-content:center; gap:30px; margin:16px 0; direction:ltr; flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="border:2px solid var(--gold); padding:8px 20px; border-radius:4px; color:var(--gold); font-family:'JetBrains Mono',monospace; font-weight:700;">Patient record</div>
+            <div style="display:flex; gap:40px; margin-top:8px; justify-content:center;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <div style="color:#8892a4; font-family:'JetBrains Mono',monospace; font-size:.75rem;">◇ 1 — 1</div>
+                <div style="border:1px solid var(--blue); padding:6px 14px; border-radius:4px; color:var(--blue); font-family:'JetBrains Mono',monospace; font-size:.8rem;">Patient</div>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <div style="color:#8892a4; font-family:'JetBrains Mono',monospace; font-size:.75rem;">◇ 1 — 1..*</div>
+                <div style="border:1px solid var(--purple); padding:6px 14px; border-radius:4px; color:var(--purple); font-family:'JetBrains Mono',monospace; font-size:.8rem;">Consultation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p>الـ diamond ◇ في الـ UML يمثل الـ aggregation — الـ empty diamond يعني aggregation، الـ filled يعني composition.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">⚡ BEHAVIORAL MODELS</div>
+      <div class="hbox blue">
+        <p>الـ <span class="en">Behavioral Models</span> هي models للسلوك الديناميكي للنظام أثناء التنفيذ — بتعرض ما يحصل أو ما المفروض يحصل لما النظام يستجيب لـ stimulus.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">DATA STIMULUS</div>
+          <p>بيانات تصل وتحتاج معالجة — مثل sensor readings أو form submissions</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">EVENT STIMULUS</div>
+          <p>حدث يحصل ويشغّل الـ processing — ممكن يكون معه بيانات أو لأ</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 DATA-DRIVEN MODELING</div>
+      <p>الـ <span class="en">Data-driven models</span> بتعرض تسلسل الأحداث في processing الـ input data لتوليد output:</p>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">WHAT ARE THEY?</div>
+          <p>أنظمة business كتير هي data-processing systems مدفوعة بالبيانات</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">WHAT THEY SHOW</div>
+          <p>تسلسل الأحداث في معالجة input data وتوليد associated output</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">WHEN USEFUL</div>
+          <p>مفيدة جداً أثناء analysis للـ requirements — بتعرض end-to-end processing</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">💉 INSULIN PUMP ACTIVITY MODEL</div>
+      <p>نموذج عملي من الـ Activity Diagram للـ insulin pump:</p>
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:20px; margin:12px 0; direction:ltr; overflow-x:auto;">
+        <div class="flow" style="flex-wrap:nowrap; gap:6px; min-width:500px;">
+          <div class="fbox" style="border-color:var(--red); color:var(--red);">Blood sugar<br>sensor</div>
+          <div class="farrow">→</div>
+          <div class="fbox">Get sensor<br>value</div>
+          <div class="farrow">→</div>
+          <div class="fbox">Sensor<br>data</div>
+          <div class="farrow">→</div>
+          <div class="fbox">Compute<br>sugar level</div>
+          <div class="farrow">→</div>
+          <div class="fbox">Blood sugar<br>level</div>
+        </div>
+        <div style="text-align:center; color:var(--gold); font-size:1.2rem; margin:6px 0;">↓</div>
+        <div style="text-align:center; margin-bottom:10px;">
+          <div class="fbox" style="display:inline-block; border-color:var(--gold);">Calculate insulin delivery</div>
+        </div>
+        <div style="text-align:center; color:var(--gold); font-size:1.2rem; margin:6px 0;">↓</div>
+        <div class="flow" style="flex-wrap:nowrap; gap:6px; min-width:500px; flex-direction:row-reverse;">
+          <div class="fbox" style="border-color:var(--green); color:var(--green);">Insulin<br>pump</div>
+          <div class="farrow" style="transform:scaleX(-1);">→</div>
+          <div class="fbox">Control<br>pump</div>
+          <div class="farrow" style="transform:scaleX(-1);">→</div>
+          <div class="fbox">Pump control<br>commands</div>
+          <div class="farrow" style="transform:scaleX(-1);">→</div>
+          <div class="fbox">Calculate pump<br>commands</div>
+          <div class="farrow" style="transform:scaleX(-1);">→</div>
+          <div class="fbox">Insulin<br>requirement</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="sec10" id="cheat">
+  <div class="ch-label">Final Boss</div>
+  <div class="ch-num">⚡</div>
+  <h2 style="color:#fff; font-size:2rem; font-weight:900; margin-bottom:8px;">Exam Cheat Sheet</h2>
+  <p style="color:#8892a4; margin-bottom:0;">كل حاجة هتحتاجها في الامتحان</p>
+  <div class="cheat-grid">
+
+    <div class="cheat-card">
+      <h3>SYSTEM MODELING — BASICS</h3>
+      <ul>
+        <li>Process of developing abstract models of a system</li>
+        <li>Each model = different view/perspective</li>
+        <li>Based on UML (Unified Modeling Language)</li>
+        <li>Helps analysts understand functionality + communicate</li>
+        <li>Model-driven: can generate implementation from model</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>UML — WHY & WHAT</h3>
+      <ul>
+        <li>Standardized visual language for model, design, document</li>
+        <li>Shows: system architecture, functional flow, object interactions, DB design, code structure</li>
+        <li>Structural diagrams: Class, Object, Component, Deployment, Package</li>
+        <li>Behavioral diagrams: Use Case, Sequence, Activity, State, Communication</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>4 SYSTEM PERSPECTIVES</h3>
+      <ul>
+        <li>① External — context/environment → Context Model</li>
+        <li>② Interaction — system↔environment, component↔component → Use Case, Sequence</li>
+        <li>③ Structural — organization → Class Diagram</li>
+        <li>④ Behavioral — dynamic behavior → State, Activity Diagram</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>5 UML DIAGRAM TYPES</h3>
+      <ul>
+        <li>Activity — activities in a process</li>
+        <li>Use Case — interactions between system & environment</li>
+        <li>Sequence — interactions between actors & system/components</li>
+        <li>Class — object classes + associations</li>
+        <li>State — how system reacts to events</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>USE OF GRAPHICAL MODELS</h3>
+      <ul>
+        <li>① Facilitate discussion — incomplete/incorrect OK</li>
+        <li>② Document existing system — accurate but not complete</li>
+        <li>③ Generate implementation — must be correct AND complete</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>CONTEXT MODELS</h3>
+      <ul>
+        <li>Establish system boundary — inside vs outside</li>
+        <li>Boundary position has profound effect on requirements</li>
+        <li>Defining boundary = political judgment</li>
+        <li>Context model: shows OTHER systems in environment</li>
+        <li>Process model: shows HOW system is used in business processes</li>
+        <li>UML Activity diagrams → define business process models</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>MENTCARE CONTEXT (6 SYSTEMS)</h3>
+      <ul>
+        <li>Mentcare (center)</li>
+        <li>Patient record system</li>
+        <li>Admissions system</li>
+        <li>Management reporting system</li>
+        <li>Prescription system</li>
+        <li>HC statistics system + Appointments system</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>USE CASE MODELING</h3>
+      <ul>
+        <li>Developed for requirements elicitation → now in UML</li>
+        <li>Each use case = discrete task with external interaction</li>
+        <li>Actors = people OR other systems</li>
+        <li>Represented graphically (overview) or in detailed tabular form</li>
+        <li>Transfer data: Actors = Receptionist + PRS; Stimulus = user command; Response = confirmation PRS updated</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>SEQUENCE DIAGRAMS</h3>
+      <ul>
+        <li>Model interactions between actors and objects within a system</li>
+        <li>Shows sequence of interactions during a use case</li>
+        <li>Objects/actors at top with dotted lifeline vertically</li>
+        <li>Interactions = annotated horizontal arrows</li>
+        <li>View Patient Info: ViewInfo → report → authorize → [OK: info | FAIL: error]</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>CLASS DIAGRAMS</h3>
+      <ul>
+        <li>Show classes in system + associations between them</li>
+        <li>Object class = general definition of one kind of system object</li>
+        <li>Association = link indicating some relationship</li>
+        <li>Class box = 3 sections: Name | Attributes | Methods</li>
+        <li>MHC-PMS: Patient, Consultation, Medication, Treatment, Condition, Doctor types</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>GENERALIZATION</h3>
+      <ul>
+        <li>Everyday technique to manage complexity</li>
+        <li>Group entities into general classes → inherit characteristics</li>
+        <li>In OOP: implemented via class inheritance</li>
+        <li>Higher-level attributes/operations also belong to lower-level</li>
+        <li>Subclasses inherit AND add specific attributes/operations</li>
+        <li>Doctor → Hospital Doctor → Consultant / Team Doctor → Trainee/Qualified</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>AGGREGATION + BEHAVIORAL</h3>
+      <ul>
+        <li>Aggregation: shows how classes (collections) are composed of other classes</li>
+        <li>Similar to "part-of" relationship; diamond ◇ symbol</li>
+        <li>PatientRecord = Patient (1-1) + Consultation (1-1..*)</li>
+        <li>Behavioral: dynamic behavior, stimulus = Data or Event</li>
+        <li>Data-driven: sequence of actions for input→output processing</li>
+        <li>Insulin pump: sensor → compute sugar → calculate insulin → control pump</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- FINALE -->
+<section id="finale">
+  <div style="font-size:3rem; margin-bottom:20px;">🎓</div>
+  <h2>System Modeling — Done!</h2>
+  <p>Lec 8 خلصت. دلوقتي عارف UML من الأول للآخر — Context، Interaction، Structural، Behavioral models. ده الـ chapter الأهم بصرياً.</p>
+  <div style="margin-top:32px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold);">Lec 8 ✓ Complete</div>
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:#8892a4;">بكل حب — ابو 💙</div>
+  </div>
+</section>
+
+<script>
+  const sections = ['sec0','sec1','sec2','sec3','sec4','sec5','sec6','sec7','sec8','sec9','sec10'];
+  const dots = document.querySelectorAll('.dot');
+  const bar = document.getElementById('progress-bar');
+
+  function revealStory(id) {
+    const s = document.getElementById(id);
+    if (!s) return;
+    s.classList.toggle('open');
+    const hook = s.previousElementSibling;
+    if (hook && hook.classList.contains('hook')) {
+      const tap = hook.querySelector('.tap');
+      if (tap) tap.textContent = s.classList.contains('open') ? 'Hide ↑' : 'Reveal →';
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (scrolled / total * 100) + '%';
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      if (top < window.innerHeight / 2 && top > -window.innerHeight / 2) {
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[i]) dots[i].classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>

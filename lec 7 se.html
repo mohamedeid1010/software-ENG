@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lec 7 — Requirements Engineering Process 🔍</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #e8b85a;
+    --gold2: #f5d08a;
+    --bg: #0a0c0e;
+    --card: #111418;
+    --card2: #161b22;
+    --red: #e05252;
+    --green: #52c78a;
+    --blue: #5298e0;
+    --purple: #9b5de5;
+    --teal: #38b2ac;
+    --orange: #e8935a;
+    --border: #2a2f3a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:#dde3ee; font-family:'Tajawal',sans-serif; overflow-x:hidden; }
+
+  #progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--gold); transition:width .3s; z-index:999; }
+
+  #nav { position:fixed; right:18px; top:50%; transform:translateY(-50%); z-index:998; display:flex; flex-direction:column; gap:10px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#2a2f3a; cursor:pointer; transition:.3s; border:2px solid transparent; }
+  .dot.active { background:var(--gold); border-color:var(--gold2); transform:scale(1.4); }
+  .dot:hover { background:var(--gold2); }
+
+  header { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:60px 20px; background:radial-gradient(ellipse at 50% 30%, #1a140a 0%, var(--bg) 70%); position:relative; overflow:hidden; }
+  header::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23e8b85a11'/%3E%3C/svg%3E"); }
+  .lec-badge { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); border:1px solid var(--gold); padding:6px 16px; border-radius:20px; margin-bottom:24px; letter-spacing:3px; }
+  header h1 { font-size:clamp(2.2rem,6vw,4rem); font-weight:900; color:#fff; line-height:1.15; }
+  header h1 span { color:var(--gold); }
+  .hero-sub { color:#8892a4; margin-top:16px; font-size:1.1rem; max-width:520px; line-height:1.7; }
+  .hero-meta { margin-top:32px; display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+  .meta-chip { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:8px 18px; font-size:.85rem; color:var(--gold2); font-family:'JetBrains Mono',monospace; }
+  .scroll-hint { margin-top:48px; color:#444; font-size:.85rem; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+  section { min-height:100vh; padding:80px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ch-label { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  .ch-num { font-size:5rem; font-weight:900; color:#1a1e26; line-height:1; margin-bottom:-10px; font-family:'JetBrains Mono',monospace; }
+
+  .hook { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; max-width:760px; width:100%; cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
+  .hook::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .hook:hover { border-color:var(--gold); transform:translateY(-3px); box-shadow:0 12px 40px rgba(232,184,90,.12); }
+  .hook h2 { font-size:clamp(1.3rem,3vw,1.8rem); color:#fff; font-weight:900; line-height:1.3; margin-bottom:12px; }
+  .hook .sub { color:#8892a4; line-height:1.7; margin-bottom:20px; }
+  .hook .tap { display:inline-block; background:rgba(232,184,90,.12); color:var(--gold); border:1px solid rgba(232,184,90,.3); border-radius:8px; padding:8px 20px; font-size:.9rem; font-family:'JetBrains Mono',monospace; transition:.3s; }
+  .hook:hover .tap { background:rgba(232,184,90,.22); }
+
+  .story { display:none; max-width:760px; width:100%; margin-top:20px; direction:rtl; text-align:right; }
+  .story.open { display:block; animation:fadeUp .4s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .scene { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:28px; margin-bottom:16px; }
+  .scene-title { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); letter-spacing:2px; margin-bottom:14px; }
+  .scene p { line-height:1.9; color:#c8d0de; margin-bottom:10px; font-size:1.05rem; }
+  .scene p:last-child { margin-bottom:0; }
+
+  .en { font-family:'JetBrains Mono',monospace; color:var(--gold2); font-size:.9em; background:rgba(232,184,90,.08); padding:1px 5px; border-radius:4px; direction:ltr; display:inline-block; }
+  .ar { direction:rtl; text-align:right; }
+
+  .dialogue { border-right:3px solid var(--gold); padding:14px 16px 14px 14px; margin:12px 0; background:rgba(232,184,90,.04); border-radius:0 8px 8px 0; }
+  .speaker { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); margin-bottom:4px; }
+
+  .reveal { background:linear-gradient(135deg, #1a1f0a, #0f1a0a); border:1px solid #52c78a44; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .reveal .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--green); letter-spacing:2px; margin-bottom:8px; }
+  .trap { background:linear-gradient(135deg, #1a0a0a, #1a0f0f); border:1px solid #e0525244; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .trap .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--red); letter-spacing:2px; margin-bottom:8px; }
+  .ding { background:linear-gradient(135deg, #0a0f1a, #0a1220); border:1px solid #5298e044; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .ding .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--blue); letter-spacing:2px; margin-bottom:8px; }
+  .warn { background:linear-gradient(135deg, #1a0f00, #1a1200); border:1px solid #e8935a44; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .warn .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--orange); letter-spacing:2px; margin-bottom:8px; }
+
+  .stbl { width:100%; border-collapse:collapse; margin:16px 0; font-size:.9rem; }
+  .stbl th { background:rgba(232,184,90,.12); color:var(--gold); padding:10px 14px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px; border-bottom:2px solid rgba(232,184,90,.2); }
+  .stbl td { padding:10px 14px; border-bottom:1px solid var(--border); color:#c8d0de; vertical-align:top; }
+  .stbl tr:last-child td { border-bottom:none; }
+  .stbl td.ar { direction:rtl; text-align:right; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:16px 0; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:16px 0; }
+  @media(max-width:600px) { .grid2,.grid3,.grid4 { grid-template-columns:1fr; } }
+  .gcard { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; }
+  .gcard .gtitle { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); margin-bottom:8px; letter-spacing:1px; }
+  .gcard p { font-size:.9rem; line-height:1.7; color:#aab4c4; }
+  .gcard.red { border-color:#e0525244; } .gcard.red .gtitle { color:var(--red); }
+  .gcard.green { border-color:#52c78a44; } .gcard.green .gtitle { color:var(--green); }
+  .gcard.blue { border-color:#5298e044; } .gcard.blue .gtitle { color:var(--blue); }
+  .gcard.purple { border-color:#9b5de544; } .gcard.purple .gtitle { color:var(--purple); }
+  .gcard.teal { border-color:#38b2ac44; } .gcard.teal .gtitle { color:var(--teal); }
+  .gcard.orange { border-color:#e8935a44; } .gcard.orange .gtitle { color:var(--orange); }
+
+  /* SPIRAL */
+  .spiral-wrap { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:28px; margin:16px 0; direction:ltr; }
+  .spiral-labels { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  .spiral-item { display:flex; align-items:flex-start; gap:10px; }
+  .spiral-dot { width:10px; height:10px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+  .spiral-item p { font-size:.88rem; line-height:1.6; color:#c8d0de; }
+
+  /* CYCLE */
+  .cycle { display:flex; align-items:center; gap:0; flex-wrap:wrap; justify-content:center; margin:16px 0; direction:ltr; }
+  .cstep { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:14px 18px; text-align:center; min-width:140px; }
+  .cstep .cnum { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--gold); margin-bottom:4px; }
+  .cstep .ctxt { font-size:.85rem; color:#c8d0de; font-weight:700; }
+  .carrow { color:var(--gold); font-size:1.5rem; margin:0 6px; }
+
+  /* FLOW */
+  .flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin:16px 0; direction:ltr; }
+  .fbox { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:.82rem; color:#c8d0de; text-align:center; font-family:'JetBrains Mono',monospace; }
+  .farrow { color:var(--gold); font-size:1.2rem; }
+
+  /* STAKEHOLDER LIST */
+  .stake-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+  .stake-item { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px; }
+  .stake-icon { font-size:1.4rem; flex-shrink:0; }
+  .stake-text .role { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); margin-bottom:4px; }
+  .stake-text p { font-size:.85rem; color:#aab4c4; line-height:1.5; }
+  @media(max-width:580px) { .stake-grid { grid-template-columns:1fr; } }
+
+  /* REVIEW CHECK CARDS */
+  .check-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  @media(max-width:580px) { .check-grid { grid-template-columns:1fr; } }
+  .check-card { border-radius:10px; padding:16px 18px; }
+  .check-card .ck-q { font-size:.82rem; color:#8892a4; margin-top:6px; line-height:1.5; font-style:italic; }
+  .check-card .ck-title { font-family:'JetBrains Mono',monospace; font-size:.85rem; font-weight:700; }
+
+  /* HBOX */
+  .hbox { border-radius:10px; padding:16px 20px; margin:12px 0; }
+  .hbox.gold { background:rgba(232,184,90,.1); border:1px solid rgba(232,184,90,.25); }
+  .hbox.red { background:rgba(224,82,82,.1); border:1px solid rgba(224,82,82,.25); }
+  .hbox.blue { background:rgba(82,152,224,.1); border:1px solid rgba(82,152,224,.25); }
+  .hbox.green { background:rgba(82,199,138,.1); border:1px solid rgba(82,199,138,.25); }
+  .hbox p { line-height:1.8; color:#c8d0de; }
+
+  /* CHEAT SHEET */
+  #cheat { background:linear-gradient(135deg,#0d1117,#111820); }
+  .cheat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; max-width:1000px; width:100%; margin-top:32px; }
+  .cheat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px; }
+  .cheat-card h3 { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); letter-spacing:2px; margin-bottom:14px; }
+  .cheat-card ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .cheat-card ul li { font-size:.85rem; color:#aab4c4; line-height:1.5; }
+  .cheat-card ul li::before { content:'› '; color:var(--gold); }
+
+  #finale { min-height:60vh; text-align:center; background:radial-gradient(ellipse at 50% 60%, #1a140a 0%, var(--bg) 70%); }
+  #finale h2 { font-size:clamp(1.8rem,4vw,2.8rem); color:#fff; font-weight:900; }
+  #finale p { color:#8892a4; margin-top:12px; line-height:1.7; max-width:500px; }
+
+  /* BIG NUMBER */
+  .big-num { font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:900; color:var(--red); line-height:1; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<nav id="nav">
+  <div class="dot active" title="Intro"></div>
+  <div class="dot" title="RE Processes"></div>
+  <div class="dot" title="Elicitation"></div>
+  <div class="dot" title="4-Stage Cycle"></div>
+  <div class="dot" title="Discovery & Interviews"></div>
+  <div class="dot" title="Ethnography"></div>
+  <div class="dot" title="Validation"></div>
+  <div class="dot" title="Reviews"></div>
+  <div class="dot" title="Management"></div>
+  <div class="dot" title="Change Management"></div>
+  <div class="dot" title="Cheat Sheet"></div>
+</nav>
+
+<!-- HEADER -->
+<header id="sec0">
+  <div class="lec-badge">CSE 302 · LECTURE 7</div>
+  <h1>Requirements<br><span>Engineering Process</span></h1>
+  <p class="hero-sub">إزاي تجمع الـ requirements من البشر اللي مش عارفين هم عايزين ايه؟ ده الـ chapter الأصعب — وأكتر حاجة بتسبب فشل المشاريع.</p>
+  <div class="hero-meta">
+    <span class="meta-chip">🔄 RE Spiral Process</span>
+    <span class="meta-chip">🕵️ Ethnography</span>
+    <span class="meta-chip">✅ Validation Checks</span>
+    <span class="meta-chip">📈 Change Management</span>
+  </div>
+  <p class="scroll-hint">scroll to begin ↓</p>
+</header>
+
+<!-- CH 1: RE PROCESSES OVERVIEW -->
+<section id="sec1">
+  <div class="ch-label">Chapter 01</div>
+  <div class="ch-num">01</div>
+  <div class="hook" onclick="revealStory('s1')">
+    <h2>🔄 الـ Requirements Engineering — عملية واحدة أم 4؟</h2>
+    <div class="sub">مش بس كتابة قايمة متطلبات. الـ RE عملية iterative بأربع أنشطة رئيسية بتتشابك مع بعض. ايه هي؟</div>
+    <div class="tap">Reveal the RE process →</div>
+  </div>
+  <div class="story" id="s1">
+    <div class="scene">
+      <div class="scene-title">🔱 THE 4 GENERIC RE ACTIVITIES</div>
+      <div class="grid4">
+        <div class="gcard blue">
+          <div class="gtitle">① ELICITATION</div>
+          <p>جمع المعلومات من الـ stakeholders وتحديد المتطلبات</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">② ANALYSIS</div>
+          <p>تحليل المتطلبات وفهم التناقضات والأولويات</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">③ VALIDATION</div>
+          <p>التحقق إن المتطلبات بتعبر فعلاً عما يريده العميل</p>
+        </div>
+        <div class="gcard orange">
+          <div class="gtitle">④ MANAGEMENT</div>
+          <p>إدارة التغييرات في المتطلبات طول دورة الحياة</p>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 KEY INSIGHT</div>
+        <p>في الواقع، الـ RE مش خطوات متتالية — هي <span class="en">iterative</span> ومتشابكة. بتعمل elicitation وفي نفس الوقت بتعمل analysis وvalidation.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🌀 THE SPIRAL VIEW OF RE</div>
+      <p>الـ RE process بتتمثل كـ spiral — كل دورة بتضيف مستوى تفصيل أعمق:</p>
+      <div class="spiral-wrap">
+        <div class="flow" style="flex-wrap:wrap; gap:8px;">
+          <div class="fbox" style="background:rgba(232,184,90,.1); border-color:rgba(232,184,90,.3);">Start</div>
+          <div class="farrow">→</div>
+          <div class="fbox" style="background:rgba(82,152,224,.08);">Feasibility Study</div>
+          <div class="farrow">→</div>
+          <div class="fbox" style="background:rgba(82,199,138,.08);">Prototyping</div>
+          <div class="farrow">→</div>
+          <div class="fbox" style="background:rgba(155,93,229,.08);">Reviews</div>
+          <div class="farrow">→</div>
+          <div class="fbox" style="background:rgba(232,147,90,.08);">System Requirements Document</div>
+        </div>
+        <div style="margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="gcard blue">
+            <div class="gtitle">LEFT SIDE — ELICITATION</div>
+            <p>System Req. Elicitation<br>User Requirements Elicitation</p>
+          </div>
+          <div class="gcard purple">
+            <div class="gtitle">RIGHT SIDE — VALIDATION</div>
+            <p>Requirements Validation بعد كل دورة من الـ spiral</p>
+          </div>
+        </div>
+        <div style="margin-top:12px;" class="gcard">
+          <div class="gtitle">INSIDE CIRCLES — FROM OUTER TO INNER</div>
+          <p style="line-height:2;">System Requirements Spec & Modeling → User Requirements Specification → Business Requirements Specification</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 2: ELICITATION & ANALYSIS -->
+<section id="sec2">
+  <div class="ch-label">Chapter 02</div>
+  <div class="ch-num">02</div>
+  <div class="hook" onclick="revealStory('s2')">
+    <h2>🕵️ "Requirements Elicitation" — لماذا الأصعب؟</h2>
+    <div class="sub">العميل مش دايماً عارف هو عايز ايه. والـ stakeholders مختلفين. كيف يتعامل الـ software engineer مع هذا الفوضى؟</div>
+    <div class="tap">Reveal the elicitation challenge →</div>
+  </div>
+  <div class="story" id="s2">
+    <div class="scene">
+      <div class="scene-title">🔍 WHAT IS REQUIREMENTS ELICITATION?</div>
+      <p>الـ <span class="en">Requirements Elicitation</span> (أو <span class="en">Requirements Discovery</span>) هي:</p>
+      <div class="hbox blue">
+        <p>عملية جمع المعلومات عن النظام المطلوب والنظام القائم وتقطير الـ user وsystem requirements من هذه المعلومات.</p>
+      </div>
+      <p style="margin-top:12px;">بتشمل فريق تقني بيشتغل مع الـ <span class="en">customers</span> لاكتشاف:</p>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">APPLICATION DOMAIN</div>
+          <p>طبيعة مجال عمل النظام — طبي، مالي، إلخ</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">SERVICES REQUIRED</div>
+          <p>الخدمات المطلوبة من النظام بالتفصيل</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">OPERATIONAL CONSTRAINTS</div>
+          <p>القيود على تشغيل النظام — أداء، أمان، إلخ</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">👥 STAKEHOLDERS — مين هم؟</div>
+      <p>الـ <span class="en">stakeholders</span> هم كل من له علاقة أو مصلحة في النظام:</p>
+      <div class="stake-grid">
+        <div class="stake-item">
+          <div class="stake-icon">🏥</div>
+          <div class="stake-text">
+            <div class="role">PATIENTS</div>
+            <p>بياناتهم بتتسجل في النظام</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">👨‍⚕️</div>
+          <div class="stake-text">
+            <div class="role">DOCTORS</div>
+            <p>مسؤولون عن تقييم وعلاج المرضى</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">👩‍⚕️</div>
+          <div class="stake-text">
+            <div class="role">NURSES</div>
+            <p>ينسقون الاستشارات ويديرون بعض العلاجات</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">📋</div>
+          <div class="stake-text">
+            <div class="role">MEDICAL RECEPTIONISTS</div>
+            <p>يديرون مواعيد المرضى</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">💻</div>
+          <div class="stake-text">
+            <div class="role">IT STAFF</div>
+            <p>مسؤولون عن تنصيب وصيانة النظام</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">⚖️</div>
+          <div class="stake-text">
+            <div class="role">ETHICS MANAGER</div>
+            <p>يتأكد إن النظام يلتزم بالمبادئ الأخلاقية لرعاية المرضى</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">📊</div>
+          <div class="stake-text">
+            <div class="role">HEALTH CARE MANAGERS</div>
+            <p>يحصلون على معلومات الإدارة من النظام</p>
+          </div>
+        </div>
+        <div class="stake-item">
+          <div class="stake-icon">📁</div>
+          <div class="stake-text">
+            <div class="role">MEDICAL RECORDS STAFF</div>
+            <p>مسؤولون عن حفظ السجلات الطبية</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">💥 5 PROBLEMS OF REQUIREMENTS ELICITATION</div>
+      <div style="display:flex; flex-direction:column; gap:10px; direction:ltr; text-align:left;">
+        <div class="hbox red">
+          <p><strong style="color:var(--red);">① Stakeholders don't know what they really want</strong><br>
+          <span style="color:#8892a4; font-size:.9rem;">الناس مش دايماً عارفة هي محتاجة ايه حتى لما تشوفه</span></p>
+        </div>
+        <div class="hbox red">
+          <p><strong style="color:var(--red);">② Stakeholders express requirements in their own terms</strong><br>
+          <span style="color:#8892a4; font-size:.9rem;">كل واحد بيتكلم بلغته — الدكتور بيتكلم طب، المحاسب بيتكلم مالية</span></p>
+        </div>
+        <div class="hbox red">
+          <p><strong style="color:var(--red);">③ Different stakeholders may have conflicting requirements</strong><br>
+          <span style="color:#8892a4; font-size:.9rem;">الـ nurse عايزة سرعة، الـ IT manager عايز أمان — ممكن يتعارضوا</span></p>
+        </div>
+        <div class="hbox red">
+          <p><strong style="color:var(--red);">④ Organizational and political factors may influence</strong><br>
+          <span style="color:#8892a4; font-size:.9rem;">السياسة الداخلية في الشركة ممكن تأثر على المتطلبات</span></p>
+        </div>
+        <div class="hbox red">
+          <p><strong style="color:var(--red);">⑤ Requirements change during the analysis process</strong><br>
+          <span style="color:#8892a4; font-size:.9rem;">لما الناس تفهم أكتر، بتعرف إنها عايزة حاجة تانية</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 3: 4-STAGE CYCLE -->
+<section id="sec3">
+  <div class="ch-label">Chapter 03</div>
+  <div class="ch-num">03</div>
+  <div class="hook" onclick="revealStory('s3')">
+    <h2>🔁 The 4-Stage Elicitation Cycle — إزاي تجمع الـ requirements؟</h2>
+    <div class="sub">مش بمجرد إنك تسأل الناس. فيه 4 مراحل بتتكرر في cycle حتى توصل للـ specification الكاملة.</div>
+    <div class="tap">Reveal the 4 stages →</div>
+  </div>
+  <div class="story" id="s3">
+    <div class="scene">
+      <div class="scene-title">🔄 THE CYCLE</div>
+      <div class="cycle">
+        <div class="cstep">
+          <div class="cnum">STAGE 1</div>
+          <div class="ctxt">Requirements Discovery</div>
+        </div>
+        <div class="carrow">→</div>
+        <div class="cstep">
+          <div class="cnum">STAGE 2</div>
+          <div class="ctxt">Classification & Organization</div>
+        </div>
+        <div class="carrow">→</div>
+        <div class="cstep">
+          <div class="cnum">STAGE 3</div>
+          <div class="ctxt">Prioritization & Negotiation</div>
+        </div>
+        <div class="carrow">→</div>
+        <div class="cstep">
+          <div class="cnum">STAGE 4</div>
+          <div class="ctxt">Requirements Specification</div>
+        </div>
+        <div class="carrow" style="transform:rotate(180deg); display:block; text-align:center; width:100%;">↑ ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ←</div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">📋 WHAT HAPPENS IN EACH STAGE?</div>
+      <table class="stbl">
+        <tr>
+          <th>Stage</th>
+          <th class="ar">ايه اللي بيحصل؟</th>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--blue);">Requirements Discovery</strong></td>
+          <td class="ar">التفاعل مع الـ stakeholders لاكتشاف متطلباتهم. الـ domain requirements بتتكتشف هنا كمان.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green);">Classification & Organisation</strong></td>
+          <td class="ar">تجميع المتطلبات المترابطة في clusters متسقة ومنطقية.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--purple);">Prioritization & Negotiation</strong></td>
+          <td class="ar">ترتيب المتطلبات حسب الأولوية وحل التعارضات والتناقضات بين الـ stakeholders.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--orange);">Requirements Specification</strong></td>
+          <td class="ar">توثيق المتطلبات وإدخالها كـ input للدورة القادمة من الـ spiral.</td>
+        </tr>
+      </table>
+      <div class="reveal">
+        <div class="label">✅ KEY POINT</div>
+        <p>المراحل دي بتتكرر — الـ Specification مش نهاية المطاف، هي input للدورة القادمة من الـ spiral process.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 4: DISCOVERY & INTERVIEWS -->
+<section id="sec4">
+  <div class="ch-label">Chapter 04</div>
+  <div class="ch-num">04</div>
+  <div class="hook" onclick="revealStory('s4')">
+    <h2>🎤 Interviews — الأداة الأولى للـ Requirements Discovery</h2>
+    <div class="sub">إزاي تسأل صح؟ الفرق بين Closed وOpen interviews، ومتى الـ interviews مش كافية؟</div>
+    <div class="tap">Reveal the interview guide →</div>
+  </div>
+  <div class="story" id="s4">
+    <div class="scene">
+      <div class="scene-title">🔍 REQUIREMENTS DISCOVERY — ما هو؟</div>
+      <p>الـ <span class="en">Requirements Discovery</span> هي عملية جمع المعلومات عن النظام المطلوب والنظام القائم:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">WHAT YOU GATHER</div>
+          <p>معلومات عن النظام المطلوب والنظام الحالي، ثم تقطير الـ user وsystem requirements منها</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">WHO YOU TALK TO</div>
+          <p>الـ stakeholders من المديرين للـ external regulators — كل من له علاقة بالنظام</p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🎤 INTERVIEWING — TYPES & TIPS</div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">CLOSED INTERVIEWS</div>
+          <p>أسئلة محددة مسبقاً. الـ stakeholder بيجاوب على أسئلة معينة. مفيد لجمع بيانات محددة.</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">OPEN INTERVIEWS</div>
+          <p>استكشاف مفتوح بدون أسئلة محددة مسبقاً. الـ stakeholder بيتكلم بحرية. مفيد للفهم العام.</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="label">✅ EFFECTIVE INTERVIEWING — 3 TIPS</div>
+        <p style="line-height:2;">
+          ① <strong>Open-minded</strong> — تجنب الأفكار المسبقة عن الـ requirements واستعد تسمع<br>
+          ② <strong>Springboard questions</strong> — أسئلة تفتح نقاش بدلاً من أسئلة نعم/لأ<br>
+          ③ <strong>Prototype system</strong> — اشتغل مع الـ stakeholder على prototype عشان تحفز النقاش
+        </p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">⚠️ INTERVIEWS IN PRACTICE — LIMITATIONS</div>
+      <div class="grid2">
+        <div class="gcard green">
+          <div class="gtitle">INTERVIEWS ARE GOOD FOR…</div>
+          <p>فهم عام لايه الـ stakeholders بيعملوا وإزاي ممكن يتفاعلوا مع النظام</p>
+        </div>
+        <div class="gcard red">
+          <div class="gtitle">INTERVIEWS ARE NOT GOOD FOR…</div>
+          <p>فهم الـ <span class="en">domain requirements</span> — المهندسين مش بيفهموا المصطلحات المتخصصة، والـ domain knowledge التلقائي صعب التعبير عنه</p>
+        </div>
+      </div>
+      <div class="trap">
+        <div class="label">⚠️ THE TACIT KNOWLEDGE TRAP</div>
+        <p>الخبير في أي مجال بيعمل حاجات تلقائياً بدون ما يفكر فيها — مش هيذكرها في الـ interview لأنه مش واعي بيها. ده اللي بيخلي الـ ethnography مهمة جداً.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 MHC-PMS USE CASES (UML SUMMARY)</div>
+      <table class="stbl">
+        <tr><th>Actor</th><th>Use Cases</th></tr>
+        <tr>
+          <td>Medical Receptionist</td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">Register Patient, View Personal Info</td>
+        </tr>
+        <tr>
+          <td>Nurse</td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">View Record, Edit Record, Setup Consultation</td>
+        </tr>
+        <tr>
+          <td>Doctor</td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">View Record, Edit Record, Setup Consultation, Generate Report</td>
+        </tr>
+        <tr>
+          <td>Manager</td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">Export Statistics, Generate Report</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CH 5: ETHNOGRAPHY -->
+<section id="sec5">
+  <div class="ch-label">Chapter 05</div>
+  <div class="ch-num">05</div>
+  <div class="hook" onclick="revealStory('s5')">
+    <h2>👁 Ethnography — "اراقب ولا تسأل"</h2>
+    <div class="sub">الناس مش بتعمل اللي بتقول إنها بتعمله. أحياناً الطريقة الوحيدة تعرف الـ requirements الحقيقية هي إنك تقعد وتراقب.</div>
+    <div class="tap">Reveal ethnography →</div>
+  </div>
+  <div class="story" id="s5">
+    <div class="scene">
+      <div class="scene-title">🔬 WHAT IS ETHNOGRAPHY?</div>
+      <p>الـ <span class="en">Ethnography</span> تقنية مستعارة من العلوم الاجتماعية:</p>
+      <div class="hbox gold">
+        <p>عالم اجتماعي بيقضي وقت طويل يراقب ويحلل إزاي الناس بتشتغل فعلاً — مش إزاي بيقولوا إنهم بيشتغلوا.</p>
+      </div>
+      <div class="grid2">
+        <div class="gcard green">
+          <div class="gtitle">KEY ADVANTAGE</div>
+          <p>الناس مش مضطرة تشرح شغلها — الـ observer بيشوف بنفسه. الـ social وorganisational factors بتتكشف تلقائياً.</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">KEY FINDING</div>
+          <p>الدراسات الـ ethnographic بتثبت إن الشغل دايماً أعقد وأغنى مما توحيه الـ simple system models.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📐 SCOPE OF ETHNOGRAPHY — ايه بتكشفه؟</div>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">HOW PEOPLE ACTUALLY WORK</div>
+          <p>Requirements مستخرجة من ممارسات العمل الحقيقية — مش من الـ process definitions والـ manuals.</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">COOPERATION AWARENESS</div>
+          <p>Requirements مستخرجة من التعاون بين الناس وعلمهم بأنشطة بعض — الـ collaborative tasks.</p>
+        </div>
+      </div>
+      <div class="trap">
+        <div class="label">⚠️ LIMITATION</div>
+        <p>الـ Ethnography ممتازة لفهم الـ <strong>existing processes</strong> — لكنها <strong>لا تستطيع</strong> تحديد features جديدة يجب إضافتها للنظام. هي tool للفهم مش للابتكار.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🎯 FOCUSED ETHNOGRAPHY — الإصدار المحسّن</div>
+      <p>طُوِّرت في مشروع دراسة <span class="en">air traffic control</span>. بتدمج الـ ethnography مع الـ prototyping:</p>
+      <div class="flow" style="flex-direction:column; align-items:flex-start; gap:10px; direction:ltr; text-align:left;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div class="fbox">Ethnographic Analysis</div>
+          <div class="farrow">→</div>
+          <div class="fbox">Debriefing Meetings</div>
+          <div class="farrow">→</div>
+          <div class="fbox" style="border-color:var(--gold); color:var(--gold);">Focused Ethnography</div>
+          <div class="farrow">→</div>
+          <div class="fbox" style="border-color:var(--green); color:var(--green);">Prototype Evaluation</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:6px;">
+          <div class="fbox">Generic System Development</div>
+          <div class="farrow">→</div>
+          <div class="fbox">System Prototyping</div>
+          <div class="farrow" style="color:var(--green);">↗</div>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 HOW IT WORKS</div>
+        <p>الـ <span class="en">prototype development</span> بيكشف أسئلة مجاوبتهاش → دي الأسئلة دي بتوجّه الـ ethnographic analysis في المرحلة الجاية.</p>
+      </div>
+      <div class="trap">
+        <div class="label">⚠️ PROBLEM WITH ETHNOGRAPHY</div>
+        <p>بتدرس الـ <span class="en">existing practices</span> اللي ممكن يكون ليها أساس تاريخي مش relevant للنظام الجديد. الواقع القديم ممكن يعيق التصميم الجديد.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 6: REQUIREMENTS VALIDATION -->
+<section id="sec6">
+  <div class="ch-label">Chapter 06</div>
+  <div class="ch-num">06</div>
+  <div class="hook" onclick="revealStory('s6')">
+    <h2>💸 غلطة في الـ Requirements تساوي 100× تكلفة غلطة في الـ Code!</h2>
+    <div class="sub">الـ Requirements Validation مش optional. إزاي تتأكد إن المتطلبات صح قبل ما تبني أي حاجة؟</div>
+    <div class="tap">Reveal the validation truth →</div>
+  </div>
+  <div class="story" id="s6">
+    <div class="scene">
+      <div class="scene-title">💰 WHY VALIDATION IS CRITICAL</div>
+      <div class="hbox gold" style="text-align:center; direction:ltr;">
+        <p><span class="big-num">100×</span></p>
+        <p style="margin-top:8px; color:var(--red); font-weight:700;">تكلفة إصلاح خطأ في الـ requirements بعد الـ delivery</p>
+        <p style="margin-top:4px; color:#8892a4; font-size:.9rem;">مقارنة بإصلاح implementation error في نفس الوقت</p>
+      </div>
+      <p style="margin-top:12px;">الـ <span class="en">Requirements Validation</span> بتثبت إن المتطلبات بتعرّف النظام اللي العميل <em>فعلاً</em> يريده — مش النظام اللي المهندس <em>فهم</em> إن العميل يريده.</p>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">✅ 5 REQUIREMENTS CHECKING CRITERIA</div>
+      <div class="check-grid">
+        <div class="check-card" style="background:rgba(82,152,224,.08); border:1px solid rgba(82,152,224,.2);">
+          <div class="ck-title" style="color:var(--blue);">① Validity</div>
+          <div class="ck-q">Does the system provide the functions which best support the customer's needs?</div>
+        </div>
+        <div class="check-card" style="background:rgba(82,199,138,.08); border:1px solid rgba(82,199,138,.2);">
+          <div class="ck-title" style="color:var(--green);">② Consistency</div>
+          <div class="ck-q">Are there any requirements conflicts?</div>
+        </div>
+        <div class="check-card" style="background:rgba(232,184,90,.08); border:1px solid rgba(232,184,90,.2);">
+          <div class="ck-title" style="color:var(--gold);">③ Completeness</div>
+          <div class="ck-q">Are all functions required by the customer included?</div>
+        </div>
+        <div class="check-card" style="background:rgba(155,93,229,.08); border:1px solid rgba(155,93,229,.2);">
+          <div class="ck-title" style="color:var(--purple);">④ Realism</div>
+          <div class="ck-q">Can the requirements be implemented given available budget and technology?</div>
+        </div>
+        <div class="check-card" style="background:rgba(232,147,90,.08); border:1px solid rgba(232,147,90,.2); grid-column:1/-1;">
+          <div class="ck-title" style="color:var(--orange);">⑤ Verifiability</div>
+          <div class="ck-q">Can the requirements be checked? Can we write tests that prove the requirement is satisfied?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔧 3 VALIDATION TECHNIQUES</div>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">① REQUIREMENTS REVIEWS</div>
+          <p>تحليل يدوي منهجي للمتطلبات من فريق متعدد — clients وcontractors معاً</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">② PROTOTYPING</div>
+          <p>استخدام executable model للنظام عشان يتحقق من المتطلبات — الـ customer يشوف ويرد</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">③ TEST-CASE GENERATION</div>
+          <p>تطوير test cases للمتطلبات — لو مش قادر تكتب test، الـ requirement غامض</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 7: REQUIREMENTS REVIEWS -->
+<section id="sec7">
+  <div class="ch-label">Chapter 07</div>
+  <div class="ch-num">07</div>
+  <div class="hook" onclick="revealStory('s7')">
+    <h2>📋 Requirements Reviews — 4 Checks + 5 Checks؟ ايه الفرق؟</h2>
+    <div class="sub">الـ slide 24 بيقول 4 review checks، الـ slide 25 بيضيف 5. كلهم مهمين للامتحان.</div>
+    <div class="tap">Reveal all review checks →</div>
+  </div>
+  <div class="story" id="s7">
+    <div class="scene">
+      <div class="scene-title">📅 WHEN & WHO — REQUIREMENTS REVIEWS</div>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">WHEN?</div>
+          <p>أثناء صياغة الـ requirements — مش بعد الانتهاء منها</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">WHO?</div>
+          <p>Both <span class="en">client</span> AND <span class="en">contractor</span> staff — الطرفين لازم يكونوا موجودين</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">FORMAL vs INFORMAL?</div>
+          <p>ممكن formal (وثائق رسمية) أو informal — التواصل الكويس بيحل المشاكل بدري</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔍 SLIDE 24 — 4 REVIEW CHECKS</div>
+      <div class="check-grid">
+        <div class="check-card" style="background:rgba(82,152,224,.08); border:1px solid rgba(82,152,224,.2);">
+          <div class="ck-title" style="color:var(--blue);">① Verifiability</div>
+          <div class="ck-q">Is the requirement realistically testable?</div>
+        </div>
+        <div class="check-card" style="background:rgba(82,199,138,.08); border:1px solid rgba(82,199,138,.2);">
+          <div class="ck-title" style="color:var(--green);">② Comprehensibility</div>
+          <div class="ck-q">Is the requirement properly understood by reviewers?</div>
+        </div>
+        <div class="check-card" style="background:rgba(232,184,90,.08); border:1px solid rgba(232,184,90,.2);">
+          <div class="ck-title" style="color:var(--gold);">③ Traceability</div>
+          <div class="ck-q">Is the origin of the requirement clearly stated?</div>
+        </div>
+        <div class="check-card" style="background:rgba(155,93,229,.08); border:1px solid rgba(155,93,229,.2);">
+          <div class="ck-title" style="color:var(--purple);">④ Adaptability</div>
+          <div class="ck-q">Can the requirement be changed without a large impact on other requirements?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📄 SLIDE 25 — 5 DETAILED CHECKS (Exam Detail)</div>
+      <table class="stbl">
+        <tr><th>#</th><th>Check</th><th class="ar">التفصيل</th></tr>
+        <tr>
+          <td>1</td>
+          <td><strong style="color:var(--blue);">Validity checks</strong></td>
+          <td class="ar">يمكن المستخدم يحتاج functions إضافية — التحليل يكشف متطلبات زيادة أو مختلفة</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong style="color:var(--green);">Consistency checks</strong></td>
+          <td class="ar">المتطلبات في الوثيقة ما تتعارضش — مفيش قيود متناقضة أو أوصاف متضاربة</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong style="color:var(--gold);">Completeness checks</strong></td>
+          <td class="ar">الوثيقة لازم تشمل كل الوظائف والقيود المطلوبة من العميل</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong style="color:var(--purple);">Realism checks</strong></td>
+          <td class="ar">باستخدام المعرفة بالتقنية الموجودة — التأكد إن المتطلبات قابلة للتنفيذ ضمن budget وجدول</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong style="color:var(--orange);">Verifiability</strong></td>
+          <td class="ar">تقليل نزاعات العميل والـ contractor — المتطلبات تكون مكتوبة بشكل يمكن كتابة tests عليها</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CH 8: REQUIREMENTS MANAGEMENT -->
+<section id="sec8">
+  <div class="ch-label">Chapter 08</div>
+  <div class="ch-num">08</div>
+  <div class="hook" onclick="revealStory('s8')">
+    <h2>📈 الـ Requirements بتتغير — دايماً!</h2>
+    <div class="sub">بعد ما تبني النظام، الـ requirements بتتغير. بيئة العمل بتتغير، القوانين بتتغير، الناس بتتغير. ده مش فشل — ده واقع.</div>
+    <div class="tap">Reveal requirements evolution →</div>
+  </div>
+  <div class="story" id="s8">
+    <div class="scene">
+      <div class="scene-title">⚙️ REQUIREMENTS MANAGEMENT — ما هو؟</div>
+      <div class="hbox gold">
+        <p>الـ <span class="en">Requirements Management</span> هو عملية إدارة الـ requirements المتغيرة أثناء عملية الـ RE وتطوير النظام.</p>
+      </div>
+      <p style="margin-top:14px;">ليه ضروري؟</p>
+      <div class="grid3">
+        <div class="gcard red">
+          <div class="gtitle">NEW REQUIREMENTS EMERGE</div>
+          <p>متطلبات جديدة بتظهر أثناء التطوير وبعد ما النظام يبدأ الاستخدام الفعلي</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">TRACK INDIVIDUAL REQS</div>
+          <p>لازم تتابع كل requirement منفصلة وتحافظ على الروابط بين الـ dependent requirements</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">FORMAL PROCESS</div>
+          <p>لازم تحدد عملية رسمية لاقتراحات التغيير وربطها بالـ system requirements</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🔄 WHY REQUIREMENTS CHANGE — السببين الرئيسيين</div>
+      <div class="grid2">
+        <div class="gcard orange">
+          <div class="gtitle">TECHNICAL & BUSINESS ENVIRONMENT</div>
+          <p>بعد التنصيب، البيئة دايماً بتتغير:<br>
+          • Hardware جديد محتاج integration جديد<br>
+          • Business priorities بتتغير<br>
+          • قوانين وتشريعات جديدة بتفرض متطلبات</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">DIFFERENT STAKEHOLDER GROUPS</div>
+          <p>الـ payers ≠ الـ users دايماً:<br>
+          • System customers بيفرضوا قيود budget وorganisational<br>
+          • بعد الـ delivery، features جديدة ممكن تكون مطلوبة للـ user support</p>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 LARGE SYSTEMS PROBLEM</div>
+        <p>الأنظمة الكبيرة عندها <span class="en">diverse user community</span> بمتطلبات وأولويات متعارضة — الـ final requirements هي دايماً <strong>compromise</strong>. مع الوقت، توازن الدعم للمستخدمين المختلفين لازم يتغير.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 REQUIREMENTS EVOLUTION DIAGRAM</div>
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin:12px 0; direction:ltr;">
+        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center;">
+          <div style="text-align:center;">
+            <div class="fbox" style="background:rgba(82,152,224,.1); border-color:var(--blue); margin-bottom:8px;">Initial Understanding<br>of Problem</div>
+            <div class="farrow" style="display:block; text-align:center;">↓</div>
+            <div class="fbox" style="background:rgba(82,152,224,.1); border-color:var(--blue);">Initial Requirements</div>
+          </div>
+          <div style="text-align:center; font-size:1.5rem; color:var(--gold);">→<br><br>→</div>
+          <div style="text-align:center;">
+            <div class="fbox" style="background:rgba(82,199,138,.1); border-color:var(--green); margin-bottom:8px;">Changed Understanding<br>of Problem</div>
+            <div class="farrow" style="display:block; text-align:center;">↓</div>
+            <div class="fbox" style="background:rgba(82,199,138,.1); border-color:var(--green);">Changed Requirements</div>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:16px; font-family:'JetBrains Mono',monospace; color:#8892a4; font-size:.8rem;">————————————————————————→ Time</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 9: CHANGE MANAGEMENT -->
+<section id="sec9">
+  <div class="ch-label">Chapter 09</div>
+  <div class="ch-num">09</div>
+  <div class="hook" onclick="revealStory('s9')">
+    <h2>🔧 Requirements Change Management — العملية الرسمية</h2>
+    <div class="sub">لما أي requirement يتغير، مش بس تعدّله. فيه process رسمية من 4 عناصر. ايه هي؟</div>
+    <div class="tap">Reveal the change process →</div>
+  </div>
+  <div class="story" id="s9">
+    <div class="scene">
+      <div class="scene-title">🔄 THE CHANGE MANAGEMENT PROCESS</div>
+      <div class="flow" style="flex-wrap:wrap;">
+        <div class="fbox" style="background:rgba(224,82,82,.1); border-color:rgba(224,82,82,.3);">Identified<br>Problem</div>
+        <div class="farrow">→</div>
+        <div class="fbox" style="background:rgba(232,184,90,.1); border-color:rgba(232,184,90,.3);">Problem Analysis<br>& Change Spec</div>
+        <div class="farrow">→</div>
+        <div class="fbox" style="background:rgba(82,152,224,.1); border-color:rgba(82,152,224,.3);">Change Analysis<br>& Costing</div>
+        <div class="farrow">→</div>
+        <div class="fbox" style="background:rgba(82,199,138,.1); border-color:rgba(82,199,138,.3);">Change<br>Implementation</div>
+        <div class="farrow">→</div>
+        <div class="fbox" style="background:rgba(155,93,229,.1); border-color:rgba(155,93,229,.3);">Revised<br>Requirements</div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📋 4 ELEMENTS OF REQUIREMENTS CHANGE MANAGEMENT</div>
+      <table class="stbl">
+        <tr><th>#</th><th>Element</th><th class="ar">الشرح</th></tr>
+        <tr>
+          <td>1</td>
+          <td><strong style="color:var(--blue);">Requirements Identification</strong></td>
+          <td class="ar">كل requirement لازم يكون ليه ID فريد — عشان يتعمله cross-reference مع requirements تانية وفي الـ traceability assessments</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong style="color:var(--green);">Change Management Process</strong></td>
+          <td class="ar">مجموعة الأنشطة اللي بتقيّم الـ impact والـ cost للتغييرات — هي المقصود بـ "عملية إدارة التغيير"</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong style="color:var(--gold);">Traceability Policies</strong></td>
+          <td class="ar">بتحدد العلاقات بين كل requirement والـ system design المقابل له. الـ traceability policy بتحدد كيفية الحفاظ على هذه السجلات.</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong style="color:var(--purple);">Tool Support</strong></td>
+          <td class="ar">إدارة الـ requirements بتتضمن معالجة كميات ضخمة من المعلومات. الـ tools بتتراوح من specialist requirements management systems لـ spreadsheets وsimple databases</td>
+        </tr>
+      </table>
+      <div class="reveal">
+        <div class="label">✅ KEY TAKEAWAY</div>
+        <p>بدون <span class="en">Requirements Change Management</span> رسمي، أي تغيير بيسيب chaos — مش بتعرف ايه تغير، ليه، وايه الـ impact على باقي النظام. الـ formal process هو اللي بيخلي التغيير controlled مش فوضى.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="sec10" id="cheat">
+  <div class="ch-label">Final Boss</div>
+  <div class="ch-num">⚡</div>
+  <h2 style="color:#fff; font-size:2rem; font-weight:900; margin-bottom:8px;">Exam Cheat Sheet</h2>
+  <p style="color:#8892a4; margin-bottom:0;">كل حاجة هتحتاجها في الامتحان في مكان واحد</p>
+  <div class="cheat-grid">
+
+    <div class="cheat-card">
+      <h3>4 RE ACTIVITIES</h3>
+      <ul>
+        <li>Requirements Elicitation</li>
+        <li>Requirements Analysis</li>
+        <li>Requirements Validation</li>
+        <li>Requirements Management</li>
+        <li>In practice: iterative & interleaved</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>4-STAGE ELICITATION CYCLE</h3>
+      <ul>
+        <li>① Discovery — interact with stakeholders, find domain reqs</li>
+        <li>② Classification & Organisation — group into coherent clusters</li>
+        <li>③ Prioritization & Negotiation — resolve conflicts</li>
+        <li>④ Specification — document & input to next spiral round</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>5 ELICITATION PROBLEMS</h3>
+      <ul>
+        <li>Stakeholders don't know what they want</li>
+        <li>Express requirements in own terms</li>
+        <li>Conflicting requirements between stakeholders</li>
+        <li>Organisational & political factors</li>
+        <li>Requirements change during analysis</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>INTERVIEWING</h3>
+      <ul>
+        <li>Closed — pre-determined questions</li>
+        <li>Open — exploring issues with stakeholders</li>
+        <li>Good for: overall understanding</li>
+        <li>NOT good for: domain requirements (tacit knowledge)</li>
+        <li>Effective: open-minded + springboard questions + prototype</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>ETHNOGRAPHY</h3>
+      <ul>
+        <li>Social scientist observes actual work — not explained work</li>
+        <li>Reveals social & organisational factors</li>
+        <li>Work is richer than simple models suggest</li>
+        <li>Scope: actual practices + cooperation awareness</li>
+        <li>CANNOT identify new features to add</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>FOCUSED ETHNOGRAPHY</h3>
+      <ul>
+        <li>Developed in air traffic control project</li>
+        <li>Combines ethnography with prototyping</li>
+        <li>Prototype → unanswered questions → focused ethnographic analysis</li>
+        <li>Problem: may study outdated historical practices</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>VALIDATION — THE 100× RULE</h3>
+      <ul>
+        <li>Fixing req error after delivery = 100× implementation fix cost</li>
+        <li>5 checks: Validity, Consistency, Completeness, Realism, Verifiability</li>
+        <li>3 techniques: Requirements Reviews, Prototyping, Test-case generation</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>REVIEW CHECKS (SLIDE 24 — 4)</h3>
+      <ul>
+        <li>Verifiability — realistically testable?</li>
+        <li>Comprehensibility — properly understood?</li>
+        <li>Traceability — origin clearly stated?</li>
+        <li>Adaptability — changeable without large impact?</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>REVIEW CHECKS (SLIDE 25 — 5)</h3>
+      <ul>
+        <li>Validity — may need additional/different functions</li>
+        <li>Consistency — no contradictory constraints</li>
+        <li>Completeness — all functions & constraints included</li>
+        <li>Realism — feasible with budget & schedule</li>
+        <li>Verifiability — reduce customer/contractor dispute</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>REQUIREMENTS EVOLUTION</h3>
+      <ul>
+        <li>Initial Understanding → Initial Requirements</li>
+        <li>Changed Understanding → Changed Requirements</li>
+        <li>Causes: new hardware, legislation, business priorities, different payers vs users</li>
+        <li>Large systems: requirements = compromise between diverse users</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>CHANGE MANAGEMENT PROCESS</h3>
+      <ul>
+        <li>Identified Problem → Problem Analysis & Change Spec</li>
+        <li>→ Change Analysis & Costing → Change Implementation → Revised Requirements</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>4 ELEMENTS OF CHANGE MANAGEMENT</h3>
+      <ul>
+        <li>① Requirements Identification — unique ID for traceability</li>
+        <li>② Change Management Process — assess impact & cost</li>
+        <li>③ Traceability Policies — req ↔ design relationships</li>
+        <li>④ Tool Support — from specialist tools to spreadsheets</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>MHC-PMS STAKEHOLDERS (8)</h3>
+      <ul>
+        <li>Patients, Doctors, Nurses</li>
+        <li>Medical Receptionists, IT Staff</li>
+        <li>Medical Ethics Manager</li>
+        <li>Health Care Managers</li>
+        <li>Medical Records Staff</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- FINALE -->
+<section id="finale">
+  <div style="font-size:3rem; margin-bottom:20px;">🎓</div>
+  <h2>Requirements Engineering Process — Done!</h2>
+  <p>Lec 7 خلصت. دلوقتي عارف الـ RE spiral، الـ 4-stage elicitation cycle، الـ ethnography، الـ validation، والـ change management كامل.</p>
+  <div style="margin-top:32px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold);">Lec 7 ✓ Complete</div>
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:#8892a4;">You got this — ابو 💪</div>
+  </div>
+</section>
+
+<script>
+  const sections = ['sec0','sec1','sec2','sec3','sec4','sec5','sec6','sec7','sec8','sec9','sec10'];
+  const dots = document.querySelectorAll('.dot');
+  const bar = document.getElementById('progress-bar');
+
+  function revealStory(id) {
+    const s = document.getElementById(id);
+    if (!s) return;
+    s.classList.toggle('open');
+    const hook = s.previousElementSibling;
+    if (hook && hook.classList.contains('hook')) {
+      const tap = hook.querySelector('.tap');
+      if (tap) tap.textContent = s.classList.contains('open') ? 'Hide ↑' : 'Reveal →';
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (scrolled / total * 100) + '%';
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      if (top < window.innerHeight / 2 && top > -window.innerHeight / 2) {
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[i]) dots[i].classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>

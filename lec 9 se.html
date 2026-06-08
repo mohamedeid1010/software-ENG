@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture 9 — Design &amp; Implementation</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e8b85a;--gold2:#f5d08a;--bg:#0a0c0e;--card:#111418;--card2:#161b22;--red:#e05252;--green:#52c78a;--blue:#5298e0;--purple:#9b5de5;--teal:#38b2ac;--orange:#e8935a;--border:#2a2f3a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:#e0e6f0;font-family:'Tajawal',sans-serif;min-height:100vh;overflow-x:hidden;}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--orange));width:0%;z-index:1000;transition:width .1s;}
+#nav-dots{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:999;}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:#2a2f3a;cursor:pointer;transition:all .3s;border:2px solid transparent;}
+.nav-dot.active{background:var(--gold);border-color:var(--gold2);transform:scale(1.3);}
+.nav-dot:hover{background:var(--gold2);}
+header{text-align:center;padding:80px 20px 60px;background:linear-gradient(180deg,#0d1117 0%,var(--bg) 100%);}
+.lec-tag{display:inline-block;background:rgba(232,184,90,.15);border:1px solid var(--gold);color:var(--gold);padding:6px 18px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.85em;margin-bottom:20px;letter-spacing:2px;}
+header h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+header p{color:#8892a4;font-size:1.1em;max-width:600px;margin:0 auto;}
+.chapter{max-width:900px;margin:0 auto;padding:40px 20px;min-height:60vh;}
+.ch-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.75em;color:var(--gold);background:rgba(232,184,90,.1);border:1px solid rgba(232,184,90,.3);padding:4px 12px;border-radius:12px;margin-bottom:16px;letter-spacing:1px;}
+.hook{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:20px;padding:40px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.hook::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--orange));opacity:0;transition:opacity .3s;}
+.hook:hover::before{opacity:1;}
+.hook:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 40px rgba(232,184,90,.1);}
+.hook h2{font-size:clamp(1.2rem,3vw,1.7rem);font-weight:900;color:#e8eaf0;margin-bottom:12px;line-height:1.4;}
+.sub{color:#8892a4;font-size:.95em;margin-bottom:20px;}
+.tap{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#0a0c0e;padding:10px 22px;border-radius:25px;font-weight:700;font-size:.9em;transition:transform .2s;}
+.hook:hover .tap{transform:scale(1.05);}
+.story{display:none;margin-top:24px;direction:rtl;text-align:right;}
+.story.open{display:block;}
+.scene{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;position:relative;}
+.scene::before{content:'';position:absolute;right:0;top:20px;bottom:20px;width:3px;background:linear-gradient(180deg,var(--gold),transparent);border-radius:2px;}
+.scene-title{font-family:'JetBrains Mono',monospace;font-size:.75em;color:var(--gold);letter-spacing:2px;margin-bottom:14px;direction:ltr;text-align:left;}
+.scene p{line-height:1.9;color:#c8d0de;margin-bottom:12px;font-size:1.05em;}
+.scene p:last-child{margin-bottom:0;}
+.en{font-family:'JetBrains Mono',monospace;color:var(--gold2);font-size:.88em;background:rgba(232,184,90,.08);padding:1px 6px;border-radius:4px;direction:ltr;display:inline-block;}
+.ding{background:rgba(82,199,138,.08);border:1px solid rgba(82,199,138,.3);border-radius:12px;padding:18px 22px;margin:16px 0;color:#7be0a8;line-height:1.8;}
+.trap{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:12px;padding:18px 22px;margin:16px 0;color:#e8908a;line-height:1.8;}
+.reveal{background:rgba(82,152,224,.08);border:1px solid rgba(82,152,224,.3);border-radius:12px;padding:18px 22px;margin:16px 0;color:#90c0f0;line-height:1.8;}
+.num-list{counter-reset:nl;list-style:none;padding:0;}
+.num-list li{counter-increment:nl;display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;color:#c8d0de;line-height:1.8;}
+.num-list li::before{content:counter(nl);background:var(--gold);color:#0a0c0e;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8em;flex-shrink:0;margin-top:3px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}}
+.gbox{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.gbox .ico{font-size:1.8em;margin-bottom:8px;}
+.gbox .lbl{font-family:'JetBrains Mono',monospace;font-size:.72em;color:var(--gold);margin-bottom:6px;direction:ltr;}
+.gbox p{font-size:.9em;color:#a0aabb;line-height:1.6;}
+.views-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.view-box{border-radius:14px;padding:20px;text-align:center;}
+.view-box.logical{background:rgba(155,93,229,.12);border:1px solid rgba(155,93,229,.4);}
+.view-box.process{background:rgba(82,152,224,.12);border:1px solid rgba(82,152,224,.4);}
+.view-box.dev{background:rgba(82,199,138,.12);border:1px solid rgba(82,199,138,.4);}
+.view-box.physical{background:rgba(232,147,90,.12);border:1px solid rgba(232,147,90,.4);}
+.view-box .v-ico{font-size:2em;margin-bottom:8px;}
+.view-box .v-name{font-family:'JetBrains Mono',monospace;font-size:.75em;color:var(--gold2);margin-bottom:8px;direction:ltr;}
+.view-box p{font-size:.88em;color:#a8b4c8;line-height:1.6;}
+.pattern-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin:16px 0;}
+.pattern-title{font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--gold);margin-bottom:16px;direction:ltr;}
+.repo-center{background:rgba(232,184,90,.12);border:2px solid var(--gold);border-radius:12px;padding:16px 24px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.9em;color:var(--gold2);margin:16px auto;width:fit-content;}
+.repo-tools{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px;}
+.repo-tool{background:rgba(82,152,224,.12);border:1px solid rgba(82,152,224,.4);border-radius:8px;padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:.75em;color:#90c0f0;}
+.pipe-flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;margin:16px 0;}
+.pipe-step{background:rgba(56,178,172,.12);border:1px solid rgba(56,178,172,.4);border-radius:8px;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:.75em;color:#7ae8e4;text-align:center;}
+.pipe-arrow{color:var(--gold);font-size:1.2em;margin:0 6px;}
+.layer-stack{display:flex;flex-direction:column;gap:4px;margin:16px 0;}
+.layer{border-radius:8px;padding:12px 20px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8em;direction:ltr;}
+.layer.l1{background:rgba(232,184,90,.15);border:1px solid rgba(232,184,90,.4);color:var(--gold2);}
+.layer.l2{background:rgba(82,199,138,.12);border:1px solid rgba(82,199,138,.35);color:#90e0b0;}
+.layer.l3{background:rgba(82,152,224,.12);border:1px solid rgba(82,152,224,.35);color:#90c0f0;}
+.layer.l4{background:rgba(155,93,229,.12);border:1px solid rgba(155,93,229,.35);color:#c090f0;}
+.reuse-levels{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.reuse-lvl{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
+.reuse-num{background:var(--purple);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85em;flex-shrink:0;margin-top:3px;}
+.lic-box{border-radius:12px;padding:18px 22px;margin:12px 0;}
+.lic-box.gpl{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);}
+.lic-box.lgpl{background:rgba(232,147,90,.08);border:1px solid rgba(232,147,90,.3);}
+.lic-box.bsd{background:rgba(82,199,138,.08);border:1px solid rgba(82,199,138,.3);}
+.lic-title{font-family:'JetBrains Mono',monospace;font-size:.82em;margin-bottom:8px;font-weight:700;}
+.lic-box.gpl .lic-title{color:#e08080;}
+.lic-box.lgpl .lic-title{color:#e8935a;}
+.lic-box.bsd .lic-title{color:#52c78a;}
+#cheatsheet{max-width:900px;margin:0 auto;padding:40px 20px 80px;}
+.cs-title{text-align:center;font-size:1.8em;font-weight:900;color:var(--gold);margin-bottom:30px;font-family:'JetBrains Mono',monospace;}
+.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.cs-card{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.cs-card h3{font-family:'JetBrains Mono',monospace;font-size:.78em;color:var(--gold);margin-bottom:12px;letter-spacing:1px;direction:ltr;}
+.cs-card ul{list-style:none;padding:0;}
+.cs-card ul li{color:#a8b4c8;font-size:.88em;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.6;}
+.cs-card ul li:last-child{border-bottom:none;}
+.cs-card ul li::before{content:'›';color:var(--gold);margin-left:6px;}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="nav-dots">
+  <div class="nav-dot" onclick="scrollToChapter(0)" title="Intro"></div>
+  <div class="nav-dot" onclick="scrollToChapter(1)" title="What is Arch Design?"></div>
+  <div class="nav-dot" onclick="scrollToChapter(2)" title="Why Architecture?"></div>
+  <div class="nav-dot" onclick="scrollToChapter(3)" title="4 Arch Views"></div>
+  <div class="nav-dot" onclick="scrollToChapter(4)" title="Repository Pattern"></div>
+  <div class="nav-dot" onclick="scrollToChapter(5)" title="Pipe-Filter + Layered"></div>
+  <div class="nav-dot" onclick="scrollToChapter(6)" title="Reuse"></div>
+  <div class="nav-dot" onclick="scrollToChapter(7)" title="Config Mgmt + Host-Target"></div>
+  <div class="nav-dot" onclick="scrollToChapter(8)" title="Open Source"></div>
+  <div class="nav-dot" onclick="scrollToChapter(9)" title="Cheat Sheet"></div>
+</div>
+
+<!-- HEADER -->
+<header id="ch0">
+  <div class="lec-tag">CSE 302 · LECTURE 9</div>
+  <h1>Design &amp; Implementation</h1>
+  <p>Architectural Design · Patterns · Implementation Issues · Open Source</p>
+</header>
+
+<!-- CH1: What is Architectural Design -->
+<section class="chapter" id="ch1">
+  <div class="ch-label">CHAPTER 1</div>
+  <div class="hook" onclick="revealStory('s1')">
+    <h2>🏗️ What exactly is Architectural Design, and how does it differ from just writing code?</h2>
+    <div class="sub">Definition · Build or Buy · Abstraction Levels (In the Small vs In the Large)</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s1">
+    <div class="scene">
+      <div class="scene-title">⚡ THE DEFINITION</div>
+      <p>
+        تخيل إنك بتبني مبنى ضخم — قبل ما تشتري أي طوبة، لازم يكون عندك مخطط كامل: فين الأعمدة، فين السلالم، إيه الأدوار. ده بالظبط اللي بيعمله <span class="en">Architectural Design</span>.
+      </p>
+      <p>
+        <span class="en">Architectural Design</span> هو <strong>أول مرحلة في عملية التصميم</strong> — بنحدد فيها المكونات الكبيرة للنظام <span class="en">(subsystems / modules)</span> وعلاقاتهم ببعض، ونوثق ده في <span class="en">Architectural Model</span>. هو الحلقة الوصل بين <span class="en">specification</span> والتصميم التفصيلي.
+      </p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🤖 PACKING ROBOT EXAMPLE</div>
+      <p>
+        مثال حلو: <span class="en">packing robot</span> — روبوت بيعبي صناديق في مصنع. المعمارية بتقولك إن فيه <span class="en">vision system</span> بيشوف الأشياء، و<span class="en">arm controller</span> بيتحكم في الذراع، و<span class="en">package database</span> بيعرف الأحجام. كل ده مكونات واضحة قبل ما تكتب سطر كود.
+      </p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🔭 ABSTRACTION LEVELS</div>
+      <p>المعمارية موجودة على <strong>مستويين من التجريد</strong>:</p>
+      <div class="grid-2">
+        <div class="gbox">
+          <div class="ico">🔬</div>
+          <div class="lbl">In the Small</div>
+          <p>معمارية برنامج <strong>واحد</strong> — بتحدد المكونات الداخلية وتفاعلاتها</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">🌐</div>
+          <div class="lbl">In the Large</div>
+          <p>معمارية <strong>أنظمة معقدة ضخمة</strong> <span class="en">(Enterprise Systems)</span> — بتتضمن أنظمة وخدمات متعددة</p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🛒 BUILD OR BUY?</div>
+      <p>
+        سؤال استراتيجي مهم في التصميم: هل نبني كل حاجة من الصفر؟ مش لازم! ممكن نشتري أنظمة جاهزة <span class="en">(COTS — Commercial Off-The-Shelf)</span> ونعمل <span class="en">integrate</span> معاهم.
+      </p>
+      <p>
+        مثلاً: نظام <span class="en">MHC-PMS</span> (لإدارة مستشفى) ممكن يستخدم نظام <span class="en">patient records</span> موجود بدل ما يبنيه من الصفر.
+      </p>
+      <div class="ding">⚡ البناء من الصفر مش دايمًا الأذكى — التكامل مع أنظمة جاهزة يوفر وقت ومجهود ضخم!</div>
+    </div>
+  </div>
+</section>
+
+<!-- CH2: Why Architecture + Representations -->
+<section class="chapter" id="ch2">
+  <div class="ch-label">CHAPTER 2</div>
+  <div class="hook" onclick="revealStory('s2')">
+    <h2>🎯 Why should we bother documenting architecture explicitly? What are the benefits?</h2>
+    <div class="sub">3 Advantages · Representations · Use of Models · Agile vs Architecture</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s2">
+    <div class="scene">
+      <div class="scene-title">✅ 3 ADVANTAGES OF EXPLICIT ARCHITECTURE</div>
+      <ol class="num-list">
+        <li>
+          <span><strong>Stakeholder Communication</strong> — المعمارية بتكون نقطة التقاء للنقاش بين كل أصحاب المصلحة <span class="en">(stakeholders)</span> — المطورين، الإدارة، العملاء كلهم بيفهموا نفس الصورة</span>
+        </li>
+        <li>
+          <span><strong>System Analysis</strong> — بتمكّن التحليل المبكر: هل النظام هيحقق المتطلبات؟ هل في <span class="en">performance</span> أو <span class="en">security</span> كافي؟ ده بيتعمل مبكراً <span class="en">(early)</span> قبل ما يُكتب الكود</span>
+        </li>
+        <li>
+          <span><strong>Large-scale Reuse</strong> — معمارية موثقة ممكن تتعاد استخدامها في أنظمة تانية مشابهة — خصوصاً في <span class="en">product lines</span></span>
+        </li>
+      </ol>
+    </div>
+    <div class="scene">
+      <div class="scene-title">📦 ARCHITECTURAL REPRESENTATIONS</div>
+      <p>
+        أبسط طريقة لتمثيل المعمارية هي <span class="en">box-and-line diagrams</span> — الصناديق هي المكونات <span class="en">(components)</span> والخطوط هي التفاعلات أو تدفق البيانات. بسيطة وغير رسمية <span class="en">(informal)</span> لكن فعّالة جداً للتواصل.
+      </p>
+      <div class="reveal">📐 المعمارية مش لازم تكون <span class="en">UML</span> رسمي دايمًا — <span class="en">box and line</span> كافي لمعظم النقاشات!</div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🛠️ USE OF ARCHITECTURAL MODELS</div>
+      <p>النماذج المعمارية بتُستخدم لغرضين رئيسيين:</p>
+      <div class="grid-2">
+        <div class="gbox">
+          <div class="ico">💬</div>
+          <div class="lbl">Facilitate Discussion</div>
+          <p>تسهيل نقاش تصميم النظام مع الفريق وأصحاب المصلحة</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">📄</div>
+          <div class="lbl">Document Architecture</div>
+          <p>توثيق المعمارية كمرجع للمطورين أثناء التطوير</p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🏃 AGILITY AND ARCHITECTURE</div>
+      <p>
+        بعض <span class="en">agile methods</span> بتقول إن المعمارية المثالية بتظهر تدريجياً أثناء التطوير <span class="en">(emergent architecture)</span>. لكن للأنظمة الكبيرة الحجم، لازم تفكر في المعمارية قبل ما تبدأ الكود — علشان تتجنب مشاكل <span class="en">integration</span> كبيرة لاحقاً.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CH3: 4 Architectural Views -->
+<section class="chapter" id="ch3">
+  <div class="ch-label">CHAPTER 3</div>
+  <div class="hook" onclick="revealStory('s3')">
+    <h2>👀 How many ways can you look at a software architecture, and what does each show?</h2>
+    <div class="sub">4 Architectural Views — Logical · Process · Development · Physical</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s3">
+    <div class="scene">
+      <div class="scene-title">🧩 THE 4 VIEWS</div>
+      <p>
+        زي ما مبنى ممكن تشوفه من الجنب، من فوق، من جوه، ومن حيث الكهربا والسباكة — <span class="en">software architecture</span> ممكن تشوفها من <strong>4 زوايا</strong> مختلفة، وكل واحدة بتجاوب على سؤال مختلف:
+      </p>
+    </div>
+    <div class="views-grid">
+      <div class="view-box logical">
+        <div class="v-ico">🧠</div>
+        <div class="v-name">LOGICAL VIEW</div>
+        <p>بتعرض <span class="en">key abstractions</span> كـ<span class="en">objects/classes</span> — إيه الكيانات المنطقية الأساسية في النظام وعلاقاتهم</p>
+      </div>
+      <div class="view-box process">
+        <div class="v-ico">⚙️</div>
+        <div class="v-name">PROCESS VIEW</div>
+        <p>بتعرض التفاعلات وقت التشغيل <span class="en">(run-time)</span> — إزاي العمليات <span class="en">(processes)</span> بتتكلم مع بعض</p>
+      </div>
+      <div class="view-box dev">
+        <div class="v-ico">💻</div>
+        <div class="v-name">DEVELOPMENT VIEW</div>
+        <p>بتعرض تقسيم البرنامج <span class="en">(decomposition)</span> من ناحية التطوير — مناسبة للمبرمجين وتنظيم الكود</p>
+      </div>
+      <div class="view-box physical">
+        <div class="v-ico">🖥️</div>
+        <div class="v-name">PHYSICAL VIEW</div>
+        <p>بتعرض توزيع البرنامج على الـ<span class="en">hardware</span> — أنهي مكون بيشتغل على أنهي جهاز أو سيرفر</p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">💡 WHY 4 VIEWS?</div>
+      <p>
+        مش كل شخص محتاج نفس النظرة. الـ<span class="en">developer</span> محتاج <span class="en">Development View</span>. الـ<span class="en">sysadmin</span> محتاج <span class="en">Physical View</span>. الـ<span class="en">business analyst</span> محتاج <span class="en">Logical View</span>. الـ<span class="en">4 views</span> بتغطي كل الجمهور من زوايا مختلفة!
+      </p>
+      <div class="ding">🎯 كل <span class="en">view</span> بتجاوب على سؤال مختلف عن <strong>نفس النظام</strong> — زي صور نفس العمارة من زوايا مختلفة!</div>
+    </div>
+  </div>
+</section>
+
+<!-- CH4: Repository Pattern -->
+<section class="chapter" id="ch4">
+  <div class="ch-label">CHAPTER 4</div>
+  <div class="hook" onclick="revealStory('s4')">
+    <h2>📦 What is an Architectural Pattern, and how does the Repository Pattern work?</h2>
+    <div class="sub">Architectural Patterns · Repository Pattern · IDE Example · Pros &amp; Cons</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s4">
+    <div class="scene">
+      <div class="scene-title">📚 WHAT IS AN ARCHITECTURAL PATTERN?</div>
+      <p>
+        <span class="en">Architectural Pattern</span> هو وصف مجرد لممارسة جيدة <span class="en">(stylized description of good practice)</span> — بيوصف طريقة تنظيم ناجحة اتجربت وشغّالة في أنظمة تانية. زي <span class="en">design patterns</span> لكن على مستوى النظام كله.
+      </p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🗄️ REPOSITORY PATTERN</div>
+      <p>
+        في نمط <span class="en">Repository</span>، كل الـ<span class="en">subsystems</span> بتتشارك في <strong>مستودع بيانات مركزي واحد</strong> <span class="en">(central repository)</span> — مش كل <span class="en">subsystem</span> يتكلم مع التاني مباشرة، بل كلهم بيكتبوا ويقروا من نفس المكان.
+      </p>
+      <div class="pattern-box">
+        <div class="pattern-title">▶ IDE REPOSITORY EXAMPLE</div>
+        <div class="repo-center">🗄️ Central Repository<br><small style="color:#a0a880">Program Code + Data + Metadata</small></div>
+        <div class="repo-tools">
+          <div class="repo-tool">📝 Editor</div>
+          <div class="repo-tool">🔨 Compiler</div>
+          <div class="repo-tool">🐛 Debug Tool</div>
+          <div class="repo-tool">📊 Code Generator</div>
+          <div class="repo-tool">🎨 UI Designer</div>
+        </div>
+      </div>
+      <p>
+        في الـ<span class="en">IDE</span>: المحرر يكتب الكود في المستودع المركزي، الـ<span class="en">compiler</span> بياخد الكود ويترجمه وينزل النتائج، الـ<span class="en">debugger</span> بيشوف نتائج التنفيذ — كلهم من نفس المستودع.
+      </p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">⚖️ REPOSITORY — PROS &amp; CONS</div>
+      <div class="grid-2">
+        <div class="gbox" style="border-color:rgba(82,199,138,.4);background:rgba(82,199,138,.05);">
+          <div class="ico">✅</div>
+          <div class="lbl" style="color:#52c78a;">ADVANTAGES</div>
+          <p>مشاركة بيانات فعالة بين الأدوات — نسخ احتياطي مركزي سهل — الأدوات مش محتاجة تتفق مع بعض مباشرة</p>
+        </div>
+        <div class="gbox" style="border-color:rgba(224,82,82,.4);background:rgba(224,82,82,.05);">
+          <div class="ico">❌</div>
+          <div class="lbl" style="color:#e05252;">DISADVANTAGES</div>
+          <p>نقطة فشل واحدة <span class="en">(single point of failure)</span> — اختناق في الوصول <span class="en">(access bottleneck)</span> لو أدوات كتير بتشتغل في نفس الوقت</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH5: Pipe-and-Filter + Layered -->
+<section class="chapter" id="ch5">
+  <div class="ch-label">CHAPTER 5</div>
+  <div class="hook" onclick="revealStory('s5')">
+    <h2>🔗 What are Pipe-and-Filter and Layered Architecture patterns?</h2>
+    <div class="sub">Pipe-and-Filter · Layered Architecture · Info Systems 4 Layers · Mentcare 4 Layers</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s5">
+    <div class="scene">
+      <div class="scene-title">🔧 PIPE-AND-FILTER PATTERN</div>
+      <p>
+        تخيل مصنع فيه خط إنتاج — كل محطة بتاخد <span class="en">input</span>، تعمل تحويل <span class="en">(transformation)</span>، وتدي <span class="en">output</span> للمحطة الجاية. ده بالظبط نمط <span class="en">Pipe-and-Filter</span>.
+      </p>
+      <p>مثال: <span class="en">Compiler</span> — معالجة الكود خطوة خطوة:</p>
+      <div class="pipe-flow">
+        <div class="pipe-step">Lexical<br>Analysis</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">Syntax<br>Analysis</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">Semantic<br>Analysis</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">Code<br>Generation</div>
+      </div>
+      <p>مثال تاني: <span class="en">ATM</span> — قراءة الكارت ← التحقق من الرصيد ← السحب ← طباعة الإيصال. كل خطوة مستقلة وبتغذي الخطوة التالية.</p>
+      <div class="ding">✅ ميزة كبيرة: تقدر تبدل أي <span class="en">filter</span> من غير ما تأثر على الباقي — بس شرط إن الـ<span class="en">data format</span> متوافق!</div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🏢 LAYERED ARCHITECTURE PATTERN</div>
+      <p>
+        نمط <span class="en">Layered Architecture</span> بيقسم النظام لطبقات <span class="en">(layers)</span> — كل طبقة بتوفر خدمات للطبقة اللي فوقها وبتستخدم خدمات الطبقة اللي تحتها.
+      </p>
+      <p><strong>مثال: Information Systems Architecture (4 طبقات)</strong></p>
+      <div class="layer-stack">
+        <div class="layer l1">UI Layer — واجهة المستخدم</div>
+        <div class="layer l2">User Interface Management — إدارة منطق الواجهة</div>
+        <div class="layer l3">Core Business Logic / Application Functionality</div>
+        <div class="layer l4">System Support (OS + Database)</div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🏥 MENTCARE LAYERED ARCHITECTURE</div>
+      <p>نظام <span class="en">Mentcare</span> لإدارة مرضى الصحة النفسية كمان مبني على 4 طبقات:</p>
+      <div class="layer-stack">
+        <div class="layer l1">MHC-PMS Application (UI + Business Logic)</div>
+        <div class="layer l2">Patient Management — Records, Appointments, Referrals</div>
+        <div class="layer l3">Repository — Patient Database</div>
+        <div class="layer l4">Database + OS Infrastructure</div>
+      </div>
+      <div class="reveal">📌 فايدة <span class="en">Layered</span>: سهل تعديل طبقة واحدة من غير ما تأثر على الباقي — ما دام الـ<span class="en">interface</span> بين الطبقات ثابت!</div>
+    </div>
+  </div>
+</section>
+
+<!-- CH6: Reuse -->
+<section class="chapter" id="ch6">
+  <div class="ch-label">CHAPTER 6</div>
+  <div class="hook" onclick="revealStory('s6')">
+    <h2>♻️ What does it mean to "reuse" software, and at what levels can it happen?</h2>
+    <div class="sub">History of Reuse · 4 Levels · 4 Types · 4 Costs</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s6">
+    <div class="scene">
+      <div class="scene-title">📜 THE STORY OF REUSE</div>
+      <p>
+        في التسعينات، الناس بدأت تكتر الكلام عن <span class="en">software reuse</span>. قبلها كان كل نظام بيتبنى من الصفر. لكن مع الوقت الكل اكتشف إن في كود جاهز ممكن يُعاد استخدامه وتوفير وقت هائل.
+      </p>
+      <p>
+        في الوقت الحالي، بناء أي نظام تجاري كبير <strong>من الصفر تماماً</strong> هو استثناء مش القاعدة — معظم الأنظمة بتعتمد على <span class="en">components</span> و<span class="en">frameworks</span> جاهزة.
+      </p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🎚️ 4 LEVELS OF REUSE</div>
+      <div class="reuse-levels">
+        <div class="reuse-lvl">
+          <div class="reuse-num">1</div>
+          <div>
+            <strong><span class="en">Abstraction Level</span></strong>
+            <p style="color:#a0aabb;font-size:.93em;margin-top:6px;">ما بتعيدش استخدام كود بالظبط — لكن بتعيد استخدام <strong>المعرفة والأنماط</strong> <span class="en">(knowledge/design patterns)</span></p>
+          </div>
+        </div>
+        <div class="reuse-lvl">
+          <div class="reuse-num">2</div>
+          <div>
+            <strong><span class="en">Object Level</span></strong>
+            <p style="color:#a0aabb;font-size:.93em;margin-top:6px;">بتعيد استخدام <span class="en">objects / classes</span> مباشرة من مكتبات جاهزة <span class="en">(libraries)</span></p>
+          </div>
+        </div>
+        <div class="reuse-lvl">
+          <div class="reuse-num">3</div>
+          <div>
+            <strong><span class="en">Component Level</span></strong>
+            <p style="color:#a0aabb;font-size:.93em;margin-top:6px;">بتعيد استخدام مجموعات من الأوبجكتس كـ<span class="en">component frameworks</span> — محتاج تكييف بسيط</p>
+          </div>
+        </div>
+        <div class="reuse-lvl">
+          <div class="reuse-num">4</div>
+          <div>
+            <strong><span class="en">System Level</span></strong>
+            <p style="color:#a0aabb;font-size:.93em;margin-top:6px;">بتعيد استخدام أنظمة كاملة <span class="en">(COTS — Commercial Off-The-Shelf)</span> وتعمل <span class="en">configure</span> عليها</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🗂️ 4 TYPES OF SOFTWARE REUSE</div>
+      <div class="grid-2">
+        <div class="gbox">
+          <div class="ico">🏪</div>
+          <div class="lbl">COTS Systems</div>
+          <p>أنظمة تجارية جاهزة — تشتريها وتشغّلها مع <span class="en">configuration</span></p>
+        </div>
+        <div class="gbox">
+          <div class="ico">🧩</div>
+          <div class="lbl">Component Frameworks</div>
+          <p>أطر عمل جاهزة تبني عليها — <span class="en">Spring, .NET, Angular</span></p>
+        </div>
+        <div class="gbox">
+          <div class="ico">📐</div>
+          <div class="lbl">Design Patterns</div>
+          <p>أنماط تصميم مجردة — تطبقها في كودك الخاص</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">📚</div>
+          <div class="lbl">Libraries</div>
+          <p>مكتبات دوال جاهزة — <span class="en">Math, UI, HTTP libs</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">💸 4 COSTS OF REUSE</div>
+      <p>إعادة الاستخدام مش مجانية — فيه تكاليف مخفية:</p>
+      <ol class="num-list">
+        <li><span>تكلفة <strong>البحث والتقييم</strong> — وقت كافي علشان تلاقي المكون الصح وتفهمه وتقيّمه</span></li>
+        <li><span>تكلفة <strong>الشراء</strong> — <span class="en">COTS systems</span> مش دايمًا مجانية</span></li>
+        <li><span>تكلفة <strong>التكييف</strong> <span class="en">(Adaptation)</span> — لو المكون مش بيناسبك 100% محتاج تعدّله أو تلف حواليه</span></li>
+        <li><span>تكلفة <strong>التكامل</strong> <span class="en">(Integration)</span> — ربط المكون بالكود الموجود بياخد وقت ومجهود</span></li>
+      </ol>
+      <div class="trap">⚠️ ناس كتير بتفكر إن الـ<span class="en">reuse</span> بيوفر وقت بس — لكن لو المكون محتاج تعديل كبير، ممكن يكون <strong>أغلى</strong> من بناءه من الصفر!</div>
+    </div>
+  </div>
+</section>
+
+<!-- CH7: Configuration Management + Host-Target + IDEs -->
+<section class="chapter" id="ch7">
+  <div class="ch-label">CHAPTER 7</div>
+  <div class="hook" onclick="revealStory('s7')">
+    <h2>🔧 How do development teams manage changing code and different environments?</h2>
+    <div class="sub">Configuration Management · 3 Activities · Host-Target · IDEs · Deployment Factors</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s7">
+    <div class="scene">
+      <div class="scene-title">⚙️ CONFIGURATION MANAGEMENT (CM)</div>
+      <p>
+        لما فريق من 10 مطورين بيشتغل على نفس الكود — مين هيحفظ النسخة الصح؟ مين غيّر إيه؟ هنا بتيجي <span class="en">Configuration Management (CM)</span>.
+      </p>
+      <p>
+        <span class="en">CM</span> هو عملية إدارة التغييرات على <strong>نظام برمجي متطور</strong> <span class="en">(evolving software system)</span> — ضروري جداً لما فريق كامل بيتعاون في نفس الكود.
+      </p>
+      <p>فيه <strong>3 أنشطة رئيسية</strong>:</p>
+      <ol class="num-list">
+        <li>
+          <span>
+            <strong><span class="en">Version Management</span></strong> — تتبع النسخ المختلفة من المكونات — أدوات زي <span class="en">Git</span> بتخزن تاريخ كامل للتغييرات
+          </span>
+        </li>
+        <li>
+          <span>
+            <strong><span class="en">System Integration</span></strong> — تحديد إيه المكونات اللي بتتكون منها كل <span class="en">build</span> أو <span class="en">release</span> — "إيه اللي بنبنيه دلوقتي؟"
+          </span>
+        </li>
+        <li>
+          <span>
+            <strong><span class="en">Problem Tracking</span></strong> — تتبع وإدارة البلاغات والمشاكل المُبلّغ عنها — أدوات زي <span class="en">Jira, Bugzilla</span>
+          </span>
+        </li>
+      </ol>
+      <div class="ding">🛠️ أدوات الـ<span class="en">CM</span> بتتفاعل مع بعض: <span class="en">Version Manager ↔ System Integrator ↔ Problem Tracker</span> في دورة مستمرة!</div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🖥️ HOST-TARGET DEVELOPMENT</div>
+      <p>
+        في معظم الأحوال، الجهاز اللي بتطور عليه البرنامج <strong>مختلف</strong> عن الجهاز اللي هيشغّله. ده هو مفهوم <span class="en">Host-Target Development</span>.
+      </p>
+      <div class="grid-2">
+        <div class="gbox" style="border-color:rgba(82,199,138,.4);background:rgba(82,199,138,.05);">
+          <div class="ico">🖥️</div>
+          <div class="lbl" style="color:#52c78a;">HOST PLATFORM</div>
+          <p>بيئة التطوير — عليها <span class="en">IDE + Compilers + Testing Tools + Version Control</span></p>
+        </div>
+        <div class="gbox" style="border-color:rgba(82,152,224,.4);background:rgba(82,152,224,.05);">
+          <div class="ico">📱</div>
+          <div class="lbl" style="color:#5298e0;">TARGET PLATFORM</div>
+          <p>بيئة التنفيذ الفعلي — <span class="en">Libraries + Related Systems + Databases</span></p>
+        </div>
+      </div>
+      <p>مثال عملي: بتطور تطبيق موبايل على اللابتوب الخاص بيك <span class="en">(host)</span> — البرنامج بيشتغل الفعلي على التليفون أو السيرفر <span class="en">(target)</span>.</p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🛠️ DEVELOPMENT PLATFORM TOOLS (5 TYPES)</div>
+      <div class="grid-3">
+        <div class="gbox">
+          <div class="lbl">IDE</div>
+          <p>بيئة تطوير متكاملة</p>
+        </div>
+        <div class="gbox">
+          <div class="lbl">Debugger</div>
+          <p>أداة كشف وتتبع الأخطاء</p>
+        </div>
+        <div class="gbox">
+          <div class="lbl">Automated Testing</div>
+          <p>أدوات اختبار تلقائي</p>
+        </div>
+        <div class="gbox">
+          <div class="lbl">Project Support</div>
+          <p>Jira, Trello, Basecamp</p>
+        </div>
+        <div class="gbox">
+          <div class="lbl">Version Control</div>
+          <p>Git, SVN, Mercurial</p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🚀 IDEs</div>
+      <p>
+        <span class="en">IDE (Integrated Development Environment)</span> هي بيئة متكاملة بتجمع في نفس الواجهة: المحرر <span class="en">(editor)</span> + الـ<span class="en">compiler</span> + الـ<span class="en">debugger</span> + أدوات التكامل مع الـ<span class="en">version control</span>.
+      </p>
+      <p>أمثلة: <span class="en">VS Code, IntelliJ IDEA, Eclipse, Xcode</span>. الـ<span class="en">IDE</span> بتخلي المطور يشتغل في مكان واحد من غير ما يتنقل بين أدوات مختلفة.</p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">📦 3 DEPLOYMENT FACTORS</div>
+      <p>عند اتخاذ قرار كيفية <span class="en">deploy</span> النظام، فيه 3 عوامل بتأثر في القرار:</p>
+      <ol class="num-list">
+        <li><span>متطلبات الـ<span class="en">hardware</span> والبرنامج للمكون — هل الـ<span class="en">target</span> يتحمل المتطلبات دي؟</span></li>
+        <li><span>توافرية النظام <span class="en">(availability)</span> — هل لازم يشتغل 24/7؟ ده بيأثر على عدد السيرفرات وطريقة التوزيع</span></li>
+        <li><span>متطلبات الاتصالات — هل في <span class="en">high bandwidth</span> أو <span class="en">low latency</span> مطلوب بين المكونات؟</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- CH8: Open Source -->
+<section class="chapter" id="ch8">
+  <div class="ch-label">CHAPTER 8</div>
+  <div class="hook" onclick="revealStory('s8')">
+    <h2>🌐 What is Open Source development, and how does licensing work in practice?</h2>
+    <div class="sub">Open Source Definition · FSF · Business Model · 3 License Models · License Management</div>
+    <div class="tap">Reveal the answer →</div>
+  </div>
+  <div class="story" id="s8">
+    <div class="scene">
+      <div class="scene-title">🌍 WHAT IS OPEN SOURCE DEVELOPMENT?</div>
+      <p>
+        <span class="en">Open Source Development</span> يعني إن <span class="en">source code</span> النظام <strong>متاح للعموم</strong> — أي حد يقدر يشوفه، يعدل فيه، ويقترح تحسينات.
+      </p>
+      <p>
+        الفكرة بدأت من <span class="en">Free Software Foundation (FSF)</span> اللي أسسها <span class="en">Richard Stallman</span> بفلسفة: الكود المصدري حق للجميع. الإنترنت وسّع الموضوع ده وخلى ملايين المطورين حول العالم يتعاونوا.
+      </p>
+      <div class="grid-4">
+        <div class="gbox">
+          <div class="ico">🐧</div>
+          <div class="lbl">Linux</div>
+          <p>نظام تشغيل</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">☕</div>
+          <div class="lbl">Java</div>
+          <p>لغة برمجة</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">🌐</div>
+          <div class="lbl">Apache</div>
+          <p>خادم ويب</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">🗄️</div>
+          <div class="lbl">mySQL</div>
+          <p>قاعدة بيانات</p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">💼 OPEN SOURCE BUSINESS MODEL</div>
+      <p>
+        شركات كتير ومتزايدة بتستخدم <span class="en">open source approach</span> في تطوير منتجاتها. موديل الأعمال مش بيعتمد على بيع البرنامج نفسه — لكن على <strong>بيع الدعم والخدمات والاستشارات</strong> اللي حواليه.
+      </p>
+      <p>
+        فكرتهم: لو مجتمع كبير من المطورين ساعد في التطوير، البرنامج بيتطور بشكل أسرع وأرخص ويتكوّن مجتمع مستخدمين ضخم يحقق استمرارية.
+      </p>
+      <div class="ding">💡 مثال: <span class="en">Red Hat</span> — تبيع دعم وخدمات إنتاجية لنظام <span class="en">Linux</span> اللي كوده مفتوح مجاناً!</div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">⚖️ OPEN SOURCE LICENSING</div>
+      <p>
+        المبدأ الأساسي: <span class="en">source code</span> متاح بحرية — لكن ده <strong>مش معناه إن أي حد يعمل أي حاجة</strong>! المطور أو الشركة اللي كتبت الكود لسه عندهم حقوق قانونية <span class="en">(copyright)</span>.
+      </p>
+      <p>ممكن يحطوا شروط في <span class="en">open source software license</span> بتحدد إزاي الكود يتاستخدم. فيه 3 نماذج رئيسية للتراخيص:</p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">📜 3 LICENSE MODELS</div>
+      <div class="lic-box gpl">
+        <div class="lic-title">🔴 GPL — GNU General Public License</div>
+        <p style="color:#c8b0b0;font-size:.93em;line-height:1.85;">
+          رخصة <strong>تبادلية</strong> <span class="en">(reciprocal)</span> — لو استخدمت كود مرخص بـ<span class="en">GPL</span> في نظام جديد، النظام الجديد لازم يكون <span class="en">open source</span> كمان تحت نفس الرخصة. "العدوى" بتنتقل!
+        </p>
+      </div>
+      <div class="lic-box lgpl">
+        <div class="lic-title">🟠 LGPL — GNU Lesser General Public License</div>
+        <p style="color:#c8b8a8;font-size:.93em;line-height:1.85;">
+          نسخة أخف من <span class="en">GPL</span> — ممكن تكتب مكونات <span class="en">(components)</span> بتستدعي كود <span class="en">LGPL</span> من غير ما تجبر مكوناتك على أن تكون <span class="en">open source</span>. للـ<span class="en">libraries</span> في الغالب.
+        </p>
+      </div>
+      <div class="lic-box bsd">
+        <div class="lic-title">🟢 BSD — Berkley Standard Distribution License</div>
+        <p style="color:#a8c8b0;font-size:.93em;line-height:1.85;">
+          رخصة <strong>غير تبادلية</strong> <span class="en">(non-reciprocal)</span> — ممكن تعدّل وتستخدم الكود من غير ما تنشر التعديلات. ممكن تحطه في أنظمة <span class="en">proprietary/closed source</span> مدفوعة.
+        </p>
+      </div>
+      <div class="trap">⚠️ ملخص: <span class="en">GPL</span> أكتر تقييداً — <span class="en">BSD</span> أكتر حرية. اختيار الرخصة الغلط ممكن يكون مشكلة قانونية كبيرة!</div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🗂️ LICENSE MANAGEMENT (6 RULES)</div>
+      <p>لإدارة تراخيص الـ<span class="en">open source</span> صح في شركتك:</p>
+      <ol class="num-list">
+        <li><span>أسّس نظام لمتابعة الـ<span class="en">open source components</span> المستخدمة ومن أين نزّلتها</span></li>
+        <li><span>افهم أنواع التراخيص المختلفة قبل استخدام أي مكون جديد</span></li>
+        <li><span>تابع مسارات تطور المكونات <span class="en">(evolution pathways)</span> — التحديثات ممكن تغير الرخصة</span></li>
+        <li><span>وعّي الفريق بأهمية الـ<span class="en">open source</span> والتراخيص</span></li>
+        <li><span>وجود أنظمة تدقيق <span class="en">(auditing systems)</span> دورية</span></li>
+        <li><span>شارك في مجتمع الـ<span class="en">open source</span> وساهم في المشاريع</span></li>
+      </ol>
+    </div>
+    <div class="scene">
+      <div class="scene-title">❓ OPEN SOURCE ISSUES — 2 KEY QUESTIONS</div>
+      <p>كل شركة لازم تسأل سؤالين رئيسيين:</p>
+      <div class="grid-2">
+        <div class="gbox">
+          <div class="ico">1️⃣</div>
+          <p>هل المنتج اللي بنطوره يستخدم <span class="en">open source components</span>؟</p>
+        </div>
+        <div class="gbox">
+          <div class="ico">2️⃣</div>
+          <p>هل نستخدم <span class="en">open source approach</span> في عملية التطوير نفسها؟</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cheat Sheet -->
+<section id="cheatsheet" id="ch9">
+  <div class="cs-title">⚡ CHEAT SHEET — LEC 9</div>
+  <div class="cs-grid">
+    <div class="cs-card">
+      <h3>ARCHITECTURAL DESIGN</h3>
+      <ul>
+        <li>أول مرحلة تصميم — تحديد subsystems وعلاقاتهم</li>
+        <li>Link بين specification والتصميم التفصيلي</li>
+        <li>In the Small: معمارية برنامج واحد</li>
+        <li>In the Large: Enterprise systems كاملة</li>
+        <li>مثال: Packing Robot (Vision + Arm + DB)</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>3 ADVANTAGES OF EXPLICIT ARCH</h3>
+      <ul>
+        <li>1 — Stakeholder Communication</li>
+        <li>2 — System Analysis (early)</li>
+        <li>3 — Large-scale Reuse</li>
+        <li>Representation: box-and-line (informal)</li>
+        <li>Use: discussion + documentation</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>4 ARCHITECTURAL VIEWS</h3>
+      <ul>
+        <li>Logical View — key objects/classes</li>
+        <li>Process View — run-time interactions</li>
+        <li>Development View — SW decomposition</li>
+        <li>Physical View — HW distribution</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>REPOSITORY PATTERN</h3>
+      <ul>
+        <li>Central repository مشترك بين subsystems</li>
+        <li>مثال: IDE (Editor, Compiler, Debugger...)</li>
+        <li>+ مشاركة بيانات فعالة، نسخ احتياطي مركزي</li>
+        <li>- Single point of failure</li>
+        <li>- Access bottleneck</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>PIPE-AND-FILTER + LAYERED</h3>
+      <ul>
+        <li>Pipe-Filter: مراحل متسلسلة input→filter→output</li>
+        <li>مثال: Compiler (Lexical→Syntax→Semantic→Code)</li>
+        <li>مثال: ATM transactions</li>
+        <li>Layered: طبقات — كل طبقة تخدم العليا</li>
+        <li>مثال: Info Systems 4 layers + Mentcare 4 layers</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>4 LEVELS OF REUSE</h3>
+      <ul>
+        <li>1 — Abstraction: design patterns (knowledge)</li>
+        <li>2 — Object: libraries/classes</li>
+        <li>3 — Component: component frameworks</li>
+        <li>4 — System: COTS systems</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>4 REUSE COSTS</h3>
+      <ul>
+        <li>Search + evaluation cost</li>
+        <li>Purchase cost (COTS)</li>
+        <li>Adaptation cost (تكييف)</li>
+        <li>Integration cost (تكامل مع الكود)</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>CONFIGURATION MANAGEMENT</h3>
+      <ul>
+        <li>إدارة تغييرات نظام متطور — ضروري للفرق</li>
+        <li>1 — Version Management (Git)</li>
+        <li>2 — System Integration (ما في الـbuild)</li>
+        <li>3 — Problem Tracking (Jira)</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>HOST-TARGET + IDEs</h3>
+      <ul>
+        <li>Host: بيئة التطوير (IDE + Compiler + Testing)</li>
+        <li>Target: بيئة التنفيذ (Libraries + DB)</li>
+        <li>IDE = Editor + Compiler + Debugger + VCS</li>
+        <li>3 Deployment factors: HW reqs, availability, comms</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>OPEN SOURCE</h3>
+      <ul>
+        <li>Source code متاح للعموم للقراءة والتعديل</li>
+        <li>أصول: FSF (Richard Stallman)</li>
+        <li>أمثلة: Linux, Java, Apache, mySQL</li>
+        <li>Business model: بيع support مش البرنامج</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>3 LICENSE MODELS</h3>
+      <ul>
+        <li>GPL — reciprocal: يجبرك تفتح كودك كمان</li>
+        <li>LGPL — أخف: components مش لازم تُفتح</li>
+        <li>BSD — non-reciprocal: حر تعمل proprietary</li>
+      </ul>
+    </div>
+    <div class="cs-card">
+      <h3>LICENSE MANAGEMENT (6)</h3>
+      <ul>
+        <li>System to track OS components used</li>
+        <li>Know license types before use</li>
+        <li>Track component evolution pathways</li>
+        <li>Educate the team on open source</li>
+        <li>Auditing systems in place</li>
+        <li>Participate in open source community</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+const chapters=['ch0','ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','cheatsheet'];
+function revealStory(id){
+  const s=document.getElementById(id);
+  if(s){s.classList.toggle('open');}
+}
+function scrollToChapter(i){
+  const el=document.getElementById(chapters[i]);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const pct=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  document.getElementById('progress-bar').style.width=pct+'%';
+});
+const dots=document.querySelectorAll('.nav-dot');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx=chapters.indexOf(e.target.id);
+      if(idx>=0){
+        dots.forEach(d=>d.classList.remove('active'));
+        if(dots[idx])dots[idx].classList.add('active');
+      }
+    }
+  });
+},{threshold:0.3});
+chapters.forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)obs.observe(el);
+});
+</script>
+</body>
+</html>
