@@ -351,132 +351,11 @@
       </ul>
       <div class="diagram">
         <div class="dt">Slide 20 — Hardware architecture (Textbook Version)</div>
-        <svg viewBox="0 0 600 360" class="svg-diagram">
-          <defs>
-            <marker id="arrow-book" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold)"/>
-            </marker>
-          </defs>
-          
-          <!-- Nodes -->
-          <rect x="20" y="15" width="560" height="30" rx="4" class="svg-node header-node" />
-          <text x="300" y="34" class="svg-text" style="font-weight:bold;">Insulin reservoir</text>
-          
-          <rect x="60" y="75" width="120" height="45" rx="4" class="svg-node" />
-          <text x="120" y="101" class="svg-text">Needle assembly</text>
-          
-          <rect x="250" y="75" width="100" height="45" rx="4" class="svg-node active-node" />
-          <text x="300" y="101" class="svg-text active-text">Pump</text>
-          
-          <rect x="440" y="75" width="100" height="45" rx="4" class="svg-node" />
-          <text x="490" y="101" class="svg-text">Clock</text>
-          
-          <rect x="60" y="160" width="100" height="45" rx="4" class="svg-node" />
-          <text x="110" y="186" class="svg-text">Sensor</text>
-          
-          <rect x="240" y="160" width="120" height="45" rx="4" class="svg-node active-node" />
-          <text x="300" y="186" class="svg-text active-text">Controller</text>
-          
-          <rect x="440" y="160" width="100" height="45" rx="4" class="svg-node" />
-          <text x="490" y="186" class="svg-text">Alarm</text>
-          
-          <rect x="175" y="245" width="110" height="45" rx="4" class="svg-node" />
-          <text x="230" y="271" class="svg-text">Display 1</text>
-          
-          <rect x="315" y="245" width="110" height="45" rx="4" class="svg-node" />
-          <text x="370" y="271" class="svg-text">Display 2</text>
-          
-          <rect x="20" y="315" width="560" height="30" rx="4" class="svg-node header-node" />
-          <text x="300" y="334" class="svg-text" style="font-weight:bold;">Power supply</text>
-          
-          <!-- Connections / Arrows -->
-          <line x1="290" y1="45" x2="290" y2="75" class="svg-arrow-line" style="marker-end:none;" />
-          <line x1="310" y1="45" x2="310" y2="75" class="svg-arrow-line" style="marker-end:none;" />
-          <path d="M 180 97.5 L 240 97.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-          <path d="M 440 105 L 355 160" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-          <path d="M 160 182.5 L 230 182.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-          <path d="M 300 160 L 300 130" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-          <path d="M 360 182.5 L 430 182.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-          <path d="M 300 205 L 300 225" class="svg-arrow-line" style="marker-end:none;" />
-          <path d="M 230 225 L 370 225" class="svg-arrow-line" style="marker-end:none;" />
-          <path d="M 230 225 L 230 237.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-          <path d="M 370 225 L 370 237.5" class="svg-arrow-line" marker-end="url(#arrow-book)" />
-        </svg>
+        <img src="lecture_images/lec_2_page_20.png" alt="Insulin Pump Hardware Architecture" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
       </div>
       <div class="diagram">
         <div class="dt">Slide 21 — Activity model (Textbook Version)</div>
-        <svg viewBox="0 0 920 380" class="svg-diagram">
-          <defs>
-            <marker id="arrow-act" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold)"/>
-            </marker>
-          </defs>
-          
-          <circle cx="135" cy="75" r="10" fill="var(--gold-soft)" />
-          
-          <rect x="180" y="50" width="80" height="50" rx="2" class="svg-node" />
-          <text x="220" y="79" class="svg-text" style="font-size: 11px;">Blood sensor</text>
-          
-          <rect x="300" y="50" width="160" height="50" rx="15" class="svg-node active-node" />
-          <text x="380" y="74" class="svg-text" style="font-size: 11px;">Analyse sensor</text>
-          <text x="380" y="89" class="svg-text" style="font-size: 11px;">reading</text>
-          
-          <rect x="500" y="50" width="80" height="50" rx="2" class="svg-node" />
-          <text x="540" y="79" class="svg-text" style="font-size: 11px;">Blood sugar</text>
-          
-          <rect x="620" y="50" width="120" height="50" rx="15" class="svg-node active-node" />
-          <text x="680" y="79" class="svg-text active-text" style="font-size: 11px;">Compute insulin</text>
-          
-          <rect x="780" y="50" width="80" height="50" rx="2" class="svg-node" />
-          <text x="820" y="71" class="svg-text" style="font-size: 11px;">Insulin</text>
-          <text x="820" y="86" class="svg-text" style="font-size: 11px;">log</text>
-
-          <rect x="640" y="140" width="80" height="50" rx="2" class="svg-node" />
-          <text x="680" y="161" class="svg-text" style="font-size: 11px;">Insulin</text>
-          <text x="680" y="176" class="svg-text" style="font-size: 11px;">dose</text>
-
-          <line x1="600" y1="220" x2="760" y2="220" class="svg-arrow-line" style="stroke-width: 6px; marker-end: none;" />
-
-          <rect x="730" y="255" width="100" height="50" rx="15" class="svg-node" />
-          <text x="780" y="284" class="svg-text" style="font-size: 11px;">Log dose</text>
-          
-          <rect x="480" y="255" width="160" height="50" rx="15" class="svg-node active-node" />
-          <text x="560" y="279" class="svg-text active-text" style="font-size: 11px;">Compute pump</text>
-          <text x="560" y="294" class="svg-text active-text" style="font-size: 11px;">commands</text>
-          
-          <rect x="360" y="255" width="80" height="50" rx="2" class="svg-node" />
-          <text x="400" y="280" class="svg-text" style="font-size: 11px;">Pump data</text>
-          
-          <rect x="180" y="255" width="140" height="50" rx="15" class="svg-node active-node" />
-          <text x="250" y="279" class="svg-text active-text" style="font-size: 11px;">Control insulin</text>
-          <text x="250" y="294" class="svg-text active-text" style="font-size: 11px;">pump</text>
-          
-          <rect x="60" y="255" width="80" height="50" rx="2" class="svg-node" />
-          <text x="100" y="276" class="svg-text" style="font-size: 11px;">Insulin</text>
-          <text x="100" y="291" class="svg-text" style="font-size: 11px;">pump</text>
-
-          <circle cx="25" cy="280" r="12" fill="none" stroke="var(--gold)" stroke-width="2" />
-          <circle cx="25" cy="280" r="7" fill="var(--gold-soft)" />
-
-          <path d="M 145 75 L 170 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 260 75 L 290 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 460 75 L 490 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 580 75 L 610 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 780 75 L 750 75" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-
-          <path d="M 680 100 L 680 130" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 680 190 L 680 210" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-
-          <path d="M 720 220 L 760 245" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 820 255 L 820 110" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 640 220 L 590 245" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          
-          <path d="M 480 280 L 450 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 360 280 L 330 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 180 280 L 330 280" style="display:none;" />
-          <path d="M 180 280 L 150 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-          <path d="M 60 280 L 47 280" class="svg-arrow-line" marker-end="url(#arrow-act)" />
-        </svg>
+        <img src="lecture_images/lec_2_page_21.png" alt="Insulin Pump Activity Model" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
       </div>
       <div class="eli5">It's like a <b>smart thermostat for your blood</b>: it reads the level, decides how much "fix" to inject, and acts — but because a mistake can kill, it must be <b>extremely reliable</b>.</div>
 
@@ -490,37 +369,7 @@
       </ul>
       <div class="diagram">
         <div class="dt">Slide 26 — Organization of the MHC-PMS (Textbook Version)</div>
-        <svg viewBox="0 0 600 280" class="svg-diagram">
-          <defs>
-            <marker id="arrow-bi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold)"/>
-            </marker>
-          </defs>
-          
-          <rect x="50" y="30" width="120" height="50" rx="2" class="svg-node" />
-          <text x="110" y="54" class="svg-text" style="font-size: 11px;">MHC-PMS</text>
-          <text x="110" y="69" class="svg-text" style="font-size: 11px;">local</text>
-          
-          <rect x="240" y="30" width="120" height="50" rx="2" class="svg-node" />
-          <text x="300" y="54" class="svg-text" style="font-size: 11px;">MHC-PMS</text>
-          <text x="300" y="69" class="svg-text" style="font-size: 11px;">local</text>
-          
-          <rect x="430" y="30" width="120" height="50" rx="2" class="svg-node" />
-          <text x="490" y="54" class="svg-text" style="font-size: 11px;">MHC-PMS</text>
-          <text x="490" y="69" class="svg-text" style="font-size: 11px;">local</text>
-
-          <rect x="180" y="115" width="240" height="50" rx="2" class="svg-node active-node" />
-          <text x="300" y="144" class="svg-text active-text" style="font-size: 11px;">MHC-PMS server</text>
-
-          <rect x="140" y="200" width="320" height="50" rx="2" class="svg-node" />
-          <text x="300" y="229" class="svg-text" style="font-size: 11px;">Patient database</text>
-
-          <path d="M 125 80 L 190 115" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
-          <path d="M 300 80 L 300 115" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
-          <path d="M 475 80 L 410 115" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
-          <path d="M 240 165 L 240 200" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
-          <path d="M 360 165 L 360 200" class="svg-arrow-line" marker-start="url(#arrow-bi)" marker-end="url(#arrow-bi)" />
-        </svg>
+        <img src="lecture_images/lec_2_page_26.png" alt="Organization of the MHC-PMS" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
       </div>
       <h4>Concerns (slide 28)</h4>
       <div class="grid g2">
@@ -533,9 +382,7 @@
       <p><b>Meaning:</b> a <b>data-collection</b> system. A government deploys hundreds of stations in remote areas to measure <b>temperature, pressure, sunshine, rainfall, wind speed & direction</b> over 24-hour periods.</p>
       <div class="diagram">
         <div class="dt">Slide 30 — The weather station's environment (3 systems)</div>
-        <div class="row"><span class="box">«system» Weather station</span><span class="arrow">—</span><span class="box dim">«system» Data management & archiving</span></div>
-        <div class="row"><span class="arrow">|</span></div>
-        <div class="row"><span class="box dim">«system» Station maintenance</span></div>
+        <img src="lecture_images/lec_2_page_30.png" alt="The weather station's environment" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
       </div>
       <div class="grid g3">
         <div class="card"><h5>Weather station system</h5><p>Collects weather data, does initial processing, <b>transmits</b> it to the management system.</p></div>
@@ -549,7 +396,8 @@
       <p><b>Meaning:</b> a <b>service-oriented</b> educational framework. Teachers & learners pick the tools they need (spreadsheets, VLE for homework, games, simulations). Every component is a <b>replaceable service</b>, so it updates incrementally and can be configured for different groups (young kids, senior students).</p>
       <div class="diagram">
         <div class="dt">Slide 39 — iLearn layered architecture</div>
-        <div class="layer"><div class="ll">User interface</div><div class="chips"><span class="chip">Browser-based UI</span><span class="chip">iLearn app</span></div></div>
+        <img src="lecture_images/lec_2_page_39.png" alt="iLearn Layered Architecture" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
+      </div>
         <div class="layer"><div class="ll">Configuration services</div><div class="chips"><span class="chip">Group mgmt</span><span class="chip">Application mgmt</span><span class="chip">Identity mgmt</span></div></div>
         <div class="layer"><div class="ll">Application services</div><div class="chips"><span class="chip">Email</span><span class="chip">Messaging</span><span class="chip">Video conf.</span><span class="chip">Word processing</span><span class="chip">Spreadsheet</span><span class="chip">VLE</span><span class="chip">Simulation</span><span class="chip">Archives</span></div></div>
         <div class="layer"><div class="ll">Utility services</div><div class="chips"><span class="chip">Authentication</span><span class="chip">Logging & monitoring</span><span class="chip">Interfacing</span><span class="chip">User storage</span><span class="chip">Search</span></div></div>
@@ -816,6 +664,184 @@
     });
     document.getElementById(scoreId).textContent='Answers revealed';
   }
+
+  // Lightbox and Zoom Button functionality
+  (function() {
+    // 1. Add style tags dynamically for premium look
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .lightbox-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(10, 12, 16, 0.95);
+        backdrop-filter: blur(10px);
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .lightbox-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .lightbox-content {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      .lightbox-modal.show .lightbox-content {
+        transform: scale(1);
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #dde3ee;
+        font-size: 35px;
+        font-weight: bold;
+        cursor: pointer;
+        background: rgba(255,255,255,0.05);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .lightbox-close:hover {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        transform: scale(1.05);
+      }
+      .lightbox-hint {
+        position: absolute;
+        bottom: 20px;
+        color: #8892a4;
+        font-size: 0.85rem;
+        pointer-events: none;
+        direction: rtl;
+        font-family: 'Tajawal', sans-serif;
+      }
+      .zoomable-img {
+        cursor: zoom-in;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+      }
+      .zoomable-img:hover {
+        transform: scale(1.015);
+        box-shadow: 0 8px 30px rgba(232, 184, 90, 0.15) !important;
+      }
+      .zoom-btn {
+        background: rgba(232, 184, 90, 0.12);
+        color: #e8b85a;
+        border: 1px solid rgba(232, 184, 90, 0.3);
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .zoom-btn:hover {
+        background: #e8b85a;
+        color: #0a0c0e;
+        transform: translateY(-1px);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Create lightbox modal elements
+    const modal = document.createElement('div');
+    modal.className = 'lightbox-modal';
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.innerHTML = '&times;';
+    
+    const img = document.createElement('img');
+    img.className = 'lightbox-content';
+    
+    const hint = document.createElement('div');
+    hint.className = 'lightbox-hint';
+    hint.innerText = 'اضغط في أي مكان لإغلاق الصورة';
+    
+    modal.appendChild(closeBtn);
+    modal.appendChild(img);
+    modal.appendChild(hint);
+    document.body.appendChild(modal);
+
+    // Open lightbox helper
+    const openLightbox = (src) => {
+      img.src = src;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    };
+
+    // Close lightbox helper
+    const closeModal = () => {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(() => { img.src = ''; }, 300);
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target !== img) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        closeModal();
+      }
+    });
+
+    // 3. Process all slide images
+    const slideImages = document.querySelectorAll('img[src*="lecture_images/"]');
+    slideImages.forEach(image => {
+      image.classList.add('zoomable-img');
+      image.addEventListener('click', () => openLightbox(image.src));
+      
+      // Try to find header (dt or who class) in its parent
+      const parent = image.parentElement;
+      if (parent) {
+        const header = parent.querySelector('.dt, .who');
+        if (header) {
+          // Style header to allow button positioning
+          header.style.display = 'flex';
+          header.style.justifyContent = 'space-between';
+          header.style.alignItems = 'center';
+          header.style.gap = '10px';
+          header.style.width = '100%';
+          
+          // Create zoom button
+          const btn = document.createElement('button');
+          btn.className = 'zoom-btn';
+          btn.innerHTML = 'تكبير الرسمة 🔍';
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(image.src);
+          });
+          
+          header.appendChild(btn);
+        }
+      }
+    });
+  })();
 </script>
 </body>
 </html>

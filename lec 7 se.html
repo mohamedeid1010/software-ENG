@@ -710,6 +710,8 @@
 
     <div class="scene">
       <div class="scene-title">🔍 SLIDE 24 — 4 REVIEW CHECKS</div>
+      <div class="who">الرسمة التوضيحية من السلايدات (Slide 24 - Review Checks)</div>
+      <img src="lecture_images/lec_7_page_24.png" alt="Slide 24 - Review Checks" style="max-width:100%; height:auto; border-radius:12px; border: 1px solid var(--border); margin: 15px 0;">
       <div class="check-grid">
         <div class="check-card" style="background:rgba(82,152,224,.08); border:1px solid rgba(82,152,224,.2);">
           <div class="ck-title" style="color:var(--blue);">① Verifiability</div>
@@ -732,6 +734,8 @@
 
     <div class="scene">
       <div class="scene-title">📄 SLIDE 25 — 5 DETAILED CHECKS (Exam Detail)</div>
+      <div class="who">الرسمة التوضيحية من السلايدات (Slide 25 - Detailed Checks)</div>
+      <img src="lecture_images/lec_7_page_25.png" alt="Slide 25 - Detailed Checks" style="max-width:100%; height:auto; border-radius:12px; border: 1px solid var(--border); margin: 15px 0;">
       <table class="stbl">
         <tr><th>#</th><th>Check</th><th class="ar">التفصيل</th></tr>
         <tr>
@@ -821,6 +825,8 @@
 
     <div class="scene">
       <div class="scene-title">📊 REQUIREMENTS EVOLUTION DIAGRAM</div>
+      <div class="who">الرسمة التوضيحية من السلايدات (Requirements Evolution)</div>
+      <img src="lecture_images/lec_7_page_29.png" alt="Requirements Evolution" style="max-width:100%; height:auto; border-radius:12px; border: 1px solid var(--border); margin: 15px 0;">
       <div style="background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:24px; margin:12px 0; direction:ltr;">
         <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center;">
           <div style="text-align:center;">
@@ -853,6 +859,8 @@
   <div class="story" id="s9">
     <div class="scene">
       <div class="scene-title">🔄 THE CHANGE MANAGEMENT PROCESS</div>
+      <div class="who">الرسمة التوضيحية من السلايدات (Requirements Change Management)</div>
+      <img src="lecture_images/lec_7_page_30.png" alt="Requirements Change Management" style="max-width:100%; height:auto; border-radius:12px; border: 1px solid var(--border); margin: 15px 0;">
       <div class="flow" style="flex-wrap:wrap;">
         <div class="fbox" style="background:rgba(224,82,82,.1); border-color:rgba(224,82,82,.3);">Identified<br>Problem</div>
         <div class="farrow">→</div>
@@ -1084,6 +1092,184 @@
       }
     });
   });
+
+  // Lightbox and Zoom Button functionality
+  (function() {
+    // 1. Add style tags dynamically for premium look
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .lightbox-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(10, 12, 16, 0.95);
+        backdrop-filter: blur(10px);
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .lightbox-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .lightbox-content {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      .lightbox-modal.show .lightbox-content {
+        transform: scale(1);
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #dde3ee;
+        font-size: 35px;
+        font-weight: bold;
+        cursor: pointer;
+        background: rgba(255,255,255,0.05);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .lightbox-close:hover {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        transform: scale(1.05);
+      }
+      .lightbox-hint {
+        position: absolute;
+        bottom: 20px;
+        color: #8892a4;
+        font-size: 0.85rem;
+        pointer-events: none;
+        direction: rtl;
+        font-family: 'Tajawal', sans-serif;
+      }
+      .zoomable-img {
+        cursor: zoom-in;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+      }
+      .zoomable-img:hover {
+        transform: scale(1.015);
+        box-shadow: 0 8px 30px rgba(232, 184, 90, 0.15) !important;
+      }
+      .zoom-btn {
+        background: rgba(232, 184, 90, 0.12);
+        color: #e8b85a;
+        border: 1px solid rgba(232, 184, 90, 0.3);
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .zoom-btn:hover {
+        background: #e8b85a;
+        color: #0a0c0e;
+        transform: translateY(-1px);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Create lightbox modal elements
+    const modal = document.createElement('div');
+    modal.className = 'lightbox-modal';
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.innerHTML = '&times;';
+    
+    const img = document.createElement('img');
+    img.className = 'lightbox-content';
+    
+    const hint = document.createElement('div');
+    hint.className = 'lightbox-hint';
+    hint.innerText = 'اضغط في أي مكان لإغلاق الصورة';
+    
+    modal.appendChild(closeBtn);
+    modal.appendChild(img);
+    modal.appendChild(hint);
+    document.body.appendChild(modal);
+
+    // Open lightbox helper
+    const openLightbox = (src) => {
+      img.src = src;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    };
+
+    // Close lightbox helper
+    const closeModal = () => {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(() => { img.src = ''; }, 300);
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target !== img) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        closeModal();
+      }
+    });
+
+    // 3. Process all slide images
+    const slideImages = document.querySelectorAll('img[src*="lecture_images/"]');
+    slideImages.forEach(image => {
+      image.classList.add('zoomable-img');
+      image.addEventListener('click', () => openLightbox(image.src));
+      
+      // Try to find header (dt or who class) in its parent
+      const parent = image.parentElement;
+      if (parent) {
+        const header = parent.querySelector('.dt, .who');
+        if (header) {
+          // Style header to allow button positioning
+          header.style.display = 'flex';
+          header.style.justifyContent = 'space-between';
+          header.style.alignItems = 'center';
+          header.style.gap = '10px';
+          header.style.width = '100%';
+          
+          // Create zoom button
+          const btn = document.createElement('button');
+          btn.className = 'zoom-btn';
+          btn.innerHTML = 'تكبير الرسمة 🔍';
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(image.src);
+          });
+          
+          header.appendChild(btn);
+        }
+      }
+    });
+  })();
 </script>
 </body>
 </html>

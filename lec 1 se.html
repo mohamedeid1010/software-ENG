@@ -254,18 +254,7 @@
       <p>Software is <b>not just the code (programs)</b>. The slides define it as everything below — programs PLUS the documents that come with them.</p>
       <div class="diagram">
         <div class="dt">Slide 4 — Software = these parts together</div>
-        <div class="row">
-          <span class="box">SOFTWARE</span>
-        </div>
-        <div class="row" style="margin-top:14px;">
-          <span class="box dim">Programs</span>
-          <span class="box dim">Data</span>
-          <span class="box dim">Documentation</span>
-        </div>
-        <div class="row">
-          <span class="chip">↳ System Documentation</span>
-          <span class="chip">↳ User Documentation</span>
-        </div>
+        <img src="lecture_images/lec_1_page_4.png" alt="Software Components Diagram" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
       </div>
       <div class="eli5">Software is like a <b>boxed board game</b>. The game pieces = the <b>programs</b>. The score sheet = the <b>data</b>. And the <b>rule book</b> = the documentation (one rulebook for the builders = <i>system docs</i>, one for the players = <i>user docs</i>). A game with no rulebook is useless — same for software with no documentation.</div>
       <div class="note">باختصار: السوفتوير = <b>برامج + بيانات + توثيق (documentation)</b>. مش بس الكود! والتوثيق نوعين: واحد للمطورين (system) وواحد للمستخدم (user).</div>
@@ -341,21 +330,7 @@
 
       <div class="diagram">
         <div class="dt">Slide 13 — The project triangle</div>
-        <div class="tri-wrap">
-          <svg viewBox="0 0 320 240" width="320" height="240" aria-label="Time Cost Quality triangle">
-            <defs>
-              <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#e8b85a" stop-opacity="0.35"/>
-                <stop offset="100%" stop-color="#e8b85a" stop-opacity="0.06"/>
-              </linearGradient>
-            </defs>
-            <polygon points="160,30 40,200 280,200" fill="url(#tg)" stroke="#e8b85a" stroke-width="2"/>
-            <text x="160" y="20" fill="#f4d28a" font-size="16" text-anchor="middle" font-family="JetBrains Mono">TIME</text>
-            <text x="30" y="222" fill="#f4d28a" font-size="16" text-anchor="middle" font-family="JetBrains Mono">COST</text>
-            <text x="290" y="222" fill="#f4d28a" font-size="16" text-anchor="middle" font-family="JetBrains Mono">QUALITY</text>
-            <circle cx="160" cy="143" r="4" fill="#e8b85a"/>
-          </svg>
-        </div>
+        <img src="lecture_images/lec_1_page_13.png" alt="Project Triangle Diagram" style="max-width:100%; height:auto; border-radius:10px; margin-top:10px; border: 1px solid rgba(232, 184, 90, 0.2);">
       </div>
       <div class="grid g3">
         <div class="card"><span class="ic">⏱️</span><h5>Time</h5><p>How fast can it be delivered?</p></div>
@@ -619,6 +594,184 @@
     });
     document.getElementById(scoreId).textContent='Answers revealed';
   }
+
+  // Lightbox and Zoom Button functionality
+  (function() {
+    // 1. Add style tags dynamically for premium look
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .lightbox-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(10, 12, 16, 0.95);
+        backdrop-filter: blur(10px);
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .lightbox-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .lightbox-content {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      .lightbox-modal.show .lightbox-content {
+        transform: scale(1);
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #dde3ee;
+        font-size: 35px;
+        font-weight: bold;
+        cursor: pointer;
+        background: rgba(255,255,255,0.05);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .lightbox-close:hover {
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        transform: scale(1.05);
+      }
+      .lightbox-hint {
+        position: absolute;
+        bottom: 20px;
+        color: #8892a4;
+        font-size: 0.85rem;
+        pointer-events: none;
+        direction: rtl;
+        font-family: 'Tajawal', sans-serif;
+      }
+      .zoomable-img {
+        cursor: zoom-in;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+      }
+      .zoomable-img:hover {
+        transform: scale(1.015);
+        box-shadow: 0 8px 30px rgba(232, 184, 90, 0.15) !important;
+      }
+      .zoom-btn {
+        background: rgba(232, 184, 90, 0.12);
+        color: #e8b85a;
+        border: 1px solid rgba(232, 184, 90, 0.3);
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .zoom-btn:hover {
+        background: #e8b85a;
+        color: #0a0c0e;
+        transform: translateY(-1px);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Create lightbox modal elements
+    const modal = document.createElement('div');
+    modal.className = 'lightbox-modal';
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.innerHTML = '&times;';
+    
+    const img = document.createElement('img');
+    img.className = 'lightbox-content';
+    
+    const hint = document.createElement('div');
+    hint.className = 'lightbox-hint';
+    hint.innerText = 'اضغط في أي مكان لإغلاق الصورة';
+    
+    modal.appendChild(closeBtn);
+    modal.appendChild(img);
+    modal.appendChild(hint);
+    document.body.appendChild(modal);
+
+    // Open lightbox helper
+    const openLightbox = (src) => {
+      img.src = src;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    };
+
+    // Close lightbox helper
+    const closeModal = () => {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(() => { img.src = ''; }, 300);
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target !== img) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        closeModal();
+      }
+    });
+
+    // 3. Process all slide images
+    const slideImages = document.querySelectorAll('img[src*="lecture_images/"]');
+    slideImages.forEach(image => {
+      image.classList.add('zoomable-img');
+      image.addEventListener('click', () => openLightbox(image.src));
+      
+      // Try to find header (dt or who class) in its parent
+      const parent = image.parentElement;
+      if (parent) {
+        const header = parent.querySelector('.dt, .who');
+        if (header) {
+          // Style header to allow button positioning
+          header.style.display = 'flex';
+          header.style.justifyContent = 'space-between';
+          header.style.alignItems = 'center';
+          header.style.gap = '10px';
+          header.style.width = '100%';
+          
+          // Create zoom button
+          const btn = document.createElement('button');
+          btn.className = 'zoom-btn';
+          btn.innerHTML = 'تكبير الرسمة 🔍';
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(image.src);
+          });
+          
+          header.appendChild(btn);
+        }
+      }
+    });
+  })();
 </script>
 </body>
 </html>
