@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CSE 302 — Lecture 05: Agile Project Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0c0e;--surface:#13161a;--surface2:#1c2028;
+  --gold:#e8b85a;--gold2:#f5d078;--gold3:#c49a3c;
+  --text:#eee8d8;--muted:#7a8090;--dim:#252830;
+  --red:#e05555;--green:#5ab87a;--blue:#5ab0f5;
+  --purple:#a07af5;--cyan:#40d0d0;--orange:#f59040;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;font-size:18px;line-height:1.8;}
+
+/* ── PROGRESS ───────────────────────────── */
+#prog-wrap{position:fixed;top:0;left:0;width:100%;height:3px;background:var(--dim);z-index:999;}
+#prog{height:100%;width:0%;background:linear-gradient(90deg,var(--purple),var(--gold),var(--cyan));transition:width .15s;}
+
+/* ── NAV DOTS ───────────────────────────── */
+#nav{position:fixed;left:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;z-index:99;}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--dim);border:2px solid var(--muted);cursor:pointer;transition:all .3s;position:relative;}
+.dot.active{background:var(--gold);border-color:var(--gold2);transform:scale(1.5);}
+.dot:hover .tip{opacity:1;}
+.tip{position:absolute;left:20px;top:50%;transform:translateY(-50%);background:var(--surface);border:1px solid var(--gold3);color:var(--gold2);font-size:11px;white-space:nowrap;padding:3px 8px;border-radius:4px;opacity:0;transition:opacity .2s;font-family:'Tajawal',sans-serif;pointer-events:none;}
+
+/* ── HERO ───────────────────────────────── */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden;
+background:radial-gradient(ellipse at 30% 40%,#1a0f2a 0%,var(--bg) 60%),radial-gradient(ellipse at 70% 70%,#0a1a1f 0%,transparent 50%);}
+.lec-badge{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);border:1px solid var(--purple);padding:4px 14px;border-radius:20px;letter-spacing:2px;margin-bottom:28px;text-transform:uppercase;}
+#hero h1{font-size:clamp(2rem,5vw,3.8rem);font-weight:900;line-height:1.15;margin-bottom:16px;}
+.g{background:linear-gradient(135deg,var(--gold2),var(--gold),var(--gold3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.p{background:linear-gradient(135deg,var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+#hero > p{font-size:1.05rem;color:var(--muted);max-width:560px;margin:0 auto 36px;}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:36px;}
+.hero-tag{font-size:.75rem;font-family:'JetBrains Mono',monospace;background:var(--surface2);border:1px solid var(--dim);color:var(--muted);padding:5px 12px;border-radius:20px;}
+.scroll-cue{font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:.3;}50%{opacity:.9;}}
+
+/* ── CHAPTER ────────────────────────────── */
+.chapter{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:60px 24px;position:relative;}
+.chapter:nth-child(odd){background:var(--bg);}
+.chapter:nth-child(even){background:var(--surface);}
+.chnum{position:absolute;top:36px;right:36px;font-family:'JetBrains Mono',monospace;font-size:4.5rem;font-weight:700;color:rgba(232,184,90,.05);line-height:1;user-select:none;}
+.inner{max-width:880px;width:100%;}
+
+/* ── HOOK ───────────────────────────────── */
+.hook{border:2px solid var(--gold3);border-radius:16px;padding:38px;cursor:pointer;background:linear-gradient(135deg,var(--surface),var(--surface2));transition:all .35s;position:relative;overflow:hidden;}
+.hook::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(232,184,90,.05) 0%,transparent 60%);pointer-events:none;}
+.hook:hover{border-color:var(--gold2);transform:translateY(-3px);box-shadow:0 16px 50px rgba(232,184,90,.1);}
+.hook h2{font-size:1.45rem;font-weight:900;color:var(--gold2);margin-bottom:10px;line-height:1.3;}
+.hook .sub{color:var(--muted);font-size:.9rem;margin-bottom:20px;}
+.tap{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--gold3);border:1px solid var(--gold3);padding:5px 14px;border-radius:20px;letter-spacing:1px;transition:all .3s;}
+.hook:hover .tap{color:var(--gold2);border-color:var(--gold2);}
+
+/* ── STORY ──────────────────────────────── */
+.story{display:none;margin-top:26px;border-left:3px solid var(--gold3);padding-left:22px;}
+.story.open{display:block;animation:fadeUp .4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+
+/* story is Arabic text, so flip its direction */
+.story{direction:rtl;text-align:right;}
+
+/* story blocks */
+.scene{margin:18px 0;padding:18px;border-radius:10px;background:var(--surface2);border:1px solid var(--dim);}
+.scene-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--gold3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;direction:ltr;text-align:left;}
+.dialogue{margin:12px 0;padding:14px 18px;border-radius:8px;border-right:4px solid var(--gold);background:rgba(232,184,90,.04);font-style:italic;}
+.dialogue .spk{font-style:normal;font-weight:700;color:var(--gold2);font-size:.82rem;margin-bottom:4px;display:block;}
+.reveal{margin:14px 0;padding:16px;background:rgba(90,184,122,.07);border:1px solid rgba(90,184,122,.25);border-radius:8px;}
+.reveal-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;direction:ltr;text-align:left;}
+.trap{margin:14px 0;padding:16px;background:rgba(224,85,85,.07);border:1px solid rgba(224,85,85,.2);border-radius:8px;}
+.trap-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;direction:ltr;text-align:left;}
+.ding{margin:14px 0;padding:16px;background:rgba(90,176,245,.06);border:1px solid rgba(90,176,245,.2);border-radius:8px;}
+.ding-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;direction:ltr;text-align:left;}
+.boss{margin:14px 0;padding:16px;background:rgba(160,122,245,.07);border:1px solid rgba(160,122,245,.25);border-radius:8px;}
+.boss-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;direction:ltr;text-align:left;}
+.formula{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--gold2);background:var(--dim);padding:8px 14px;border-radius:6px;display:inline-block;margin:5px 0;direction:ltr;}
+.en{font-family:'JetBrains Mono',monospace;font-size:.88rem;color:var(--gold2);}
+
+/* table — keep LTR for readability of English terms */
+.stbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.87rem;direction:ltr;}
+.stbl th{background:var(--dim);color:var(--gold2);padding:8px 12px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.76rem;letter-spacing:.5px;}
+.stbl td{padding:8px 12px;border-bottom:1px solid var(--dim);}
+.stbl td:first-child{color:var(--gold2);font-weight:700;white-space:nowrap;}
+.stbl tr:hover td{background:rgba(232,184,90,.02);}
+/* Arabic cell */
+.ar{direction:rtl;text-align:right;}
+
+/* ── SCRUM VALUES ───────────────────────── */
+.values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:16px 0;}
+.val-card{background:var(--surface2);border:1px solid var(--dim);border-radius:12px;padding:16px;text-align:center;transition:all .3s;}
+.val-card:hover{transform:translateY(-4px);}
+.val-card.courage{border-top:3px solid var(--red);}
+.val-card.focus{border-top:3px solid var(--blue);}
+.val-card.commitment{border-top:3px solid var(--gold);}
+.val-card.respect{border-top:3px solid var(--green);}
+.val-card.openness{border-top:3px solid var(--purple);}
+.val-icon{font-size:1.8rem;margin-bottom:6px;}
+.val-name{font-weight:700;font-size:.9rem;font-family:'JetBrains Mono',monospace;}
+.val-card.courage .val-name{color:var(--red);}
+.val-card.focus .val-name{color:var(--blue);}
+.val-card.commitment .val-name{color:var(--gold);}
+.val-card.respect .val-name{color:var(--green);}
+.val-card.openness .val-name{color:var(--purple);}
+.val-ar{font-size:.78rem;color:var(--muted);margin-top:4px;}
+
+/* ── PHASE CARDS ────────────────────────── */
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0;}
+.phase-card{background:var(--surface2);border-radius:12px;padding:16px;text-align:center;direction:rtl;}
+.phase-card.p1{border-top:3px solid var(--blue);}
+.phase-card.p2{border-top:3px solid var(--purple);}
+.phase-card.p3{border-top:3px solid var(--green);}
+.p-icon{font-size:2rem;margin-bottom:8px;}
+.p-en{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;margin-bottom:4px;}
+.phase-card.p1 .p-en{color:var(--blue);}
+.phase-card.p2 .p-en{color:var(--purple);}
+.phase-card.p3 .p-en{color:var(--green);}
+.p-ar{font-size:.82rem;color:var(--text);}
+@media(max-width:600px){.phase-grid{grid-template-columns:1fr;}}
+
+/* ── SPRINT STEPS ───────────────────────── */
+.sprint-flow{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;align-items:flex-start;direction:ltr;}
+.sprint-step{background:var(--surface2);border:1px solid var(--dim);border-radius:10px;padding:12px;text-align:center;flex:1;min-width:120px;max-width:165px;transition:all .3s;}
+.sprint-step:hover{border-color:var(--cyan);}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--cyan);margin-bottom:5px;}
+.step-en{font-weight:700;font-size:.82rem;color:var(--text);margin-bottom:3px;}
+.step-ar{font-size:.75rem;color:var(--muted);direction:rtl;}
+.sprint-arrow{color:var(--gold3);font-size:1.2rem;padding-top:18px;}
+
+/* ── BENEFITS ───────────────────────────── */
+.benefit-list{display:flex;flex-direction:column;gap:10px;margin:12px 0;}
+.benefit-item{display:flex;align-items:flex-start;gap:12px;background:var(--surface2);border:1px solid var(--dim);border-radius:10px;padding:14px;direction:rtl;}
+.b-icon{font-size:1.5rem;flex-shrink:0;}
+.b-en{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--gold2);font-weight:700;direction:ltr;margin-bottom:3px;}
+.b-ar{font-size:.85rem;color:var(--text);}
+
+/* ── VS GRID ────────────────────────────── */
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin:14px 0;align-items:start;}
+.vs-col{background:var(--surface2);border-radius:12px;padding:16px;direction:rtl;}
+.vs-col.agile{border-top:3px solid var(--green);}
+.vs-col.plan{border-top:3px solid var(--blue);}
+.vs-label{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--dim);direction:ltr;}
+.vs-col.agile .vs-label{color:var(--green);}
+.vs-col.plan .vs-label{color:var(--blue);}
+.vs-center{display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--gold3);padding-top:36px;}
+.vs-col ul{list-style:none;font-size:.83rem;}
+.vs-col ul li{padding:3px 0;padding-right:12px;position:relative;}
+.vs-col ul li::before{content:'›';position:absolute;right:0;color:var(--gold3);}
+@media(max-width:600px){.vs-grid{grid-template-columns:1fr;}.vs-center{display:none;}}
+
+/* ── FACTOR TAGS ────────────────────────── */
+.factor-group{margin:12px 0;}
+.factor-group h4{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;border-bottom:1px solid var(--dim);padding-bottom:5px;direction:ltr;}
+.factor-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.factor-tag{font-size:.82rem;background:var(--surface2);border:1px solid var(--dim);padding:4px 12px;border-radius:20px;color:var(--text);transition:.25s;}
+.factor-tag:hover{border-color:var(--gold3);color:var(--gold2);}
+
+/* ── MULTI-SCRUM ─────────────────────────── */
+.multi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px;margin:14px 0;}
+.multi-card{background:var(--surface2);border:1px solid var(--dim);border-radius:12px;padding:16px;border-right:3px solid var(--purple);direction:rtl;}
+.mc-icon{font-size:1.6rem;margin-bottom:6px;}
+.mc-en{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.8rem;color:var(--purple);margin-bottom:4px;direction:ltr;}
+.mc-ar{font-size:.83rem;color:var(--text);}
+
+/* ── PROBLEMS GRID ──────────────────────── */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:12px 0;}
+.prob-card{background:var(--surface2);border:1px solid rgba(224,85,85,.2);border-radius:12px;padding:16px;border-top:3px solid var(--red);direction:rtl;}
+.prob-icon{font-size:1.6rem;margin-bottom:6px;}
+.prob-en{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--red);margin-bottom:4px;direction:ltr;}
+.prob-ar{font-size:.83rem;color:var(--text);}
+
+/* ── CHEAT SHEET ────────────────────────── */
+#cheatsheet{padding:80px 20px;background:var(--bg);}
+.cs-inner{max-width:980px;margin:0 auto;}
+.cs-header{text-align:center;margin-bottom:46px;}
+.cs-header h2{font-size:1.9rem;font-weight:900;color:var(--gold2);margin-bottom:8px;}
+.cs-header p{color:var(--muted);font-size:.88rem;}
+.cs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;}
+.cs-block{background:var(--surface);border:1px solid var(--dim);border-radius:12px;padding:20px;}
+.cs-block h3{font-size:.78rem;color:var(--gold2);font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--dim);padding-bottom:9px;margin-bottom:11px;}
+.cs-block ul{list-style:none;padding:0;}
+.cs-block ul li{font-size:.84rem;color:var(--text);padding:3px 0;padding-left:13px;position:relative;}
+.cs-block ul li::before{content:'›';position:absolute;left:0;color:var(--gold3);}
+.hl{color:var(--gold2);}
+
+/* ── FINALE ─────────────────────────────── */
+#finale{min-height:55vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;
+background:radial-gradient(ellipse at 50% 60%,#1a0f2a 0%,var(--bg) 65%);}
+.finale-inner h2{font-size:2rem;font-weight:900;color:var(--gold2);margin-bottom:12px;}
+.finale-inner p{color:var(--muted);max-width:520px;margin:0 auto;direction:rtl;}
+.gold-line{width:60px;height:2px;background:var(--gold3);margin:20px auto;border-radius:2px;}
+.key-formulas{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px;}
+
+@media(max-width:600px){
+  .chnum{font-size:3rem;top:18px;right:18px;}
+  .hook{padding:20px;}
+  .hook h2{font-size:1.2rem;}
+  #nav{left:6px;}
+  .cs-grid{grid-template-columns:1fr;}
+  .values-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="prog-wrap"><div id="prog"></div></div>
+<nav id="nav"></nav>
+
+<!-- ═══════════ HERO -->
+<section id="hero" class="chapter" data-ch="Start ✦">
+  <div class="lec-badge">CSE 302 · Lecture 05</div>
+  <h1><span class="g">Agile</span> Project <span class="p">Management</span></h1>
+  <p>Scrum, Sprints, Scaling, and why Agile isn't as simple as it sounds</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Scrum</span>
+    <span class="hero-tag">Sprint Cycle</span>
+    <span class="hero-tag">Scaling Agile</span>
+    <span class="hero-tag">Large Systems</span>
+    <span class="hero-tag">Multi-team Scrum</span>
+  </div>
+  <div class="scroll-cue">▼ Click any question — the story is in Arabic, the exam terms are in English</div>
+</section>
+
+<!-- ═══════════ C1: AGILE PM -->
+<section class="chapter" id="c1" data-ch="Agile PM ①">
+  <div class="chnum">01</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s1')">
+      <h2>🎯 The client changed ALL requirements halfway through. Your entire plan is now useless. Now what?</h2>
+      <div class="sub">Traditional project management has one job: deliver on time and on budget. But what happens when the plan meets reality?</div>
+      <div class="tap">Reveal the answer →</div>
+    </div>
+    <div class="story" id="s1">
+
+      <div class="scene">
+        <div class="scene-title">⚡ المشكلة</div>
+        <div class="dialogue">
+          <span class="spk">المدير التقليدي 📋</span>
+          عندنا خطة كاملة: 6 شهور، 40 feature، <span class="en">Gantt chart</span> محكم. كل حاجة محددة.
+        </div>
+        <div class="dialogue">
+          <span class="spk">الواقع 😈 — بعد 3 شهور</span>
+          السوق اتغير. العميل عايز 20 feature تانية خالص. وعايزها في شهرين.
+        </div>
+        <p>الـ <span class="en">plan-driven</span> بينكسر هنا. الـ <strong style="color:var(--gold2)">Agile PM</strong> اتبنى أساساً لهذه اللحظة.</p>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ Core Goal of Project Management</div>
+        <p>المسؤولية الأساسية للـ <span class="en">software project manager</span> هي إن الـ <span class="en">software</span> يتسلم <strong style="color:var(--gold2)">on time and within the planned budget</strong>.</p>
+        <br/>
+        <table class="stbl">
+          <tr><th>Approach</th><th>How it works</th><th class="ar">مناسب لـ</th></tr>
+          <tr>
+            <td style="color:var(--blue)">Plan-driven</td>
+            <td>Full plan upfront — deliverables, timeline, team roles</td>
+            <td class="ar">متطلبات ثابتة، أنظمة منظّمة</td>
+          </tr>
+          <tr>
+            <td style="color:var(--green)">Agile PM</td>
+            <td>Adapted to incremental development + agile practices</td>
+            <td class="ar">متطلبات متغيرة، فرق صغيرة</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="ding">
+        <div class="ding-title">💡 الحقيقة</div>
+        <p>معظم المشاريع الحقيقية بتستخدم <strong style="color:var(--gold2)">عناصر من الاتنين</strong> — الـ <span class="en">pure Agile</span> أو الـ <span class="en">pure Plan-driven</span> هو الاستثناء مش القاعدة.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C2: SCRUM + 3 PHASES -->
+<section class="chapter" id="c2" data-ch="Scrum ②">
+  <div class="chnum">02</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s2')">
+      <h2>🏉 What is Scrum — and what are its 3 phases?</h2>
+      <div class="sub">Scrum focuses on managing iterative development rather than specific agile practices. It has exactly 3 phases — know them cold for the exam.</div>
+      <div class="tap">Break down Scrum →</div>
+    </div>
+    <div class="story" id="s2">
+
+      <div class="scene">
+        <div class="scene-title">📖 التعريف</div>
+        <p><span class="en">Scrum</span> هو <strong style="color:var(--gold2)">agile method</strong> بيتخصص في إدارة الـ <span class="en">iterative development</span> مش في ممارسات <span class="en">Agile</span> المحددة. هو عملية <span class="en">empirical</span> — قراراته مبنية على الملاحظة والتجربة.</p>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ 3 Pillars of Scrum</div>
+        <table class="stbl">
+          <tr><th>Pillar</th><th class="ar">المعنى</th></tr>
+          <tr><td>Transparency</td><td class="ar">كل حاجة مرئية لكل الفريق في أي وقت</td></tr>
+          <tr><td>Inspection</td><td class="ar">مراجعة مستمرة للتقدم والعمل</td></tr>
+          <tr><td>Adaptation</td><td class="ar">التكيّف بناءً على اللي بتتعلمه</td></tr>
+        </table>
+        <p style="direction:rtl;margin-top:8px;">فكّر في الـ <span class="en">Empiricism</span> = بتشتغل من خلال تجارب صغيرة، بتتعلم منها، وبتغيّر في طريقة شغلك باستمرار.</p>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🗺️ الـ 3 Phases — مهم جداً للامتحان!</div>
+        <div class="phase-grid">
+          <div class="phase-card p1">
+            <div class="p-icon">🗺️</div>
+            <div class="p-en">Outline Planning</div>
+            <div class="p-ar">تحديد الأهداف العامة وتصميم الـ <span class="en">software architecture</span> الأولية</div>
+          </div>
+          <div class="phase-card p2">
+            <div class="p-icon">🔄</div>
+            <div class="p-en">Sprint Cycles</div>
+            <div class="p-ar">سلسلة من الـ <span class="en">sprints</span> — كل <span class="en">sprint</span> بيطوّر <span class="en">increment</span> من النظام</div>
+          </div>
+          <div class="phase-card p3">
+            <div class="p-icon">🏁</div>
+            <div class="p-en">Closure</div>
+            <div class="p-ar">إغلاق المشروع: وثائق، <span class="en">user manuals</span>، <span class="en">lessons learned</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trap">
+        <div class="trap-title">⚠️ فخ الامتحان</div>
+        <p>الـ <span class="en">Scrum</span> مش عن ممارسات <span class="en">Agile</span> المحددة — ده عن إدارة الـ <strong style="color:var(--gold2)">iterative development</strong>. متخلطوش بالـ <span class="en">XP</span> اللي هو عن ممارسات محددة زي <span class="en">TDD</span> و<span class="en">Pair Programming</span>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C3: SCRUM TERMINOLOGY -->
+<section class="chapter" id="c3" data-ch="Terminology ③">
+  <div class="chnum">03</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s3')">
+      <h2>📚 8 Scrum terms that appear in every exam — do you know all of them?</h2>
+      <div class="sub">Development Team, Product Backlog, ScrumMaster, Sprint, Velocity... each has a precise definition you must get exactly right.</div>
+      <div class="tap">Master the Scrum vocabulary →</div>
+    </div>
+    <div class="story" id="s3">
+
+      <div class="scene">
+        <div class="scene-title">📖 الـ 8 مصطلحات</div>
+        <table class="stbl">
+          <tr><th>Scrum Term</th><th class="ar">الشرح بالعربي</th></tr>
+          <tr>
+            <td>Development Team</td>
+            <td class="ar">مجموعة <span class="en">self-organizing</span> من المطورين — <strong style="color:var(--gold2)">لا تتجاوز 7 أشخاص</strong>. هم اللي بيطوروا البرنامج والوثائق الأساسية.</td>
+          </tr>
+          <tr>
+            <td>Potentially Shippable Product Increment</td>
+            <td class="ar">الـ <span class="en">software increment</span> المُسلَّم من كل <span class="en">sprint</span> — في حالة نهائية، لا يحتاج مزيداً من الاختبار أو التطوير.</td>
+          </tr>
+          <tr>
+            <td>Product Backlog</td>
+            <td class="ar">قائمة المهام (<span class="en">to-do list</span>) الخاصة بالفريق. بتحتوي على <span class="en">features</span>، متطلبات، <span class="en">user stories</span>، وثائق.</td>
+          </tr>
+          <tr>
+            <td>Product Owner</td>
+            <td class="ar">فرد أو مجموعة صغيرة مسؤولة عن تحديد الـ <span class="en">features</span> وإعادة ترتيب أولوياتها في الـ <span class="en">backlog</span>. ممكن يكون العميل نفسه.</td>
+          </tr>
+          <tr>
+            <td>Scrum (Daily)</td>
+            <td class="ar">اجتماع يومي قصير للفريق لمراجعة التقدم وترتيب الأولويات. لازم يكون <strong style="color:var(--gold2)">وجهاً لوجه (face-to-face)</strong>.</td>
+          </tr>
+          <tr>
+            <td>ScrumMaster</td>
+            <td class="ar">بيضمن تطبيق <span class="en">Scrum</span> صح، بيوجّه الفريق، ويتواصل مع خارج الشركة. <strong style="color:var(--red)">ليس project manager!</strong></td>
+          </tr>
+          <tr>
+            <td>Sprint</td>
+            <td class="ar"><span class="en">development iteration</span> ذو طول ثابت — <strong style="color:var(--gold2)">عادةً 2–4 أسابيع</strong>.</td>
+          </tr>
+          <tr>
+            <td>Velocity</td>
+            <td class="ar">تقدير لحجم الـ <span class="en">backlog</span> اللي الفريق يقدر يغطيه في <span class="en">sprint</span> واحد — مقياس إنتاجية الفريق.</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="trap">
+        <div class="trap-title">⚠️ فخ: ScrumMaster ≠ Project Manager</div>
+        <p>الـ <span class="en">ScrumMaster</span> <strong style="color:var(--red)">مش</strong> مدير مشروع. هو بيحمي الفريق من التشتت الخارجي ويضمن تطبيق <span class="en">Scrum</span> — لكنه مش بيتحكم في المشروع بالمفهوم التقليدي.</p>
+      </div>
+
+      <div class="ding">
+        <div class="ding-title">💡 حفظ سهل للـ 8 مصطلحات</div>
+        <div class="formula">Team(7) · Backlog · Owner · ScrumMaster · Sprint(2-4w) · Velocity · Increment · Daily-Scrum</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C4: SPRINT CYCLE -->
+<section class="chapter" id="c4" data-ch="Sprint Cycle ④">
+  <div class="chnum">04</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s4')">
+      <h2>🔄 Every 2–4 weeks, a Scrum team runs the same loop. Know it step by step.</h2>
+      <div class="sub">From Product Backlog to Potentially Shippable Software — the Sprint Cycle is the heartbeat of Scrum.</div>
+      <div class="tap">Trace the full sprint cycle →</div>
+    </div>
+    <div class="story" id="s4">
+
+      <div class="scene">
+        <div class="scene-title">🔁 خطوات Sprint Cycle</div>
+        <div class="sprint-flow">
+          <div class="sprint-step">
+            <div class="step-num">STEP 01</div>
+            <div class="step-en">Review Work to be Done</div>
+            <div class="step-ar">راجع الـ Product Backlog وحدد اللي محتاج شغل</div>
+          </div>
+          <div class="sprint-arrow">›</div>
+          <div class="sprint-step">
+            <div class="step-num">STEP 02</div>
+            <div class="step-en">Select Items + Plan Sprint</div>
+            <div class="step-ar">الفريق والعميل يختاروا items وينقلوها لـ Sprint Backlog</div>
+          </div>
+          <div class="sprint-arrow">›</div>
+          <div class="sprint-step" style="border-color:var(--purple);">
+            <div class="step-num" style="color:var(--purple);">CORE</div>
+            <div class="step-en">Sprint (2–4 weeks)</div>
+            <div class="step-ar">الفريق معزول. Daily Scrums كل يوم. كل تواصل عبر ScrumMaster</div>
+          </div>
+          <div class="sprint-arrow">›</div>
+          <div class="sprint-step">
+            <div class="step-num">STEP 04</div>
+            <div class="step-en">Review Sprint</div>
+            <div class="step-ar">عرض النتائج على stakeholders</div>
+          </div>
+          <div class="sprint-arrow">›</div>
+          <div class="sprint-step" style="border-color:var(--green);">
+            <div class="step-num" style="color:var(--green);">OUTPUT</div>
+            <div class="step-en">Potentially Shippable Software</div>
+            <div class="step-ar">increment جاهز للتسليم فعلاً</div>
+          </div>
+        </div>
+        <p style="direction:rtl;margin-top:10px;color:var(--muted);font-size:.85rem;">← بعد الـ Review بيرجع الفريق للخطوة الأولى من جديد (iterative).</p>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ تفاصيل مهمة عن الـ Sprint</div>
+        <table class="stbl">
+          <tr><th>Detail</th><th class="ar">الشرح</th></tr>
+          <tr><td>Duration</td><td class="ar"><strong style="color:var(--gold2)">ثابت — 2 لـ 4 أسابيع</strong></td></tr>
+          <tr><td>Starting point</td><td class="ar">الـ <span class="en">Product Backlog</span> — قائمة كل الشغل المطلوب على المشروع</td></tr>
+          <tr><td>Selection phase</td><td class="ar">الفريق بالكامل + العميل يختاروا الـ features اللي هتتطوّر في الـ sprint ده</td></tr>
+          <tr><td>During sprint</td><td class="ar">الفريق منعزل عن العميل والمنظمة. كل التواصل الخارجي عبر <strong style="color:var(--gold2)">ScrumMaster فقط</strong></td></tr>
+          <tr><td>End of sprint</td><td class="ar">العمل يُراجع ويُعرض، ثم يبدأ sprint جديد</td></tr>
+        </table>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🛡️ دور الـ ScrumMaster أثناء الـ Sprint</div>
+        <p>دور الـ <span class="en">ScrumMaster</span> هو <strong style="color:var(--gold2)">حماية فريق التطوير من التشتتات الخارجية (external distractions)</strong>.</p>
+        <br/>
+        <p>أثناء الـ <span class="en">sprint</span>، الفريق معزول عن العميل والمنظمة — كل التواصل بيتم عبر الـ <span class="en">Scrum Master</span>.</p>
+      </div>
+
+      <div class="trap">
+        <div class="trap-title">⚠️ الـ Sprint Cycle دوري!</div>
+        <p>بعد كل <span class="en">Review Sprint</span>، بيرجع الفريق يراجع الـ <span class="en">backlog</span> من أول. ده مش خطأ — ده طبيعة الـ <strong style="color:var(--gold2)">iterative development</strong>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C5: VALUES + TRUST -->
+<section class="chapter" id="c5" data-ch="Values ⑤">
+  <div class="chnum">05</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s5')">
+      <h2>🏛️ What's the ONE thing that collapses a Scrum team faster than any bug?</h2>
+      <div class="sub">It's not technical debt. Not bad code. There's one foundation that holds everything together — and 5 values that build it.</div>
+      <div class="tap">Reveal the secret foundation →</div>
+    </div>
+    <div class="story" id="s5">
+
+      <div class="scene">
+        <div class="scene-title">🔑 الأساس: TRUST</div>
+        <div class="dialogue">
+          <span class="spk">Scrum Guide</span>
+          الخاصية الجوهرية اللي بتربط كل عناصر الـ <span class="en">Scrum Team</span> ببعض هي الـ <strong style="color:var(--gold2)">Trust</strong>. لو مفيش ثقة في الفريق، هيبقى فيه <span class="en">tension</span> وعوائق في إنجاز الشغل.
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ الـ 5 Scrum Values — اختصار: C-F-C-R-O</div>
+        <div class="values-grid">
+          <div class="val-card courage">
+            <div class="val-icon">🦁</div>
+            <div class="val-name">Courage</div>
+            <div class="val-ar">الشجاعة لعمل الصح وحل المشاكل الصعبة</div>
+          </div>
+          <div class="val-card focus">
+            <div class="val-icon">🎯</div>
+            <div class="val-name">Focus</div>
+            <div class="val-ar">التركيز على شغل الـ sprint وأهداف الفريق</div>
+          </div>
+          <div class="val-card commitment">
+            <div class="val-icon">🤝</div>
+            <div class="val-name">Commitment</div>
+            <div class="val-ar">الالتزام الشخصي بتحقيق أهداف الفريق</div>
+          </div>
+          <div class="val-card respect">
+            <div class="val-icon">🌟</div>
+            <div class="val-name">Respect</div>
+            <div class="val-ar">احترام أعضاء الفريق كأشخاص مستقلين وأكفاء</div>
+          </div>
+          <div class="val-card openness">
+            <div class="val-icon">🌐</div>
+            <div class="val-name">Openness</div>
+            <div class="val-ar">الانفتاح على العمل والتحديات مع الفريق والـ stakeholders</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🤝 Teamwork in Scrum يومياً</div>
+        <table class="stbl">
+          <tr><th>Role</th><th class="ar">المهمة اليومية</th></tr>
+          <tr>
+            <td>ScrumMaster</td>
+            <td class="ar">بيرتّب الاجتماعات اليومية، بيتابع الـ <span class="en">backlog</span>، بيسجل القرارات، بيقيس التقدم، ويتواصل مع الخارج</td>
+          </tr>
+          <tr>
+            <td>Whole Team (Daily Scrum)</td>
+            <td class="ar">كل فرد يشارك: ماذا أنجزت؟ ما المشاكل؟ ما الخطة لغداً؟ → الفريق يعيد التخطيط قصير المدى لو في مشاكل</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="ding">
+        <div class="ding-title">💡 جملة الحفظ للـ 5 values</div>
+        <div class="formula">C-F-C-R-O</div>
+        <p style="direction:rtl;margin-top:8px;">Courage · Focus · Commitment · Respect · Openness</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C6: SCRUM BENEFITS -->
+<section class="chapter" id="c6" data-ch="Benefits ⑥">
+  <div class="chnum">06</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s6')">
+      <h2>🏆 Why do thousands of companies worldwide choose Scrum over everything else?</h2>
+      <div class="sub">5 concrete benefits that explain the global Scrum explosion — every single one is exam material.</div>
+      <div class="tap">Reveal the 5 Scrum benefits →</div>
+    </div>
+    <div class="story" id="s6">
+
+      <div class="reveal">
+        <div class="reveal-title">✅ الـ 5 Scrum Benefits — اختصار: M-U-V-O-T</div>
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <div class="b-icon">🧩</div>
+            <div>
+              <div class="b-en">Manageable &amp; Understandable Chunks</div>
+              <div class="b-ar">المنتج بيتقسم لأجزاء صغيرة ومفهومة → أسهل في التطوير والتتبع</div>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="b-icon">🌊</div>
+            <div>
+              <div class="b-en">Unstable Requirements Don't Hold Up Progress</div>
+              <div class="b-ar">المتطلبات المتغيرة مش بتوقف الشغل — كل <span class="en">sprint</span> مستقل</div>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="b-icon">👁️</div>
+            <div>
+              <div class="b-en">Visibility of Everything</div>
+              <div class="b-ar">الفريق كله بيشوف كل حاجة → تحسين التواصل داخل الفريق</div>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="b-icon">🚀</div>
+            <div>
+              <div class="b-en">On-time Delivery + Customer Feedback</div>
+              <div class="b-ar">العملاء بيشوفوا <span class="en">increments</span> ويعطوا <span class="en">feedback</span> → تسليم منتظم في الوقت</div>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="b-icon">🤜🤛</div>
+            <div>
+              <div class="b-en">Trust is Built</div>
+              <div class="b-ar">ثقة بين العملاء والمطورين → ثقافة إيجابية + كل الناس متوقعه المشروع ينجح</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C7: SCALING AGILE -->
+<section class="chapter" id="c7" data-ch="Scaling ⑦">
+  <div class="chnum">07</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s7')">
+      <h2>📈 Agile works perfectly for 7 people in one room. What about 700 people across 7 countries?</h2>
+      <div class="sub">Scaling Up vs Scaling Out — two very different problems with the same name. Know the difference or lose marks.</div>
+      <div class="tap">Learn how Agile grows up →</div>
+    </div>
+    <div class="story" id="s7">
+
+      <div class="scene">
+        <div class="scene-title">🤔 ليه محتاجين Scaling؟</div>
+        <p>الـ <span class="en">Agile</span> ثبت نجاحه للمشاريع الصغيرة والمتوسطة مع فرق صغيرة في مكان واحد. نجاحه بيجي من الـ <strong style="color:var(--gold2)">improved communications</strong> — اللي بتتحقق لما الكل شغّال مع بعض.</p>
+        <br/>
+        <p>لكن الواقع فيه مشاريع بـ <strong style="color:var(--red)">فرق متعددة، أماكن مختلفة، فروق زمنية</strong>.</p>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ Scaling UP vs Scaling OUT</div>
+        <div class="vs-grid">
+          <div class="vs-col agile">
+            <div class="vs-label">📈 Scaling UP</div>
+            <ul>
+              <li>استخدام <span class="en">Agile</span> لأنظمة كبيرة مش ممكن فريق صغير يطوّرها</li>
+              <li>التحدي: فريق كبير مش ممكن يتواصل بشكل غير رسمي</li>
+              <li>الحل: تقسيم لـ teams متعددة، كل <span class="en">team</span> تعمل <span class="en">Scrum</span></li>
+            </ul>
+          </div>
+          <div class="vs-center">↔</div>
+          <div class="vs-col plan">
+            <div class="vs-label">🌍 Scaling OUT</div>
+            <ul>
+              <li>إدخال <span class="en">Agile</span> في منظمة كبيرة عندها سنوات من الخبرة بالـ <span class="en">plan-driven</span></li>
+              <li>التحدي: الثقافة المؤسسية مقاومة للتغيير</li>
+              <li>الحل: تدريج التحول + مرونة في تطبيق <span class="en">Agile</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🔑 Agile Fundamentals — لازم تحافظ عليهم وقت التوسع</div>
+        <table class="stbl">
+          <tr><th>#</th><th>Fundamental</th><th class="ar">المعنى</th></tr>
+          <tr><td>1</td><td>Flexible planning</td><td class="ar">التخطيط المرن اللي بيتكيف مع التغيير</td></tr>
+          <tr><td>2</td><td>Frequent system releases</td><td class="ar">إصدارات متكررة تبقي الزخم والـ feedback</td></tr>
+          <tr><td>3</td><td>Continuous integration</td><td class="ar">دمج الكود باستمرار لتجنب تراكم المشاكل</td></tr>
+          <tr><td>4</td><td>Good team communications</td><td class="ar">تواصل جيد بين الفرق المتعددة</td></tr>
+        </table>
+      </div>
+
+      <div class="trap">
+        <div class="trap-title">⚠️ Scaling ≠ نسخ Scrum وتكبيره</div>
+        <p>التوسع مش مجرد "خد <span class="en">Scrum</span> واضربه في 10". لازم تصمم <span class="en">cross-team communication mechanisms</span> وتعالج تحديات جديدة.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C8: PRACTICAL PROBLEMS -->
+<section class="chapter" id="c8" data-ch="Problems ⑧">
+  <div class="chnum">08</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s8')">
+      <h2>💥 Agile sounds perfect. So why does it fail in most large companies?</h2>
+      <div class="sub">3 practical problems and a nasty contractual trap — the real-world friction that Agile manifestos conveniently don't mention.</div>
+      <div class="tap">Face the hard truths →</div>
+    </div>
+    <div class="story" id="s8">
+
+      <div class="scene">
+        <div class="scene-title">🚧 الـ 3 مشاكل العملية</div>
+        <div class="prob-grid">
+          <div class="prob-card">
+            <div class="prob-icon">📄</div>
+            <div class="prob-en">Informality vs Contracts</div>
+            <div class="prob-ar">الـ <span class="en">informality</span> بتاعة <span class="en">Agile</span> بتتعارض مع الـ <span class="en">contract definition</span> اللي الشركات الكبيرة بتستخدمه. العقود القانونية محتاجة <span class="en">spec</span> واضحة ثابتة.</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-icon">🔧</div>
+            <div class="prob-en">New Dev vs Maintenance</div>
+            <div class="prob-ar">الـ <span class="en">Agile</span> مناسب أكثر لـ <span class="en">new software development</span> مش للـ <span class="en">maintenance</span>. لكن معظم تكاليف الشركات الكبيرة بتيجي من صيانة أنظمة قديمة!</div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-icon">🌍</div>
+            <div class="prob-en">Distributed Teams</div>
+            <div class="prob-ar">الـ <span class="en">Agile</span> اتصمم لفرق صغيرة في مكان واحد، لكن معظم التطوير دلوقتي بيتضمن <span class="en">worldwide distributed teams</span>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="boss">
+        <div class="boss-title">⚔️ Boss Battle: The Contractual Issue</div>
+        <p>معظم عقود الـ <span class="en">software</span> للأنظمة المخصصة مبنية على <strong style="color:var(--purple)">specification</strong> واضحة.</p>
+        <br/>
+        <p>لكن ده بيمنع الـ <strong style="color:var(--purple)">interleaving specification and development</strong> — وده قلب الـ <span class="en">Agile</span>!</p>
+        <br/>
+        <p>العقد اللي بيدفع مقابل <strong style="color:var(--purple)">developer time</strong> مش مقابل <span class="en">functionality</span> هو الحل — لكن القسم القانوني بيشوفه <strong style="color:var(--red)">high risk</strong> لأن اللي هيتسلم مش مضمون.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C9: AGILE MAINTENANCE -->
+<section class="chapter" id="c9" data-ch="Maintenance ⑨">
+  <div class="chnum">09</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s9')">
+      <h2>🛠️ You built an app with Agile in 2020. It's 2030 and needs major changes. Can you maintain it?</h2>
+      <div class="sub">Agile and software maintenance is a relationship with serious problems. Two key questions define the challenge.</div>
+      <div class="tap">Explore the maintenance dilemma →</div>
+    </div>
+    <div class="story" id="s9">
+
+      <div class="scene">
+        <div class="scene-title">💡 ليه الـ Maintenance مهم هنا؟</div>
+        <p>معظم المنظمات بتصرف على صيانة الأنظمة الموجودة أكتر من تطوير أنظمة جديدة. عشان كده، لو الـ <span class="en">Agile</span> هينجح، لازم <strong style="color:var(--gold2)">يدعم الـ maintenance زي ما بيدعم التطوير الأصلي</strong>.</p>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ The Two Key Questions</div>
+        <table class="stbl">
+          <tr><th>Key Question</th><th class="ar">التحدي</th></tr>
+          <tr>
+            <td>Are agile-developed systems <strong>maintainable</strong>, given the emphasis on minimizing formal documentation?</td>
+            <td class="ar">قلة الـ <span class="en">documentation</span> بتخلي فهم النظام صعب لأي حد جديد يشتغل عليه</td>
+          </tr>
+          <tr>
+            <td>Can agile methods be used to <strong>evolve a system</strong> in response to customer change requests?</td>
+            <td class="ar">هل ممكن تغيير النظام بناءً على طلبات العميل بعد التسليم بسنين؟</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🔴 الـ 3 Key Problems في Agile Maintenance</div>
+        <table class="stbl">
+          <tr><th>#</th><th>Problem</th><th class="ar">الشرح</th></tr>
+          <tr><td>1</td><td>Lack of product documentation</td><td class="ar">الـ <span class="en">Agile</span> بيقلل الوثائق → الفريق الجديد مش عارف النظام بيشتغل إزاي</td></tr>
+          <tr><td>2</td><td>Keeping customers involved</td><td class="ar">في المشاريع الطويلة، ممثل العميل مش دايماً متاح لإعطاء <span class="en">feedback</span> مستمر</td></tr>
+          <tr><td>3</td><td>Maintaining continuity of development team</td><td class="ar">الفريق الأصلي بيتغير مع الوقت → الناس الجديدة مش عارفة سياق القرارات القديمة</td></tr>
+        </table>
+      </div>
+
+      <div class="boss">
+        <div class="boss-title">⚔️ الأصعب: Long-lifetime Systems</div>
+        <p>الـ <span class="en">Agile development</span> بيعتمد على إن الفريق يعرف ويفهم اللي المفروض يعمله. في الأنظمة طويلة العمر، ده بيبقى مشكلة حقيقية لأن <strong style="color:var(--purple)">المطورين الأصليين مش دايماً هيشتغلوا على النظام</strong>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C10: AGILE VS PLAN-DRIVEN -->
+<section class="chapter" id="c10" data-ch="Agile vs Plan ⑩">
+  <div class="chnum">10</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s10')">
+      <h2>⚖️ New project just landed. Agile or Plan-driven? Here is the exact decision framework.</h2>
+      <div class="sub">The answer is never "always Agile" — it depends on 3 questions and 5 real organizational conflicts.</div>
+      <div class="tap">Get the decision framework →</div>
+    </div>
+    <div class="story" id="s10">
+
+      <div class="scene">
+        <div class="scene-title">⚖️ الحقيقة: معظم المشاريع مزيج!</div>
+        <p>معظم المشاريع بتشمل عناصر من الـ <span class="en">plan-driven</span> والـ <span class="en">agile</span> في نفس الوقت. الاختيار بيعتمد على 3 أسئلة:</p>
+      </div>
+
+      <div class="reveal">
+        <div class="reveal-title">✅ Decision Questions</div>
+        <table class="stbl">
+          <tr><th>السؤال</th><th style="color:var(--blue)">→ Plan-driven</th><th style="color:var(--green)">→ Agile</th></tr>
+          <tr>
+            <td>هل محتاج detailed spec/design قبل البدء؟</td>
+            <td class="ar">نعم → <span class="en">Plan-driven</span></td>
+            <td class="ar">لا، المتطلبات ممكن تتطور → <span class="en">Agile</span></td>
+          </tr>
+          <tr>
+            <td>هل تريد incremental delivery مع rapid feedback؟</td>
+            <td class="ar">لا، التسليم النهائي أهم</td>
+            <td class="ar">نعم → <span class="en">Agile</span></td>
+          </tr>
+          <tr>
+            <td>هل الـ system كبير ومستحيل التواصل بشكل غير رسمي؟</td>
+            <td class="ar">نعم → <span class="en">Plan-driven</span></td>
+            <td class="ar">فريق صغير في مكان واحد → <span class="en">Agile</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🏢 Agile Principles vs Organizational Practice — تعارضات حقيقية</div>
+        <table class="stbl">
+          <tr><th>Agile Principle</th><th class="ar">المشكلة في الواقع</th></tr>
+          <tr><td>Customer Involvement</td><td class="ar">العميل عنده التزامات تانية، مش قادر يقضي وقت مع الفريق. وممكن يكون في stakeholders خارجيين (زي المنظّمين) مش ممكن يمثلوا العميل.</td></tr>
+          <tr><td>Embrace Change</td><td class="ar">ترتيب أولويات التغييرات صعب جداً لما في stakeholders كتير بأولويات مختلفة ومتعارضة.</td></tr>
+          <tr><td>Incremental Delivery</td><td class="ar">الـ iterations السريعة مش بتتوافق مع التخطيط التسويقي طويل المدى — المديرين محتاجين يعرفوا قبل شهور.</td></tr>
+          <tr><td>Maintain Simplicity</td><td class="ar">تحت ضغط الـ deadlines، الفريق مش عنده وقت للـ simplifications المطلوبة.</td></tr>
+          <tr><td>People not Process</td><td class="ar">ممكن أعضاء الفريق ما يكونوش مناسبين للطبيعة المكثّفة للـ Agile، وما يتعاملوش كويس مع بعض.</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C11: FACTORS + LARGE SYSTEMS -->
+<section class="chapter" id="c11" data-ch="Large Systems ⑪">
+  <div class="chnum">11</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s11')">
+      <h2>🏗️ Can Agile handle a banking system with 50 teams, legacy code, and government regulations?</h2>
+      <div class="sub">Large systems have special characteristics that make Agile significantly harder — 3 factor groups and 5 scaling challenges.</div>
+      <div class="tap">Explore the large system challenge →</div>
+    </div>
+    <div class="story" id="s11">
+
+      <div class="reveal">
+        <div class="reveal-title">✅ Agile &amp; Plan-based Factors — 3 مجموعات (Slide 24)</div>
+        <div class="factor-group">
+          <h4>System Factors</h4>
+          <div class="factor-tags">
+            <span class="factor-tag">Type</span>
+            <span class="factor-tag">Lifetime</span>
+            <span class="factor-tag">Scale</span>
+            <span class="factor-tag">Regulation</span>
+          </div>
+        </div>
+        <div class="factor-group">
+          <h4>Team Factors</h4>
+          <div class="factor-tags">
+            <span class="factor-tag">Technology</span>
+            <span class="factor-tag">Distribution</span>
+            <span class="factor-tag">Competence</span>
+          </div>
+        </div>
+        <div class="factor-group">
+          <h4>Organization Factors</h4>
+          <div class="factor-tags">
+            <span class="factor-tag">Contracts</span>
+            <span class="factor-tag">Delivery</span>
+            <span class="factor-tag">Culture</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🔍 System Issues — الأسئلة اللي بتحدد المنهج</div>
+        <table class="stbl">
+          <tr><th>Question</th><th class="ar">التأثير</th></tr>
+          <tr><td>How <strong>large</strong>?</td><td class="ar">الـ <span class="en">Agile</span> أحسن للفرق الصغيرة. كبير → محتاج تنسيق <span class="en">plan-driven</span> أكتر</td></tr>
+          <tr><td>What <strong>type</strong>?</td><td class="ar">أنظمة محتاجة تحليل مكثف قبل التنفيذ → <span class="en">plan-driven</span></td></tr>
+          <tr><td>Expected <strong>lifetime</strong>?</td><td class="ar">أنظمة طويلة العمر محتاجة <span class="en">documentation</span> لنقل معرفة الفريق</td></tr>
+          <tr><td>External <strong>regulation</strong>?</td><td class="ar">نظام منظَّم → لازم تنتج <span class="en">documentation</span> مفصّلة كجزء من <span class="en">safety case</span></td></tr>
+        </table>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🏗️ خصائص الـ Large Systems</div>
+        <table class="stbl">
+          <tr><th>Characteristic</th><th class="ar">الشرح</th></tr>
+          <tr><td>Collections of separate systems</td><td class="ar">الأنظمة الكبيرة عادةً مجموعات من أنظمة منفصلة بتتواصل مع بعض — فرق مختلفة بتطور كل نظام</td></tr>
+          <tr><td>Brownfield systems</td><td class="ar">تطوير <span class="en">software</span> جديد في وجود أنظمة قديمة (<span class="en">legacy</span>). جزء كبير من الشغل = <span class="en">system configuration</span> مش كتابة كود من أول</td></tr>
+          <tr><td>External rules &amp; regulations</td><td class="ar">مقيّد بقواعد خارجية بتحدد طريقة التطوير</td></tr>
+          <tr><td>Long procurement time</td><td class="ar">صعب تحافظ على فريق متماسك يعرف النظام — الناس بتتغير</td></tr>
+          <tr><td>Diverse stakeholders</td><td class="ar">مستحيل تشارك كل الـ stakeholders في التطوير</td></tr>
+        </table>
+      </div>
+
+      <div class="boss">
+        <div class="boss-title">⚔️ Scaling Up — 5 تحديات مستحيلة!</div>
+        <table class="stbl">
+          <tr><th>#</th><th>Challenge</th><th class="ar">الشرح</th></tr>
+          <tr><td>1</td><td>Incremental requirements impossible</td><td class="ar">مستحيل تعمل <span class="en">incremental approach</span> كامل للمتطلبات في أنظمة كبيرة</td></tr>
+          <tr><td>2</td><td>Single Product Owner impossible</td><td class="ar">مش ممكن يكون في <span class="en">product owner</span> واحد أو ممثل عميل واحد</td></tr>
+          <tr><td>3</td><td>Can't focus on code only</td><td class="ar">مستحيل تركّز بس على الكود — لازم تفكر في الـ system كله</td></tr>
+          <tr><td>4</td><td>Cross-team communication needed</td><td class="ar">لازم تصمم آليات تواصل بين الفرق المختلفة</td></tr>
+          <tr><td>5</td><td>Continuous integration practically impossible</td><td class="ar">صعب جداً — لكن لازم تحافظ على <span class="en">frequent builds</span> و<span class="en">regular releases</span></td></tr>
+        </table>
+      </div>
+
+      <div class="trap">
+        <div class="trap-title">⚠️ Brownfield — تعريف في الامتحان!</div>
+        <p><span class="en">Brownfield software development</span> = تطوير ونشر <span class="en">software</span> جديد <strong style="color:var(--gold2)">في وجود أنظمة موجودة أو legacy</strong>.</p>
+        <p>عكسه: <strong style="color:var(--green)">Greenfield</strong> = بناء من الصفر بدون أي legacy.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ C12: MULTI-TEAM SCRUM -->
+<section class="chapter" id="c12" data-ch="Multi-Scrum ⑫">
+  <div class="chnum">12</div>
+  <div class="inner">
+    <div class="hook" onclick="revealStory('s12')">
+      <h2>🌐 10 Scrum teams. 1 product. How do you stop them from building 10 different things?</h2>
+      <div class="sub">Multi-team Scrum has exactly 4 coordination mechanisms — plus the organizational reality that makes adoption hard.</div>
+      <div class="tap">Coordinate the chaos →</div>
+    </div>
+    <div class="story" id="s12">
+
+      <div class="reveal">
+        <div class="reveal-title">✅ Multi-team Scrum — الـ 4 آليات</div>
+        <div class="multi-grid">
+          <div class="multi-card">
+            <div class="mc-icon">👥</div>
+            <div class="mc-en">Role Replication</div>
+            <div class="mc-ar">كل فريق عنده <span class="en">Product Owner</span> خاص + <span class="en">ScrumMaster</span> خاص</div>
+          </div>
+          <div class="multi-card">
+            <div class="mc-icon">🏛️</div>
+            <div class="mc-en">Product Architects</div>
+            <div class="mc-ar">كل فريق يختار <span class="en">product architect</span> — وهم بيتعاونوا على تصميم الـ <span class="en">overall system architecture</span></div>
+          </div>
+          <div class="multi-card">
+            <div class="mc-icon">📅</div>
+            <div class="mc-en">Release Alignment</div>
+            <div class="mc-ar">تواريخ الـ releases من كل الفرق متزامنة → دايماً في <span class="en">demonstrable complete system</span></div>
+          </div>
+          <div class="multi-card">
+            <div class="mc-icon">🔁</div>
+            <div class="mc-en">Scrum of Scrums</div>
+            <div class="mc-ar">اجتماع يومي بيحضره ممثل من كل فريق لمناقشة التقدم وتنسيق الشغل</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene">
+        <div class="scene-title">🏢 ليه المنظمات الكبيرة بتقاوم Agile؟</div>
+        <table class="stbl">
+          <tr><th>Reason</th><th class="ar">الشرح</th></tr>
+          <tr><td>Project managers reluctant</td><td class="ar">معندهمش خبرة بـ <span class="en">Agile</span> → خايفين يجربوا حاجة جديدة</td></tr>
+          <tr><td>Quality procedures &amp; standards</td><td class="ar">الشركات الكبيرة عندها إجراءات جودة → كل المشاريع لازم تتبعها → متعارضة مع <span class="en">Agile informality</span></td></tr>
+          <tr><td>Skill level requirement</td><td class="ar">الـ <span class="en">Agile</span> بيشتغل أحسن مع مستوى مهارة عالي — في الشركات الكبيرة في مدى واسع من القدرات</td></tr>
+          <tr><td>Cultural resistance</td><td class="ar">منظمات عندها تاريخ طويل مع الـ <span class="en">conventional systems engineering</span> بتقاوم التغيير</td></tr>
+        </table>
+      </div>
+
+      <div class="ding">
+        <div class="ding-title">💡 Key Points من الـ Slides 34-35</div>
+        <table class="stbl">
+          <tr><th>Key Point</th><th class="ar">الجوهر</th></tr>
+          <tr><td>Agile methods</td><td class="ar">تطوير تدريجي، إصدارات متكررة، تقليل الـ documentation، كود عالي الجودة</td></tr>
+          <tr><td>Agile practices include</td><td class="ar"><span class="en">User stories · Frequent releases · Continuous improvement · TDD · Customer participation</span></td></tr>
+          <tr><td>Scrum =</td><td class="ar"><span class="en">Project management framework</span> مبني حول الـ <strong style="color:var(--gold2)">sprints (fixed time periods)</strong></td></tr>
+          <tr><td>Scaling Agile</td><td class="ar">الأنظمة الكبيرة محتاجة <span class="en">up-front design</span> + بعض الـ <span class="en">documentation</span>. الممارسات المؤسسية ممكن تتعارض مع الـ <span class="en">informality</span></td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CHEAT SHEET -->
+<section id="cheatsheet" class="chapter" data-ch="Cheat Sheet ★">
+  <div style="width:100%;max-width:980px;margin:0 auto;padding:0 20px;">
+    <div class="cs-header">
+      <h2>📄 Cheat Sheet — Lecture 5</h2>
+      <p>All exam-critical definitions, facts, and numbers — write these in your exam exactly as shown</p>
+    </div>
+    <div class="cs-grid">
+
+      <div class="cs-block">
+        <h3>Scrum Definition</h3>
+        <ul>
+          <li>Agile method focused on <strong class="hl">managing iterative development</strong></li>
+          <li>Empirical process: observation + experience + experimentation</li>
+          <li>3 Pillars: <strong class="hl">Transparency · Inspection · Adaptation</strong></li>
+          <li>3 Phases: <strong class="hl">Outline Planning → Sprint Cycles → Closure</strong></li>
+          <li>Foundation element: <strong class="hl">TRUST</strong></li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Scrum Terminology (8 terms)</h3>
+        <ul>
+          <li><strong class="hl">Development Team</strong> — self-organizing, max 7 people</li>
+          <li><strong class="hl">Product Backlog</strong> — team to-do list</li>
+          <li><strong class="hl">Product Owner</strong> — identifies &amp; prioritizes features</li>
+          <li><strong class="hl">ScrumMaster</strong> — ensures Scrum followed, NOT project manager</li>
+          <li><strong class="hl">Sprint</strong> — fixed iteration, 2–4 weeks</li>
+          <li><strong class="hl">Velocity</strong> — backlog covered per sprint estimate</li>
+          <li><strong class="hl">Scrum (daily)</strong> — daily face-to-face meeting</li>
+          <li><strong class="hl">Shippable Increment</strong> — finished state, no further testing needed</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>5 Scrum Values: C-F-C-R-O</h3>
+        <ul>
+          <li><strong class="hl">Courage</strong> — do the right thing, tackle hard problems</li>
+          <li><strong class="hl">Focus</strong> — on sprint work and team goals</li>
+          <li><strong class="hl">Commitment</strong> — personal commitment to team goals</li>
+          <li><strong class="hl">Respect</strong> — team members as capable individuals</li>
+          <li><strong class="hl">Openness</strong> — about work and challenges</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Sprint Cycle</h3>
+        <ul>
+          <li>Review work to be done → Product Backlog</li>
+          <li>Select items + Plan sprint → Sprint Backlog</li>
+          <li>Sprint (team isolated, 2–4 weeks)</li>
+          <li>All external comms through ScrumMaster only</li>
+          <li>Daily Scrum meetings throughout sprint</li>
+          <li>Review sprint → Potentially shippable software</li>
+          <li>Loop back to start</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Scrum Benefits: M-U-V-O-T</h3>
+        <ul>
+          <li><strong class="hl">Manageable</strong> &amp; understandable chunks</li>
+          <li><strong class="hl">Unstable</strong> requirements don't hold up progress</li>
+          <li><strong class="hl">Visibility</strong> of everything → improved team communication</li>
+          <li><strong class="hl">On-time</strong> delivery + customer feedback on increments</li>
+          <li><strong class="hl">Trust</strong> built between customers and developers</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Scaling: UP vs OUT</h3>
+        <ul>
+          <li><strong class="hl">Scaling UP</strong> — agile for large systems (can't be done by small team)</li>
+          <li><strong class="hl">Scaling OUT</strong> — introducing agile across a large organization</li>
+          <li>4 fundamentals to keep: Flexible planning · Frequent releases · Continuous integration · Good team communications</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Practical Problems (3)</h3>
+        <ul>
+          <li>Informality incompatible with <strong class="hl">contract definition</strong></li>
+          <li>Appropriate for new dev, not <strong class="hl">software maintenance</strong></li>
+          <li>Designed for co-located, but now <strong class="hl">worldwide distributed teams</strong></li>
+          <li>Contract paying for <strong class="hl">developer time</strong> = high risk (delivery not guaranteed)</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Agile Maintenance Problems (3)</h3>
+        <ul>
+          <li>Lack of product documentation</li>
+          <li>Keeping customers involved long-term</li>
+          <li>Maintaining continuity of development team</li>
+          <li>Long-lifetime: original devs won't always work on it</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Agile &amp; Plan-based Factors</h3>
+        <ul>
+          <li><strong class="hl">System:</strong> Type · Lifetime · Scale · Regulation</li>
+          <li><strong class="hl">Team:</strong> Technology · Distribution · Competence</li>
+          <li><strong class="hl">Organization:</strong> Contracts · Delivery · Culture</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Large Systems</h3>
+        <ul>
+          <li>Collections of separate communicating systems</li>
+          <li><strong class="hl">Brownfield</strong> = new SW in presence of existing/legacy systems</li>
+          <li>Constrained by external rules/regulations</li>
+          <li>Long procurement time, diverse stakeholders</li>
+          <li>Scaling up: fully incremental requirements = <strong class="hl">impossible</strong></li>
+          <li>Continuous integration = practically <strong class="hl">impossible</strong></li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Multi-team Scrum (4 mechanisms)</h3>
+        <ul>
+          <li><strong class="hl">Role replication</strong> — each team has PO + ScrumMaster</li>
+          <li><strong class="hl">Product architects</strong> — collaborate on overall architecture</li>
+          <li><strong class="hl">Release alignment</strong> — synchronized release dates</li>
+          <li><strong class="hl">Scrum of Scrums</strong> — daily inter-team meeting</li>
+        </ul>
+      </div>
+
+      <div class="cs-block">
+        <h3>Key Numbers</h3>
+        <ul>
+          <li>Scrum pillars: <strong class="hl">3</strong></li>
+          <li>Scrum phases: <strong class="hl">3</strong></li>
+          <li>Scrum values: <strong class="hl">5</strong> (C-F-C-R-O)</li>
+          <li>Sprint duration: <strong class="hl">2–4 weeks</strong> (fixed)</li>
+          <li>Team size: max <strong class="hl">7 people</strong></li>
+          <li>Multi-team mechanisms: <strong class="hl">4</strong></li>
+          <li>Agile fundamentals for scaling: <strong class="hl">4</strong></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FINALE -->
+<section id="finale" class="chapter" data-ch="Done ✓">
+  <div class="finale-inner">
+    <h2>🏁 Lecture 5 — Complete!</h2>
+    <div class="gold-line"></div>
+    <p>من Scrum الأساسي لـ Multi-team Scrum — فهمت القصة بالعربي وعندك الـ terms جاهزة للامتحان بالإنجليزي.</p>
+    <div class="key-formulas">
+      <span class="formula">3 Pillars: T·I·A</span>
+      <span class="formula">3 Phases: Plan→Sprints→Close</span>
+      <span class="formula">5 Values: C-F-C-R-O</span>
+      <span class="formula">Sprint: 2-4w · Team ≤7</span>
+      <span class="formula">4 Multi-Scrum Mechanisms</span>
+    </div>
+  </div>
+</section>
+
+<script>
+function revealStory(id){
+  const s=document.getElementById(id);
+  if(!s) return;
+  const open=s.classList.toggle('open');
+  if(open) setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+}
+(function(){
+  const nav=document.getElementById('nav');
+  const chs=document.querySelectorAll('.chapter[data-ch]');
+  chs.forEach(ch=>{
+    const d=document.createElement('div');
+    d.className='dot';
+    d.innerHTML=`<span class="tip">${ch.dataset.ch}</span>`;
+    d.addEventListener('click',()=>ch.scrollIntoView({behavior:'smooth'}));
+    nav.appendChild(d);
+  });
+  const dots=nav.querySelectorAll('.dot');
+  chs.forEach(ch=>{
+    new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const i=[...chs].indexOf(e.target);
+          dots.forEach((d,j)=>d.classList.toggle('active',i===j));
+        }
+      });
+    },{threshold:.35}).observe(ch);
+  });
+})();
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  document.getElementById('prog').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lec 6 — Requirements Engineering 📋</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #e8b85a;
+    --gold2: #f5d08a;
+    --bg: #0a0c0e;
+    --card: #111418;
+    --card2: #161b22;
+    --red: #e05252;
+    --green: #52c78a;
+    --blue: #5298e0;
+    --purple: #9b5de5;
+    --teal: #38b2ac;
+    --border: #2a2f3a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:#dde3ee; font-family:'Tajawal',sans-serif; overflow-x:hidden; }
+
+  /* PROGRESS */
+  #progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--gold); transition:width .3s; z-index:999; }
+
+  /* NAV DOTS */
+  #nav { position:fixed; right:18px; top:50%; transform:translateY(-50%); z-index:998; display:flex; flex-direction:column; gap:10px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#2a2f3a; cursor:pointer; transition:.3s; border:2px solid transparent; }
+  .dot.active { background:var(--gold); border-color:var(--gold2); transform:scale(1.4); }
+  .dot:hover { background:var(--gold2); }
+
+  /* HEADER */
+  header { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:60px 20px; background:radial-gradient(ellipse at 50% 30%, #1a140a 0%, var(--bg) 70%); position:relative; overflow:hidden; }
+  header::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23e8b85a11'/%3E%3C/svg%3E"); }
+  .lec-badge { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); border:1px solid var(--gold); padding:6px 16px; border-radius:20px; margin-bottom:24px; letter-spacing:3px; }
+  header h1 { font-size:clamp(2.2rem,6vw,4rem); font-weight:900; color:#fff; line-height:1.15; }
+  header h1 span { color:var(--gold); }
+  .hero-sub { color:#8892a4; margin-top:16px; font-size:1.1rem; max-width:520px; line-height:1.7; }
+  .hero-meta { margin-top:32px; display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+  .meta-chip { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:8px 18px; font-size:.85rem; color:var(--gold2); font-family:'JetBrains Mono',monospace; }
+  .scroll-hint { margin-top:48px; color:#444; font-size:.85rem; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+  /* SECTIONS */
+  section { min-height:100vh; padding:80px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ch-label { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  .ch-num { font-size:5rem; font-weight:900; color:#1a1e26; line-height:1; margin-bottom:-10px; font-family:'JetBrains Mono',monospace; }
+
+  /* HOOK CARD */
+  .hook { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; max-width:760px; width:100%; cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
+  .hook::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .hook:hover { border-color:var(--gold); transform:translateY(-3px); box-shadow:0 12px 40px rgba(232,184,90,.12); }
+  .hook h2 { font-size:clamp(1.3rem,3vw,1.8rem); color:#fff; font-weight:900; line-height:1.3; margin-bottom:12px; }
+  .hook .sub { color:#8892a4; line-height:1.7; margin-bottom:20px; }
+  .hook .tap { display:inline-block; background:rgba(232,184,90,.12); color:var(--gold); border:1px solid rgba(232,184,90,.3); border-radius:8px; padding:8px 20px; font-size:.9rem; font-family:'JetBrains Mono',monospace; transition:.3s; }
+  .hook:hover .tap { background:rgba(232,184,90,.22); }
+
+  /* STORY */
+  .story { display:none; max-width:760px; width:100%; margin-top:20px; direction:rtl; text-align:right; }
+  .story.open { display:block; animation:fadeUp .4s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .scene { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:28px; margin-bottom:16px; }
+  .scene-title { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); letter-spacing:2px; margin-bottom:14px; }
+  .scene p { line-height:1.9; color:#c8d0de; margin-bottom:10px; font-size:1.05rem; }
+  .scene p:last-child { margin-bottom:0; }
+
+  .en { font-family:'JetBrains Mono',monospace; color:var(--gold2); font-size:.9em; background:rgba(232,184,90,.08); padding:1px 5px; border-radius:4px; direction:ltr; display:inline-block; }
+  .ar { direction:rtl; text-align:right; }
+
+  /* DIALOGUE */
+  .dialogue { border-right:3px solid var(--gold); padding-right:16px; margin:12px 0; background:rgba(232,184,90,.04); padding:14px 16px 14px 14px; border-radius:0 8px 8px 0; }
+  .speaker { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); margin-bottom:4px; }
+
+  /* REVEAL / TRAP / DING */
+  .reveal { background:linear-gradient(135deg, #1a1f0a, #0f1a0a); border:1px solid #52c78a44; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .reveal .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--green); letter-spacing:2px; margin-bottom:8px; }
+  .trap { background:linear-gradient(135deg, #1a0a0a, #1a0f0f); border:1px solid #e0525244; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .trap .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--red); letter-spacing:2px; margin-bottom:8px; }
+  .ding { background:linear-gradient(135deg, #0a0f1a, #0a1220); border:1px solid #5298e044; border-radius:12px; padding:22px 26px; margin:12px 0; }
+  .ding .label { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--blue); letter-spacing:2px; margin-bottom:8px; }
+
+  /* TABLES */
+  .stbl { width:100%; border-collapse:collapse; margin:16px 0; font-size:.9rem; }
+  .stbl th { background:rgba(232,184,90,.12); color:var(--gold); padding:10px 14px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px; border-bottom:2px solid rgba(232,184,90,.2); }
+  .stbl td { padding:10px 14px; border-bottom:1px solid var(--border); color:#c8d0de; vertical-align:top; }
+  .stbl tr:last-child td { border-bottom:none; }
+  .stbl tr:hover td { background:rgba(255,255,255,.02); }
+  .stbl td.ar { direction:rtl; text-align:right; }
+
+  /* GRID CARDS */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:16px 0; }
+  @media(max-width:600px) { .grid2,.grid3 { grid-template-columns:1fr; } }
+  .gcard { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; }
+  .gcard .gtitle { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); margin-bottom:8px; letter-spacing:1px; }
+  .gcard p { font-size:.9rem; line-height:1.7; color:#aab4c4; }
+  .gcard.red { border-color:#e0525244; } .gcard.red .gtitle { color:var(--red); }
+  .gcard.green { border-color:#52c78a44; } .gcard.green .gtitle { color:var(--green); }
+  .gcard.blue { border-color:#5298e044; } .gcard.blue .gtitle { color:var(--blue); }
+  .gcard.purple { border-color:#9b5de544; } .gcard.purple .gtitle { color:var(--purple); }
+  .gcard.teal { border-color:#38b2ac44; } .gcard.teal .gtitle { color:var(--teal); }
+
+  /* NF TREE */
+  .tree { display:flex; flex-direction:column; align-items:center; gap:8px; margin:16px 0; direction:ltr; }
+  .tree-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .tnode { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-family:'JetBrains Mono',monospace; font-size:.75rem; color:#c8d0de; text-align:center; }
+  .tnode.root { background:rgba(232,184,90,.15); border-color:var(--gold); color:var(--gold); font-size:.85rem; }
+  .tnode.l1-a { border-color:#5298e044; color:var(--blue); }
+  .tnode.l1-b { border-color:#52c78a44; color:var(--green); }
+  .tnode.l1-c { border-color:#9b5de544; color:var(--purple); }
+
+  /* FLOW */
+  .flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin:16px 0; direction:ltr; }
+  .fbox { background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:10px 16px; font-size:.85rem; color:#c8d0de; text-align:center; font-family:'JetBrains Mono',monospace; }
+  .farrow { color:var(--gold); font-size:1.2rem; }
+
+  /* INSULIN PUMP TABLE */
+  .pump-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:.85rem; }
+  .pump-table th { background:rgba(56,178,172,.15); color:var(--teal); padding:10px 14px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:.8rem; border-bottom:2px solid rgba(56,178,172,.3); }
+  .pump-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:#c8d0de; vertical-align:top; font-size:.85rem; }
+  .pump-table td.label-cell { font-family:'JetBrains Mono',monospace; color:var(--gold2); font-weight:700; width:140px; }
+  .pump-table tr:last-child td { border-bottom:none; }
+
+  /* USERS DIAGRAM */
+  .users-flow { display:flex; flex-direction:column; gap:10px; margin:16px 0; direction:ltr; }
+  .user-row { display:flex; align-items:center; gap:12px; background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+  .user-role { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); min-width:170px; font-weight:700; }
+  .user-desc { font-size:.9rem; color:#aab4c4; line-height:1.5; }
+
+  /* CHEAT SHEET */
+  #cheat { background:linear-gradient(135deg,#0d1117,#111820); }
+  .cheat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; max-width:1000px; width:100%; margin-top:32px; }
+  .cheat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px; }
+  .cheat-card h3 { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold); letter-spacing:2px; margin-bottom:14px; }
+  .cheat-card ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .cheat-card ul li { font-size:.85rem; color:#aab4c4; padding-right:0; padding-left:0; line-height:1.5; }
+  .cheat-card ul li::before { content:'› '; color:var(--gold); }
+
+  /* FINALE */
+  #finale { min-height:60vh; text-align:center; background:radial-gradient(ellipse at 50% 60%, #1a140a 0%, var(--bg) 70%); }
+  #finale h2 { font-size:clamp(1.8rem,4vw,2.8rem); color:#fff; font-weight:900; }
+  #finale p { color:#8892a4; margin-top:12px; line-height:1.7; max-width:500px; }
+
+  /* QUOTE */
+  .quote-block { background:rgba(232,184,90,.06); border-right:4px solid var(--gold); padding:18px 22px; border-radius:0 10px 10px 0; margin:14px 0; direction:ltr; text-align:left; }
+  .quote-block p { color:#c8d0de; font-style:italic; line-height:1.7; }
+  .quote-block cite { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--gold); display:block; margin-top:8px; }
+
+  /* HIGHLIGHT BOX */
+  .hbox { border-radius:10px; padding:16px 20px; margin:12px 0; }
+  .hbox.gold { background:rgba(232,184,90,.1); border:1px solid rgba(232,184,90,.25); }
+  .hbox.red { background:rgba(224,82,82,.1); border:1px solid rgba(224,82,82,.25); }
+  .hbox.blue { background:rgba(82,152,224,.1); border:1px solid rgba(82,152,224,.25); }
+  .hbox p { line-height:1.8; color:#c8d0de; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<nav id="nav">
+  <div class="dot active" onclick="scrollTo(0)" data-ch="Intro" title="Intro"></div>
+  <div class="dot" onclick="scrollToSec(1)" data-ch="Ch1" title="What is RE?"></div>
+  <div class="dot" onclick="scrollToSec(2)" data-ch="Ch2" title="User vs System"></div>
+  <div class="dot" onclick="scrollToSec(3)" data-ch="Ch3" title="3 Types"></div>
+  <div class="dot" onclick="scrollToSec(4)" data-ch="Ch4" title="Functional"></div>
+  <div class="dot" onclick="scrollToSec(5)" data-ch="Ch5" title="Non-Functional"></div>
+  <div class="dot" onclick="scrollToSec(6)" data-ch="Ch6" title="Metrics"></div>
+  <div class="dot" onclick="scrollToSec(7)" data-ch="Ch7" title="The Document"></div>
+  <div class="dot" onclick="scrollToSec(8)" data-ch="Ch8" title="How to Write"></div>
+  <div class="dot" onclick="scrollToSec(9)" data-ch="Ch9" title="Insulin Pump"></div>
+  <div class="dot" onclick="scrollToSec(10)" data-ch="Cheat" title="Cheat Sheet"></div>
+</nav>
+
+<!-- HEADER -->
+<header id="sec0">
+  <div class="lec-badge">CSE 302 · LECTURE 6</div>
+  <h1>Requirements<br><span>Engineering</span></h1>
+  <p class="hero-sub">لما حد يقولك "اعمل نظام كويس" — ده مش requirement. اتعلم تحول الكلام ده لعقد حقيقي.</p>
+  <div class="hero-meta">
+    <span class="meta-chip">📋 3 Types of Requirements</span>
+    <span class="meta-chip">📄 NFR Metrics</span>
+    <span class="meta-chip">💉 Insulin Pump Example</span>
+    <span class="meta-chip">📑 SRS Document</span>
+  </div>
+  <p class="scroll-hint">scroll to begin ↓</p>
+</header>
+
+<!-- CH 1: WHAT IS REQUIREMENTS ENGINEERING -->
+<section id="sec1">
+  <div class="ch-label">Chapter 01</div>
+  <div class="ch-num">01</div>
+  <div class="hook" onclick="revealStory('s1')">
+    <h2>🤔 "اعمل نظام حلو" — هل دي requirement؟</h2>
+    <div class="sub">Davis قال جملة بتغير كل حاجة في Software Engineering. ما هي؟</div>
+    <div class="tap">Reveal the Davis secret →</div>
+  </div>
+  <div class="story" id="s1">
+    <div class="scene">
+      <div class="scene-title">📜 THE DAVIS QUOTE</div>
+      <div class="quote-block" style="direction:ltr">
+        <p>"Establishing the requirements for a computer-based system is one of the most critical phases of software engineering… The hardest single part of building a software system is deciding precisely what to build."</p>
+        <cite>— Davis (paraphrased from the book)</cite>
+      </div>
+      <p>الـ <span class="en">requirements</span> مش مجرد قايمة أمنيات — هي العقد اللي بيحدد بالضبط ايه اللي المفروض يتبنى. لو الـ <span class="en">requirements</span> غلط، كل حاجة بعديها غلط.</p>
+    </div>
+    <div class="scene">
+      <div class="scene-title">⚡ ABSTRACTION LEVELS</div>
+      <p>الـ <span class="en">requirements</span> بتتكتب على مستويين مختلفين جداً:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">HIGH LEVEL (Abstract)</div>
+          <p>للـ <span class="en">customer</span> — جملة واحدة بسيطة بتوصف الهدف. مش لازم technical.</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">LOW LEVEL (Detailed)</div>
+          <p>للـ <span class="en">developer</span> — تفاصيل دقيقة جداً. كل حاجة technically محددة.</p>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="label">✅ KEY INSIGHT</div>
+      <p>الـ <span class="en">requirements engineering</span> هو عملية تحويل "عايزين نظام ناجح" → عقد دقيق بيحدد بالضبط ايه معنى "ناجح".</p>
+    </div>
+  </div>
+</section>
+
+<!-- CH 2: USER VS SYSTEM REQUIREMENTS -->
+<section id="sec2">
+  <div class="ch-label">Chapter 02</div>
+  <div class="ch-num">02</div>
+  <div class="hook" onclick="revealStory('s2')">
+    <h2>👤 Customer بيقرأ — 👨‍💻 Developer بيقرأ... نفس الوثيقة؟</h2>
+    <div class="sub">لأ. فيه مستويين مختلفين. User Requirements vs System Requirements — ايه الفرق وليه؟</div>
+    <div class="tap">Reveal the two levels →</div>
+  </div>
+  <div class="story" id="s2">
+    <div class="scene">
+      <div class="scene-title">👁 THE TWO WORLDS</div>
+      <table class="stbl">
+        <tr>
+          <th>Aspect</th>
+          <th>User Requirements</th>
+          <th>System Requirements</th>
+        </tr>
+        <tr>
+          <td class="ar">من يقرأها؟</td>
+          <td class="ar">العميل، المدير، غير متخصص</td>
+          <td class="ar">المطور، المهندس، المتخصص</td>
+        </tr>
+        <tr>
+          <td class="ar">اللغة</td>
+          <td class="ar">لغة طبيعية + رسوم بسيطة</td>
+          <td class="ar">وثيقة منظمة ودقيقة</td>
+        </tr>
+        <tr>
+          <td class="ar">المستوى</td>
+          <td class="ar">عالي — abstract</td>
+          <td class="ar">منخفض — detailed</td>
+        </tr>
+        <tr>
+          <td class="ar">الهدف</td>
+          <td class="ar">تعريف الخدمات المطلوبة</td>
+          <td class="ar">تعريف كيفية تقديم الخدمات</td>
+        </tr>
+      </table>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🏥 MHC-PMS EXAMPLE — نظام إدارة المرضى</div>
+      <div class="hbox gold">
+        <p><strong>User Requirement (جملة واحدة):</strong><br>
+        "A nurse shall be able to search the appointments for all clinics on a particular day."</p>
+      </div>
+      <div class="hbox blue">
+        <p><strong>System Requirements (5 تفاصيل دقيقة):</strong></p>
+      </div>
+      <div class="gcard" style="margin:8px 0; direction:ltr; text-align:left;">
+        <p style="font-family:'JetBrains Mono',monospace; font-size:.82rem; line-height:2; color:#c8d0de;">
+          1.1 — A user shall be able to search the appointments lists for all clinics or for a selected clinic on a specified day.<br>
+          1.2 — A system shall then display a list of all appointments for that day, with name, address, appointment time, and treatment.<br>
+          1.3 — Following display, the user shall be able to select any of the listed appointments and cancel the appointment.<br>
+          1.4 — Users of the search function shall be able to specify that appointments shall be sorted by time, doctor, or treatment.<br>
+          1.5 — Appropriate warning shall be displayed if a patient appointment is cancelled.
+        </p>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="label">✅ RULE</div>
+      <p>الـ <span class="en">User Requirements</span> بتقول الـ "WHAT" بشكل عام. الـ <span class="en">System Requirements</span> بتقول الـ "WHAT" بشكل دقيق وقابل للتنفيذ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CH 3: 3 TYPES -->
+<section id="sec3">
+  <div class="ch-label">Chapter 03</div>
+  <div class="ch-num">03</div>
+  <div class="hook" onclick="revealStory('s3')">
+    <h2>🎯 كل الـ Requirements من نفس النوع؟</h2>
+    <div class="sub">لأ — فيه 3 أنواع مختلفة جداً. والفرق بينهم ممكن يفرق بين نظام ناجح ونظام فاشل.</div>
+    <div class="tap">Reveal the 3 types →</div>
+  </div>
+  <div class="story" id="s3">
+    <div class="scene">
+      <div class="scene-title">🔱 THE 3 TYPES</div>
+      <div class="grid3">
+        <div class="gcard blue">
+          <div class="gtitle">① FUNCTIONAL</div>
+          <p>بتوصف الخدمات والوظائف اللي النظام المفروض يعملها. "النظام يعمل ايه؟"</p>
+        </div>
+        <div class="gcard red">
+          <div class="gtitle">② NON-FUNCTIONAL</div>
+          <p>قيود على الخدمات أو عملية التطوير. "النظام يعمل إزاي؟" — سرعة، أمان، موثوقية.</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">③ DOMAIN</div>
+          <p>قيود جاية من مجال تشغيل النظام. قوانين طبية، مالية، قانونية.</p>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">💡 امثلة سريعة</div>
+      <table class="stbl">
+        <tr>
+          <th>Type</th>
+          <th>Example</th>
+          <th class="ar">ملاحظة</th>
+        </tr>
+        <tr>
+          <td><span class="en">Functional</span></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">System shall generate monthly reports for each clinic.</td>
+          <td class="ar">وظيفة محددة</td>
+        </tr>
+        <tr>
+          <td><span class="en">Non-Functional</span></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">System shall be available 08:30–17:30, Mon–Fri.</td>
+          <td class="ar">قيد على التشغيل</td>
+        </tr>
+        <tr>
+          <td><span class="en">Domain</span></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem;">System shall implement patient privacy as per HStan-03-2006.</td>
+          <td class="ar">قانون خارجي</td>
+        </tr>
+      </table>
+    </div>
+    <div class="trap">
+      <div class="label">⚠️ EXAM TRAP</div>
+      <p>الـ <span class="en">Domain Requirements</span> مش نوع منفصل كلياً — هي في الحقيقة <span class="en">Functional</span> أو <span class="en">Non-functional</span> requirements بس مصدرها من بيئة التشغيل (مجال طبي، مالي، قانوني). السؤال ممكن يطلب منك تحدد النوع وتبرر.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CH 4: FUNCTIONAL REQUIREMENTS -->
+<section id="sec4">
+  <div class="ch-label">Chapter 04</div>
+  <div class="ch-num">04</div>
+  <div class="hook" onclick="revealStory('s4')">
+    <h2>📝 Functional Requirements — "الوعود"</h2>
+    <div class="sub">النظام لازم يعمل ايه بالضبط؟ وايه اللي بيحصل لما الـ requirements مش complete ولا consistent؟</div>
+    <div class="tap">Reveal the promises →</div>
+  </div>
+  <div class="story" id="s4">
+    <div class="scene">
+      <div class="scene-title">📋 WHAT ARE FUNCTIONAL REQUIREMENTS?</div>
+      <p>الـ <span class="en">Functional Requirements</span> بتوصف:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">الخدمات والوظائف</div>
+          <p>النظام يعمل ايه لما الـ <span class="en">user</span> يعمل action معين.</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">ردود الفعل</div>
+          <p>النظام يستجيب إزاي في مواقف معينة — error handling, edge cases.</p>
+        </div>
+      </div>
+      <p style="margin-top:14px;">مستوى التفصيل بيعتمد على نوع الـ <span class="en">software</span> والـ <span class="en">users</span> والنظام:</p>
+      <ul style="list-style:none; margin:10px 0; line-height:2.2; color:#c8d0de; padding:0 10px;">
+        <li>→ <span class="en">User requirements</span> = high-level, abstract</li>
+        <li>→ <span class="en">System requirements</span> = detailed, precise</li>
+      </ul>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🏥 MHC-PMS — FUNCTIONAL EXAMPLES</div>
+      <div class="hbox blue" style="direction:ltr; text-align:left; margin-bottom:10px;">
+        <p style="font-family:'JetBrains Mono',monospace; font-size:.82rem; line-height:1.9;">
+          ① A user shall be able to search the appointments lists for all clinics or for a selected clinic on a specified day.<br>
+          ② The system shall generate each day, for each clinic, a list of patients expected to attend appointments that day.<br>
+          ③ Each staff member using the system shall be uniquely identified by their 8-digit employee number.
+        </p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">⚡ THE COMPLETENESS & CONSISTENCY PROBLEM</div>
+      <div class="grid2">
+        <div class="gcard green">
+          <div class="gtitle">COMPLETE</div>
+          <p>لازم تشمل وصف كل الـ <span class="en">facilities</span> المطلوبة — مفيش حاجة تتنسى.</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">CONSISTENT</div>
+          <p>مفيش تعارض أو تناقض في أوصاف الـ <span class="en">system facilities</span>.</p>
+        </div>
+      </div>
+      <div class="trap">
+        <div class="label">⚠️ THE PAINFUL TRUTH</div>
+        <p>في الواقع، من المستحيل إنتاج <span class="en">requirements document</span> كامل ومتسق 100%. دايماً بيكون فيه ثغرات — الهدف تقليلها مش إلغاؤها.</p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">🔍 REQUIREMENTS IMPRECISION — مثال "Search"</div>
+      <div class="dialogue">
+        <div class="speaker">👩‍⚕️ NURSE (User Intent)</div>
+        <p>عايزة أدور على أي appointment في أي clinic في المستشفى كلها.</p>
+      </div>
+      <div class="dialogue">
+        <div class="speaker">👨‍💻 DEVELOPER (Interpretation)</div>
+        <p>هعمل search في الـ clinic اللي بتشتغل فيها الـ nurse بس.</p>
+      </div>
+      <div class="trap">
+        <div class="label">💥 RESULT</div>
+        <p>كلمة "search" في الـ <span class="en">user requirement</span> كانت غامضة — الـ nurse قصدت كل الـ clinics، الـ developer فهم clinic واحدة. النظام اتبنى غلط لأن الـ <span class="en">requirement</span> كان imprecise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 5: NON-FUNCTIONAL REQUIREMENTS -->
+<section id="sec5">
+  <div class="ch-label">Chapter 05</div>
+  <div class="ch-num">05</div>
+  <div class="hook" onclick="revealStory('s5')">
+    <h2>💀 "The Hidden Killers" — Non-Functional Requirements</h2>
+    <div class="sub">النظام بيعمل كل وظايفه تمام — بس بيتسكل 30 ثانية لكل request. هل ده نظام ناجح؟</div>
+    <div class="tap">Reveal the hidden killers →</div>
+  </div>
+  <div class="story" id="s5">
+    <div class="scene">
+      <div class="scene-title">⚡ ما هي Non-Functional Requirements؟</div>
+      <p>الـ <span class="en">Non-functional requirements</span> بتحدد خصائص وقيود النظام — مش الوظايف نفسها، لكن إزاي النظام يعمل الوظايف دي:</p>
+      <div class="grid3">
+        <div class="gcard red">
+          <div class="gtitle">SYSTEM PROPERTIES</div>
+          <p>سرعة، موثوقية، أمان، حجم التخزين</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">CONSTRAINTS</div>
+          <p>I/O device capability, نوع الـ IDE، لغة البرمجة المستخدمة</p>
+        </div>
+        <div class="gcard purple">
+          <div class="gtitle">PROCESS REQs</div>
+          <p>تحديد IDE معين، development method محدد</p>
+        </div>
+      </div>
+      <div class="trap">
+        <div class="label">💥 KEY FACT</div>
+        <p>الـ <span class="en">Non-functional requirements</span> أحياناً أهم من الـ <span class="en">Functional</span>! لو مش متحققة، النظام ممكن يبقى useless حتى لو بيعمل كل الوظايف صح.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🌳 TYPES OF NON-FUNCTIONAL REQUIREMENTS</div>
+      <div class="tree">
+        <div class="tree-row"><div class="tnode root">Non-Functional Requirements</div></div>
+        <div class="tree-row">
+          <div class="tnode l1-a">Product Requirements</div>
+          <div class="tnode l1-b">Organizational Requirements</div>
+          <div class="tnode l1-c">External Requirements</div>
+        </div>
+        <div class="tree-row">
+          <div class="tnode" style="border-color:#5298e033">Efficiency</div>
+          <div class="tnode" style="border-color:#5298e033">Dependability</div>
+          <div class="tnode" style="border-color:#5298e033">Security</div>
+          <div class="tnode" style="border-color:#52c78a33">Environmental</div>
+          <div class="tnode" style="border-color:#52c78a33">Operational</div>
+          <div class="tnode" style="border-color:#52c78a33">Development</div>
+          <div class="tnode" style="border-color:#9b5de533">Regulatory</div>
+          <div class="tnode" style="border-color:#9b5de533">Ethical</div>
+        </div>
+        <div class="tree-row">
+          <div class="tnode" style="font-size:.7rem">Performance</div>
+          <div class="tnode" style="font-size:.7rem">Space</div>
+          <div class="tnode" style="font-size:.7rem">Usability</div>
+          <div class="tnode" style="font-size:.7rem">Accounting</div>
+          <div class="tnode" style="font-size:.7rem">Legislative</div>
+          <div class="tnode" style="font-size:.7rem">Safety/Security</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📦 THE 3 CLASSIFICATIONS</div>
+      <table class="stbl">
+        <tr>
+          <th>Classification</th>
+          <th class="ar">التعريف</th>
+          <th class="ar">مثال</th>
+        </tr>
+        <tr>
+          <td><span class="en">Product Requirements</span></td>
+          <td class="ar">قيود على سلوك المنتج المسلّم — execution speed، reliability</td>
+          <td class="ar">النظام يكون متاح Mon–Fri 08:30–17:30، downtime ≤ 5 ثواني</td>
+        </tr>
+        <tr>
+          <td><span class="en">Organisational Requirements</span></td>
+          <td class="ar">نتيجة سياسات وإجراءات المؤسسة — process standards، implementation requirements</td>
+          <td class="ar">المستخدمين يتحققوا من هويتهم باستخدام health authority identity card</td>
+        </tr>
+        <tr>
+          <td><span class="en">External Requirements</span></td>
+          <td class="ar">عوامل خارجية — interoperability، legislative requirements</td>
+          <td class="ar">النظام يطبق قوانين خصوصية المرضى حسب HStan-03-2006-priv</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🏥 MHC-PMS — NON-FUNCTIONAL EXAMPLES</div>
+      <div class="gcard" style="margin:8px 0; direction:ltr; text-align:left;">
+        <div class="gtitle" style="color:var(--blue);">PRODUCT REQUIREMENT</div>
+        <p style="font-size:.88rem; line-height:1.7;">The MHC-PMS shall be available to all clinics during normal working hours (Mon–Fri, 08.30–17.30). Downtime within normal working hours shall not exceed five seconds in any one day.</p>
+      </div>
+      <div class="gcard" style="margin:8px 0; direction:ltr; text-align:left;">
+        <div class="gtitle" style="color:var(--green);">ORGANIZATIONAL REQUIREMENT</div>
+        <p style="font-size:.88rem; line-height:1.7;">Users of the MHC-PMS system shall authenticate themselves using their health authority identity card.</p>
+      </div>
+      <div class="gcard" style="margin:8px 0; direction:ltr; text-align:left;">
+        <div class="gtitle" style="color:var(--purple);">EXTERNAL REQUIREMENT</div>
+        <p style="font-size:.88rem; line-height:1.7;">The system shall implement patient privacy provisions as set out in HStan-03-2006-priv.</p>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">🏗️ HOW NFRs AFFECT THE SYSTEM</div>
+      <div class="grid2">
+        <div class="gcard red">
+          <div class="gtitle">ARCHITECTURE LEVEL</div>
+          <p>الـ <span class="en">NFR</span> ممكن تأثر على الـ overall architecture بدل الـ components الفردية. مثال: لو فيه <span class="en">performance requirement</span> قوي، ممكن تضطر تعيد تصميم كل الـ communication بين الـ components.</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">CASCADE EFFECT</div>
+          <p>NFR واحد زي الـ <span class="en">security requirement</span> ممكن يولد عشرات الـ <span class="en">functional requirements</span> جديدة وممكن يقيّد requirements موجودة.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 6: METRICS -->
+<section id="sec6">
+  <div class="ch-label">Chapter 06</div>
+  <div class="ch-num">06</div>
+  <div class="hook" onclick="revealStory('s6')">
+    <h2>📊 "النظام يكون سهل الاستخدام" — هل ده Requirement حقيقي؟</h2>
+    <div class="sub">لأ! مش قابل للقياس. ايه الفرق بين Goal و Testable NFR؟ وإزاي تقيس الـ reliability والـ performance؟</div>
+    <div class="tap">Reveal the metrics →</div>
+  </div>
+  <div class="story" id="s6">
+    <div class="scene">
+      <div class="scene-title">🎯 GOAL vs TESTABLE NFR</div>
+      <div class="hbox red">
+        <p><strong style="color:var(--red);">❌ Goal (مش مفيد في الـ specs):</strong><br>
+        "The system should be easy to use by medical staff and should be organized so that user errors are minimized."<br>
+        <span style="color:#8892a4; font-size:.9rem;">غامض — مش قابل للقياس</span></p>
+      </div>
+      <div class="hbox green">
+        <p><strong style="color:var(--green);">✅ Testable NFR (مفيد):</strong><br>
+        "Medical staff shall be able to use all the system functions after four hours of training. After this training, the average number of errors made by experienced users shall not exceed two per hour of system use."<br>
+        <span style="color:#8892a4; font-size:.9rem;">دقيق — قابل للقياس والاختبار</span></p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-title">📏 METRICS TABLE FOR NON-FUNCTIONAL REQUIREMENTS</div>
+      <table class="stbl">
+        <tr>
+          <th>Property</th>
+          <th>Measure</th>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--blue);">Speed</strong></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem; line-height:1.7;">
+            Processed transactions/second<br>
+            User/event response time<br>
+            Screen refresh time
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--green);">Size</strong></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem; line-height:1.7;">
+            Mbytes<br>
+            Number of ROM chips
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--gold);">Ease of Use</strong></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem; line-height:1.7;">
+            Training time<br>
+            Number of help frames
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--red);">Reliability</strong></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem; line-height:1.7;">
+            Mean time to failure<br>
+            Probability of unavailability<br>
+            Rate of failure occurrence<br>
+            Availability
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--purple);">Robustness</strong></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem; line-height:1.7;">
+            Time to restart after failure<br>
+            % of events causing failure<br>
+            Probability of data corruption on failure
+          </td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--teal);">Portability</strong></td>
+          <td style="direction:ltr; text-align:left; font-size:.85rem; line-height:1.7;">
+            % of target dependent statements<br>
+            Number of target systems
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="reveal">
+      <div class="label">✅ EXAM RULE</div>
+      <p>أي <span class="en">NFR</span> مش مقاسة = Goal مش Requirement. في الامتحان لو طلبوا منك تكتب <span class="en">testable NFR</span>، لازم تحدد الرقم أو المقياس الدقيق.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CH 7: THE REQUIREMENTS DOCUMENT -->
+<section id="sec7">
+  <div class="ch-label">Chapter 07</div>
+  <div class="ch-num">07</div>
+  <div class="hook" onclick="revealStory('s7')">
+    <h2>📑 The Software Requirements Document — وثيقة أم عقد؟</h2>
+    <div class="sub">مين بيقرأها؟ ايه هيكلها؟ وليه مش design document؟</div>
+    <div class="tap">Reveal the document →</div>
+  </div>
+  <div class="story" id="s7">
+    <div class="scene">
+      <div class="scene-title">📋 WHAT IS THE SRS?</div>
+      <p>الـ <span class="en">Software Requirements Document (SRS)</span> هو الـ <strong>official statement</strong> اللي بيحدد ايه المطلوب من المطورين:</p>
+      <div class="grid3">
+        <div class="gcard green">
+          <div class="gtitle">INCLUDES</div>
+          <p>User requirements + System requirements معاً في وثيقة واحدة</p>
+        </div>
+        <div class="gcard red">
+          <div class="gtitle">NOT A DESIGN DOC</div>
+          <p>بتقول WHAT — مش HOW. النظام يعمل ايه، مش إزاي يعمله.</p>
+        </div>
+        <div class="gcard blue">
+          <div class="gtitle">CONTRACT BASIS</div>
+          <p>ممكن تكون جزء من عقد — لازم تكون complete قدر الإمكان</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">👥 WHO USES THE SRS?</div>
+      <div class="users-flow">
+        <div class="user-row">
+          <div class="user-role">🏢 System Customers</div>
+          <div class="user-desc ar">بيحددوا الـ requirements ويتأكدوا إنها بتلبي احتياجاتهم. بيحددوا التغييرات المطلوبة.</div>
+        </div>
+        <div class="user-row">
+          <div class="user-role">👔 Managers</div>
+          <div class="user-desc ar">بستخدموا الوثيقة عشان يخططوا للـ bid وخطة التطوير.</div>
+        </div>
+        <div class="user-row">
+          <div class="user-role">⚙️ System Engineers</div>
+          <div class="user-desc ar">بيستخدموها عشان يفهموا النظام المفروض يتطور.</div>
+        </div>
+        <div class="user-row">
+          <div class="user-role">🧪 Test Engineers</div>
+          <div class="user-desc ar">بيطوروا tests للـ validation بناءً عليها.</div>
+        </div>
+        <div class="user-row">
+          <div class="user-role">🔧 Maintenance Engineers</div>
+          <div class="user-desc ar">بيستخدموها لفهم النظام والعلاقات بين أجزائه.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📖 STRUCTURE OF THE SRS</div>
+      <table class="stbl">
+        <tr><th>Chapter</th><th class="ar">المحتوى</th></tr>
+        <tr><td><span class="en">Preface</span></td><td class="ar">تاريخ الوثيقة، summary التغييرات، intended readership</td></tr>
+        <tr><td><span class="en">Introduction</span></td><td class="ar">وصف الحاجة للنظام وكيف يتناسب مع الـ business objectives</td></tr>
+        <tr><td><span class="en">Glossary</span></td><td class="ar">تعريف المصطلحات التقنية المستخدمة</td></tr>
+        <tr><td><span class="en">User Requirements</span></td><td class="ar">وصف الخدمات للـ user بلغة طبيعية ورسوم توضيحية</td></tr>
+        <tr><td><span class="en">System Architecture</span></td><td class="ar">نظرة عالية المستوى على architecture وتوزيع الـ modules</td></tr>
+        <tr><td><span class="en">System Requirements Spec</span></td><td class="ar">تفاصيل functional وnon-functional بشكل دقيق</td></tr>
+        <tr><td><span class="en">System Models</span></td><td class="ar">رسوم UML — object models, data-flow, semantic models</td></tr>
+        <tr><td><span class="en">System Evolution</span></td><td class="ar">الافتراضات الأساسية والتغييرات المتوقعة في المستقبل</td></tr>
+        <tr><td><span class="en">Appendices</span></td><td class="ar">تفاصيل تقنية — hardware configs، database structures</td></tr>
+        <tr><td><span class="en">Index</span></td><td class="ar">فهرس أبجدي، diagrams، functions</td></tr>
+      </table>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 DOCUMENT VARIABILITY</div>
+      <p>شكل الوثيقة بيختلف حسب:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">SYSTEM TYPE</div>
+          <p>نظام embedded بيحتاج تفاصيل أكتر من web app بسيط</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">DEVELOPMENT APPROACH</div>
+          <p>نظام بيتطور <span class="en">incrementally</span> عادة بيكون فيه less detail في الـ SRS</p>
+        </div>
+      </div>
+      <div class="ding">
+        <div class="label">📌 NOTE</div>
+        <p>فيه standards زي الـ <span class="en">IEEE standard</span> لكتابة الـ SRS — بس بيتطبق أكتر على large systems engineering projects.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 8: HOW TO WRITE REQUIREMENTS -->
+<section id="sec8">
+  <div class="ch-label">Chapter 08</div>
+  <div class="ch-num">08</div>
+  <div class="hook" onclick="revealStory('s8')">
+    <h2>✍️ 5 طرق لكتابة الـ Requirements — ايه الأفضل؟</h2>
+    <div class="sub">Natural language بيسبب مشاكل كتير. ايه البدائل؟ ومتى نستخدم كل طريقة؟</div>
+    <div class="tap">Reveal the 5 ways →</div>
+  </div>
+  <div class="story" id="s8">
+    <div class="scene">
+      <div class="scene-title">📝 5 WAYS TO WRITE REQUIREMENTS</div>
+      <table class="stbl">
+        <tr>
+          <th>Notation</th>
+          <th class="ar">الوصف</th>
+          <th class="ar">متى تستخدمه؟</th>
+        </tr>
+        <tr>
+          <td><span class="en">Natural Language</span></td>
+          <td class="ar">جمل مرقمة بلغة طبيعية — كل جملة requirement واحدة</td>
+          <td class="ar">الأكثر استخداماً — للـ user requirements</td>
+        </tr>
+        <tr>
+          <td><span class="en">Structured Natural Language</span></td>
+          <td class="ar">لغة طبيعية على template/form محدد — كل field بيحتوي معلومة معينة</td>
+          <td class="ar">لما تريد consistency بدون ambiguity كبير</td>
+        </tr>
+        <tr>
+          <td><span class="en">Design Description Languages</span></td>
+          <td class="ar">بيستخدم لغة زي programming language لتحديد الـ requirements</td>
+          <td class="ar">نادر الاستخدام حالياً — مناسب للـ interface specifications</td>
+        </tr>
+        <tr>
+          <td><span class="en">Graphical Notations</span></td>
+          <td class="ar">رسوم بيانية + text annotations — UML use case and sequence diagrams</td>
+          <td class="ar">شائع جداً — لتوضيح العلاقات والتفاعلات</td>
+        </tr>
+        <tr>
+          <td><span class="en">Mathematical Specifications</span></td>
+          <td class="ar">notations رياضية مبنية على state machines أو set theory</td>
+          <td class="ar">يقلل الـ ambiguity — لكن العملاء مش بيفهموه</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">⚠️ PROBLEMS WITH NATURAL LANGUAGE</div>
+      <div class="grid3">
+        <div class="gcard red">
+          <div class="gtitle">① LACK OF CLARITY</div>
+          <p>الدقة صعبة بدون ما الوثيقة تبقى صعبة القراءة. تعارض بين precision وreadability.</p>
+        </div>
+        <div class="gcard red">
+          <div class="gtitle">② REQUIREMENTS CONFUSION</div>
+          <p>الـ functional والـ non-functional requirements بتتخلط مع بعض في نفس الجملة.</p>
+        </div>
+        <div class="gcard red">
+          <div class="gtitle">③ REQUIREMENTS AMALGAMATION</div>
+          <p>عدة requirements مختلفة بتتكتب مع بعض في جملة واحدة — صعب تتعرف عليها منفصلة.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📋 REQUIREMENTS SPECIFICATION — THE BASICS</div>
+      <p>عملية الـ <span class="en">Requirements Specification</span> هي كتابة الـ user وsystem requirements في وثيقة واحدة:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">USER REQUIREMENTS SPEC</div>
+          <p>لازم يفهمها الـ end-users والـ customers اللي مش عندهم background تقني</p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">SYSTEM REQUIREMENTS SPEC</div>
+          <p>تفاصيل أكتر — ممكن تشمل معلومات تقنية. قد تكون جزء من عقد.</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="label">✅ CRITICAL POINT</div>
+        <p>الـ requirements ممكن تكون جزء من عقد للـ system development — لذلك من المهم جداً تكون complete قدر الإمكان.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH 9: INSULIN PUMP — STRUCTURED SPECS -->
+<section id="sec9">
+  <div class="ch-label">Chapter 09</div>
+  <div class="ch-num">09</div>
+  <div class="hook" onclick="revealStory('s9')">
+    <h2>💉 The Insulin Pump — درس حقيقي في الـ Specifications</h2>
+    <div class="sub">نظام طبي حقيقي لحساب جرعة الأنسولين. إزاي نكتب الـ requirements بشكل structured وtabular؟</div>
+    <div class="tap">Reveal the insulin pump specs →</div>
+  </div>
+  <div class="story" id="s9">
+    <div class="scene">
+      <div class="scene-title">📋 FORM-BASED (STRUCTURED) SPECIFICATIONS</div>
+      <p>الـ <span class="en">Structured Specifications</span> بتستخدم template ثابت بيحتوي على:</p>
+      <div class="grid2">
+        <div class="gcard blue">
+          <div class="gtitle">COMPONENTS OF FORM-BASED SPEC</div>
+          <p style="line-height:2;">
+            • Function / Entity definition<br>
+            • Description of inputs + their sources<br>
+            • Description of outputs + destinations<br>
+            • Info needed for computation<br>
+            • Description of the action<br>
+            • Pre-conditions and Post-conditions<br>
+            • Side effects (if any)
+          </p>
+        </div>
+        <div class="gcard green">
+          <div class="gtitle">WHY USE IT?</div>
+          <p>يقلل الـ ambiguity الموجود في الـ natural language — كل field بيتكلم عن جانب واحد محدد من الـ requirement.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">💉 INSULIN PUMP — FORM-BASED SPEC</div>
+      <div style="direction:ltr; text-align:left;">
+        <table class="pump-table">
+          <tr><th colspan="2">Insulin Pump/Control Software/SRS/3.3.2</th></tr>
+          <tr>
+            <td class="label-cell">Function</td>
+            <td>Compute insulin dose: Safe sugar level.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Description</td>
+            <td>Computes the dose of insulin to be delivered when the current measured sugar level is in the safe zone between 3 and 7 units.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Inputs</td>
+            <td>Current sugar reading (r2); the previous two readings (r0 and r1).</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Source</td>
+            <td>Current sugar reading from sensor. Other readings from memory.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Outputs</td>
+            <td>CompDose — the dose in insulin to be delivered.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Destination</td>
+            <td>Main control loop.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Action</td>
+            <td>
+              CompDose is zero if the sugar level is stable or falling or if the level is increasing but the rate of decrease is decreasing.<br><br>
+              If the level is increasing and the rate of increase is increasing, then CompDose = round((r2 − r1)/4).<br>
+              If rounded result = 0 then CompDose = MinimumDose.
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell">Requirements</td>
+            <td>Two previous readings so that the rate of change of sugar level can be computed.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Pre-condition</td>
+            <td>The insulin reservoir contains at least the maximum allowed single dose of insulin.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Post-condition</td>
+            <td>r0 is replaced by r1 then r1 is replaced by r2.</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Side effects</td>
+            <td>None.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-title">📊 TABULAR SPECIFICATION</div>
+      <p>الـ <span class="en">Tabular Specification</span> بتكمّل الـ natural language — مفيدة لما يكون فيه عدة سيناريوهات مختلفة لنفس الوظيفة:</p>
+      <div style="direction:ltr; text-align:left; margin-top:14px;">
+        <table class="pump-table">
+          <tr>
+            <th>Condition</th>
+            <th>Action</th>
+          </tr>
+          <tr>
+            <td>Sugar level falling (r2 &lt; r1)</td>
+            <td>CompDose = 0</td>
+          </tr>
+          <tr>
+            <td>Sugar level stable (r2 = r1)</td>
+            <td>CompDose = 0</td>
+          </tr>
+          <tr>
+            <td>Sugar level increasing AND rate of increase decreasing<br><code style="color:#aab4c4; font-size:.8rem;">((r2 − r1) &lt; (r1 − r0))</code></td>
+            <td>CompDose = 0</td>
+          </tr>
+          <tr>
+            <td>Sugar level increasing AND rate stable or increasing<br><code style="color:#aab4c4; font-size:.8rem;">((r2 − r1) ≥ (r1 − r0))</code></td>
+            <td>
+              CompDose = round((r2 − r1)/4)<br>
+              If result = 0 → CompDose = MinimumDose
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="reveal">
+        <div class="label">✅ WHY TABULAR?</div>
+        <p>الـ natural language صعب فيه تحدد كل scenarios بشكل واضح. الـ tabular specification بتحدد كل condition وaction مقابلها بشكل لا لبس فيه — مثالي لأنظمة embedded زي الـ insulin pump.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="sec10" id="cheat">
+  <div class="ch-label">Final Boss</div>
+  <div class="ch-num">⚡</div>
+  <h2 style="color:#fff; font-size:2rem; font-weight:900; margin-bottom:8px;">Exam Cheat Sheet</h2>
+  <p style="color:#8892a4; margin-bottom:0;">كل حاجة هتحتاجها في الامتحان في مكان واحد</p>
+  <div class="cheat-grid">
+
+    <div class="cheat-card">
+      <h3>THE 3 TYPES</h3>
+      <ul>
+        <li><strong>Functional</strong> — what the system does</li>
+        <li><strong>Non-functional</strong> — constraints on how it does it</li>
+        <li><strong>Domain</strong> — constraints from operation domain</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>USER vs SYSTEM REQS</h3>
+      <ul>
+        <li>User Req → abstract, natural language, for customers</li>
+        <li>System Req → detailed, structured, for developers</li>
+        <li>SRS includes BOTH</li>
+        <li>SRS = WHAT, not HOW</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>NON-FUNCTIONAL TYPES</h3>
+      <ul>
+        <li><strong>Product</strong> — behavior of delivered product (speed, reliability)</li>
+        <li><strong>Organizational</strong> — org policies (IDE, process standards)</li>
+        <li><strong>External</strong> — interoperability, legislative</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>NFR METRICS</h3>
+      <ul>
+        <li>Speed → transactions/sec, response time</li>
+        <li>Size → Mbytes, ROM chips</li>
+        <li>Ease of use → training time, help frames</li>
+        <li>Reliability → mean time to failure, availability</li>
+        <li>Robustness → restart time, data corruption %</li>
+        <li>Portability → % target-dependent statements</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>SRS STRUCTURE (10 CHAPTERS)</h3>
+      <ul>
+        <li>Preface → Introduction → Glossary</li>
+        <li>User Requirements Definition</li>
+        <li>System Architecture</li>
+        <li>System Requirements Specification</li>
+        <li>System Models → System Evolution</li>
+        <li>Appendices → Index</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>5 WAYS TO WRITE REQUIREMENTS</h3>
+      <ul>
+        <li>Natural language sentences</li>
+        <li>Structured natural language (templates)</li>
+        <li>Design description languages (rare)</li>
+        <li>Graphical notations (UML)</li>
+        <li>Mathematical specifications (formal)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>PROBLEMS WITH NATURAL LANGUAGE</h3>
+      <ul>
+        <li>Lack of clarity — precision vs readability trade-off</li>
+        <li>Requirements confusion — functional + NFR mixed</li>
+        <li>Requirements amalgamation — multiple reqs in one sentence</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>FORM-BASED SPEC FIELDS</h3>
+      <ul>
+        <li>Function · Description</li>
+        <li>Inputs (source) · Outputs (destination)</li>
+        <li>Action · Requirements</li>
+        <li>Pre-condition · Post-condition</li>
+        <li>Side effects</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>SRS USERS & THEIR PURPOSE</h3>
+      <ul>
+        <li>Customers → specify & verify requirements</li>
+        <li>Managers → plan bids & development</li>
+        <li>System Engineers → understand what to build</li>
+        <li>Test Engineers → develop validation tests</li>
+        <li>Maintenance Engineers → understand system</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>COMPLETENESS & CONSISTENCY</h3>
+      <ul>
+        <li>Complete = all required facilities described</li>
+        <li>Consistent = no conflicts or contradictions</li>
+        <li>In practice: IMPOSSIBLE to achieve both 100%</li>
+        <li>Imprecision leads to misunderstanding (search example)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>MHC-PMS KEY EXAMPLES</h3>
+      <ul>
+        <li>Functional: search appointments, generate daily lists, 8-digit employee ID</li>
+        <li>Product NFR: available Mon–Fri 08:30–17:30, downtime ≤ 5s/day</li>
+        <li>Org NFR: authenticate via health authority card</li>
+        <li>External NFR: implement HStan-03-2006-priv</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>INSULIN PUMP — KEY NUMBERS</h3>
+      <ul>
+        <li>Safe sugar zone: 3–7 units</li>
+        <li>Inputs: r0 (oldest), r1 (previous), r2 (current)</li>
+        <li>CompDose = round((r2-r1)/4)</li>
+        <li>CompDose = 0 when falling or stable</li>
+        <li>CompDose = MinimumDose if result rounds to 0</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- FINALE -->
+<section id="finale">
+  <div style="font-size:3rem; margin-bottom:20px;">🎓</div>
+  <h2>You're ready for the exam!</h2>
+  <p>Lec 6 — Requirements Engineering خلصت. دلوقتي عارف الفرق بين User وSystem requirements، الـ 3 أنواع، الـ metrics، وازاي تكتب specs بشكل صح.</p>
+  <div style="margin-top:32px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--gold);">Lec 6 ✓ Complete</div>
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 24px; font-family:'JetBrains Mono',monospace; font-size:.8rem; color:#8892a4;">Good luck — ابو 💪</div>
+  </div>
+</section>
+
+<script>
+  const sections = ['sec0','sec1','sec2','sec3','sec4','sec5','sec6','sec7','sec8','sec9','sec10'];
+  const dots = document.querySelectorAll('.dot');
+  const bar = document.getElementById('progress-bar');
+
+  function revealStory(id) {
+    const s = document.getElementById(id);
+    if (!s) return;
+    s.classList.toggle('open');
+    const hook = s.previousElementSibling;
+    if (hook && hook.classList.contains('hook')) {
+      const tap = hook.querySelector('.tap');
+      if (tap) tap.textContent = s.classList.contains('open') ? 'Hide ↑' : 'Reveal →';
+    }
+  }
+
+  function scrollToSec(i) {
+    const el = document.getElementById(sections[i]);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (scrolled / total * 100) + '%';
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      if (top < window.innerHeight / 2 && top > -window.innerHeight / 2) {
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[i]) dots[i].classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>
