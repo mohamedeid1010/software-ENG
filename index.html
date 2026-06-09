@@ -1097,7 +1097,7 @@
       overlay.classList.add('active');
 
       // Fetch current count (already incremented on page load if first visit)
-      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/`)
         .then(res => res.json())
         .then(data => {
           animateCount(countEl, data.count || 1);
