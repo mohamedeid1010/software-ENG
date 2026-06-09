@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE 302 — Software Engineering Study Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070a;
+    --panel: rgba(255, 255, 255, 0.02);
+    --panel-hover: rgba(232, 184, 90, 0.06);
+    --border: rgba(232, 184, 90, 0.15);
+    --border-hover: rgba(232, 184, 90, 0.4);
+    --ink: #e9e6df;
+    --muted: #8c887f;
+    --gold: #e8b85a;
+    --gold-soft: #f4d28a;
+    --shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+    --shadow-glow: 0 0 25px rgba(232, 184, 90, 0.12);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Sora', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: 
+      radial-gradient(800px 500px at 50% -10%, rgba(232, 184, 90, 0.08), transparent 50%),
+      radial-gradient(600px 400px at 50% 110%, rgba(
+// MISSING LINE 43
+// MISSING LINE 44
+// MISSING LINE 45
+// MISSING LINE 46
+// MISSING LINE 47
+// MISSING LINE 48
+// MISSING LINE 49
+// MISSING LINE 50
+// MISSING LINE 51
+// MISSING LINE 52
+// MISSING LINE 53
+// MISSING LINE 54
+// MISSING LINE 55
+// MISSING LINE 56
+// MISSING LINE 57
+// MISSING LINE 58
+// MISSING LINE 59
+// MISSING LINE 60
+// MISSING LINE 61
+// MISSING LINE 62
+// MISSING LINE 63
+// MISSING LINE 64
+// MISSING LINE 65
+// MISSING LINE 66
+// MISSING LINE 67
+// MISSING LINE 68
+// MISSING LINE 69
+// MISSING LINE 70
+// MISSING LINE 71
+// MISSING LINE 72
+// MISSING LINE 73
+// MISSING LINE 74
+// MISSING LINE 75
+// MISSING LINE 76
+// MISSING LINE 77
+// MISSING LINE 78
+// MISSING LINE 79
+// MISSING LINE 80
+// MISSING LINE 81
+// MISSING LINE 82
+// MISSING LINE 83
+// MISSING LINE 84
+// MISSING LINE 85
+// MISSING LINE 86
+// MISSING LINE 87
+// MISSING LINE 88
+// MISSING LINE 89
+// MISSING LINE 90
+// MISSING LINE 91
+// MISSING LINE 92
+// MISSING LINE 93
+// MISSING LINE 94
+// MISSING LINE 95
+// MISSING LINE 96
+// MISSING LINE 97
+// MISSING LINE 98
+// MISSING LINE 99
+// MISSING LINE 100
+// MISSING LINE 101
+// MISSING LINE 102
+// MISSING LINE 103
+// MISSING LINE 104
+// MISSING LINE 105
+// MISSING LINE 106
+// MISSING LINE 107
+// MISSING LINE 108
+// MISSING LINE 109
+// MISSING LINE 110
+// MISSING LINE 111
+// MISSING LINE 112
+// MISSING LINE 113
+// MISSING LINE 114
+// MISSING LINE 115
+// MISSING LINE 116
+// MISSING LINE 117
+// MISSING LINE 118
+// MISSING LINE 119
+// MISSING LINE 120
+// MISSING LINE 121
+// MISSING LINE 122
+// MISSING LINE 123
+// MISSING LINE 124
+// MISSING LINE 125
+// MISSING LINE 126
+// MISSING LINE 127
+// MISSING LINE 128
+// MISSING LINE 129
+// MISSING LINE 130
+// MISSING LINE 131
+// MISSING LINE 132
+// MISSING LINE 133
+// MISSING LINE 134
+// MISSING LINE 135
+// MISSING LINE 136
+// MISSING LINE 137
+// MISSING LINE 138
+// MISSING LINE 139
+// MISSING LINE 140
+// MISSING LINE 141
+// MISSING LINE 142
+// MISSING LINE 143
+// MISSING LINE 144
+// MISSING LINE 145
+// MISSING LINE 146
+// MISSING LINE 147
+// MISSING LINE 148
+// MISSING LINE 149
+// MISSING LINE 150
+// MISSING LINE 151
+// MISSING LINE 152
+// MISSING LINE 153
+// MISSING LINE 154
+// MISSING LINE 155
+// MISSING LINE 156
+// MISSING LINE 157
+// MISSING LINE 158
+// MISSING LINE 159
+// MISSING LINE 160
+// MISSING LINE 161
+// MISSING LINE 162
+// MISSING LINE 163
+// MISSING LINE 164
+// MISSING LINE 165
+// MISSING LINE 166
+// MISSING LINE 167
+// MISSING LINE 168
+// MISSING LINE 169
+// MISSING LINE 170
+// MISSING LINE 171
+// MISSING LINE 172
+// MISSING LINE 173
+// MISSING LINE 174
+// MISSING LINE 175
+// MISSING LINE 176
+// MISSING LINE 177
+// MISSING LINE 178
+// MISSING LINE 179
+// MISSING LINE 180
+// MISSING LINE 181
+// MISSING LINE 182
+// MISSING LINE 183
+// MISSING LINE 184
+// MISSING LINE 185
+// MISSING LINE 186
+// MISSING LINE 187
+// MISSING LINE 188
+// MISSING LINE 189
+// MISSING LINE 190
+// MISSING LINE 191
+// MISSING LINE 192
+// MISSING LINE 193
+// MISSING LINE 194
+// MISSING LINE 195
+// MISSING LINE 196
+// MISSING LINE 197
+// MISSING LINE 198
+// MISSING LINE 199
+// MISSING LINE 200
+// MISSING LINE 201
+// MISSING LINE 202
+// MISSING LINE 203
+// MISSING LINE 204
+// MISSING LINE 205
+// MISSING LINE 206
+// MISSING LINE 207
+// MISSING LINE 208
+// MISSING LINE 209
+// MISSING LINE 210
+// MISSING LINE 211
+// MISSING LINE 212
+// MISSING LINE 213
+// MISSING LINE 214
+// MISSING LINE 215
+// MISSING LINE 216
+// MISSING LINE 217
+// MISSING LINE 218
+// MISSING LINE 219
+// MISSING LINE 220
+// MISSING LINE 221
+// MISSING LINE 222
+// MISSING LINE 223
+// MISSING LINE 224
+// MISSING LINE 225
+// MISSING LINE 226
+// MISSING LINE 227
+// MISSING LINE 228
+// MISSING LINE 229
+// MISSING LINE 230
+// MISSING LINE 231
+// MISSING LINE 232
+// MISSING LINE 233
+// MISSING LINE 234
+// MISSING LINE 235
+// MISSING LINE 236
+// MISSING LINE 237
+// MISSING LINE 238
+// MISSING LINE 239
+// MISSING LINE 240
+// MISSING LINE 241
+// MISSING LINE 242
+// MISSING LINE 243
+// MISSING LINE 244
+// MISSING LINE 245
+// MISSING LINE 246
+// MISSING LINE 247
+// MISSING LINE 248
+// MISSING LINE 249
+// MISSING LINE 250
+// MISSING LINE 251
+// MISSING LINE 252
+// MISSING LINE 253
+// MISSING LINE 254
+// MISSING LINE 255
+// MISSING LINE 256
+// MISSING LINE 257
+// MISSING LINE 258
+// MISSING LINE 259
+// MISSING LINE 260
+// MISSING LINE 261
+// MISSING LINE 262
+// MISSING LINE 263
+// MISSING LINE 264
+// MISSING LINE 265
+// MISSING LINE 266
+// MISSING LINE 267
+// MISSING LINE 268
+// MISSING LINE 269
+// MISSING LINE 270
+// MISSING LINE 271
+// MISSING LINE 272
+// MISSING LINE 273
+// MISSING LINE 274
+// MISSING LINE 275
+// MISSING LINE 276
+// MISSING LINE 277
+// MISSING LINE 278
+// MISSING LINE 279
+// MISSING LINE 280
+// MISSING LINE 281
+// MISSING LINE 282
+// MISSING LINE 283
+// MISSING LINE 284
+// MISSING LINE 285
+// MISSING LINE 286
+// MISSING LINE 287
+// MISSING LINE 288
+// MISSING LINE 289
+// MISSING LINE 290
+// MISSING LINE 291
+// MISSING LINE 292
+// MISSING LINE 293
+// MISSING LINE 294
+// MISSING LINE 295
+// MISSING LINE 296
+// MISSING LINE 297
+// MISSING LINE 298
+// MISSING LINE 299
+// MISSING LINE 300
+// MISSING LINE 301
+// MISSING LINE 302
+// MISSING LINE 303
+// MISSING LINE 304
+// MISSING LINE 305
+// MISSING LINE 306
+// MISSING LINE 307
+// MISSING LINE 308
+// MISSING LINE 309
+// MISSING LINE 310
+// MISSING LINE 311
+// MISSING LINE 312
+// MISSING LINE 313
+// MISSING LINE 314
+// MISSING LINE 315
+// MISSING LINE 316
+// MISSING LINE 317
+// MISSING LINE 318
+// MISSING LINE 319
+// MISSING LINE 320
+// MISSING LINE 321
+// MISSING LINE 322
+// MISSING LINE 323
+// MISSING LINE 324
+// MISSING LINE 325
+// MISSING LINE 326
+// MISSING LINE 327
+// MISSING LINE 328
+// MISSING LINE 329
+// MISSING LINE 330
+// MISSING LINE 331
+// MISSING LINE 332
+// MISSING LINE 333
+// MISSING LINE 334
+// MISSING LINE 335
+// MISSING LINE 336
+// MISSING LINE 337
+// MISSING LINE 338
+// MISSING LINE 339
+// MISSING LINE 340
+// MISSING LINE 341
+// MISSING LINE 342
+// MISSING LINE 343
+// MISSING LINE 344
+// MISSING LINE 345
+// MISSING LINE 346
+// MISSING LINE 347
+// MISSING LINE 348
+// MISSING LINE 349
+// MISSING LINE 350
+// MISSING LINE 351
+// MISSING LINE 352
+// MISSING LINE 353
+// MISSING LINE 354
+// MISSING LINE 355
+// MISSING LINE 356
+// MISSING LINE 357
+// MISSING LINE 358
+// MISSING LINE 359
+// MISSING LINE 360
+// MISSING LINE 361
+// MISSING LINE 362
+// MISSING LINE 363
+// MISSING LINE 364
+// MISSING LINE 365
+// MISSING LINE 366
+// MISSING LINE 367
+// MISSING LINE 368
+// MISSING LINE 369
+// MISSING LINE 370
+// MISSING LINE 371
+// MISSING LINE 372
+// MISSING LINE 373
+// MISSING LINE 374
+// MISSING LINE 375
+// MISSING LINE 376
+// MISSING LINE 377
+// MISSING LINE 378
+// MISSING LINE 379
+// MISSING LINE 380
+// MISSING LINE 381
+// MISSING LINE 382
+// MISSING LINE 383
+// MISSING LINE 384
+// MISSING LINE 385
+// MISSING LINE 386
+// MISSING LINE 387
+// MISSING LINE 388
+// MISSING LINE 389
+// MISSING LINE 390
+// MISSING LINE 391
+// MISSING LINE 392
+// MISSING LINE 393
+// MISSING LINE 394
+// MISSING LINE 395
+// MISSING LINE 396
+// MISSING LINE 397
+// MISSING LINE 398
+// MISSING LINE 399
+// MISSING LINE 400
+// MISSING LINE 401
+// MISSING LINE 402
+// MISSING LINE 403
+// MISSING LINE 404
+// MISSING LINE 405
+// MISSING LINE 406
+// MISSING LINE 407
+// MISSING LINE 408
+// MISSING LINE 409
+// MISSING LINE 410
+// MISSING LINE 411
+// MISSING LINE 412
+// MISSING LINE 413
+// MISSING LINE 414
+// MISSING LINE 415
+// MISSING LINE 416
+// MISSING LINE 417
+// MISSING LINE 418
+// MISSING LINE 419
+// MISSING LINE 420
+// MISSING LINE 421
+// MISSING LINE 422
+// MISSING LINE 423
+// MISSING LINE 424
+// MISSING LINE 425
+// MISSING LINE 426
+// MISSING LINE 427
+// MISSING LINE 428
+// MISSING LINE 429
+// MISSING LINE 430
+// MISSING LINE 431
+// MISSING LINE 432
+// MISSING LINE 433
+// MISSING LINE 434
+// MISSING LINE 435
+// MISSING LINE 436
+// MISSING LINE 437
+// MISSING LINE 438
+// MISSING LINE 439
+// MISSING LINE 440
+// MISSING LINE 441
+// MISSING LINE 442
+// MISSING LINE 443
+// MISSING LINE 444
+// MISSING LINE 445
+// MISSING LINE 446
+// MISSING LINE 447
+// MISSING LINE 448
+// MISSING LINE 449
+// MISSING LINE 450
+// MISSING LINE 451
+// MISSING LINE 452
+// MISSING LINE 453
+// MISSING LINE 454
+// MISSING LINE 455
+// MISSING LINE 456
+// MISSING LINE 457
+// MISSING LINE 458
+// MISSING LINE 459
+// MISSING LINE 460
+// MISSING LINE 461
+// MISSING LINE 462
+// MISSING LINE 463
+// MISSING LINE 464
+// MISSING LINE 465
+// MISSING LINE 466
+// MISSING LINE 467
+// MISSING LINE 468
+// MISSING LINE 469
+// MISSING LINE 470
+// MISSING LINE 471
+// MISSING LINE 472
+// MISSING LINE 473
+// MISSING LINE 474
+// MISSING LINE 475
+// MISSING LINE 476
+// MISSING LINE 477
+// MISSING LINE 478
+// MISSING LINE 479
+// MISSING LINE 480
+// MISSING LINE 481
+// MISSING LINE 482
+// MISSING LINE 483
+// MISSING LINE 484
+// MISSING LINE 485
+// MISSING LINE 486
+// MISSING LINE 487
+// MISSING LINE 488
+// MISSING LINE 489
+// MISSING LINE 490
+// MISSING LINE 491
+// MISSING LINE 492
+// MISSING LINE 493
+// MISSING LINE 494
+// MISSING LINE 495
+// MISSING LINE 496
+// MISSING LINE 497
+// MISSING LINE 498
+// MISSING LINE 499
+// MISSING LINE 500
+// MISSING LINE 501
+// MISSING LINE 502
+// MISSING LINE 503
+// MISSING LINE 504
+// MISSING LINE 505
+// MISSING LINE 506
+// MISSING LINE 507
+// MISSING LINE 508
+// MISSING LINE 509
+// MISSING LINE 510
+// MISSING LINE 511
+// MISSING LINE 512
+// MISSING LINE 513
+// MISSING LINE 514
+// MISSING LINE 515
+// MISSING LINE 516
+// MISSING LINE 517
+// MISSING LINE 518
+// MISSING LINE 519
+// MISSING LINE 520
+// MISSING LINE 521
+// MISSING LINE 522
+// MISSING LINE 523
+// MISSING LINE 524
+// MISSING LINE 525
+// MISSING LINE 526
+// MISSING LINE 527
+// MISSING LINE 528
+// MISSING LINE 529
+// MISSING LINE 530
+// MISSING LINE 531
+// MISSING LINE 532
+// MISSING LINE 533
+// MISSING LINE 534
+// MISSING LINE 535
+// MISSING LINE 536
+// MISSING LINE 537
+// MISSING LINE 538
+// MISSING LINE 539
+// MISSING LINE 540
+// MISSING LINE 541
+// MISSING LINE 542
+// MISSING LINE 543
+// MISSING LINE 544
+// MISSING LINE 545
+// MISSING LINE 546
+// MISSING LINE 547
+// MISSING LINE 548
+// MISSING LINE 549
+// MISSING LINE 550
+// MISSING LINE 551
+// MISSING LINE 552
+// MISSING LINE 553
+// MISSING LINE 554
+// MISSING LINE 555
+// MISSING LINE 556
+// MISSING LINE 557
+// MISSING LINE 558
+// MISSING LINE 559
+// MISSING LINE 560
+// MISSING LINE 561
+// MISSING LINE 562
+// MISSING LINE 563
+// MISSING LINE 564
+// MISSING LINE 565
+// MISSING LINE 566
+// MISSING LINE 567
+// MISSING LINE 568
+// MISSING LINE 569
+// MISSING LINE 570
+// MISSING LINE 571
+// MISSING LINE 572
+// MISSING LINE 573
+// MISSING LINE 574
+// MISSING LINE 575
+// MISSING LINE 576
+// MISSING LINE 577
+// MISSING LINE 578
+// MISSING LINE 579
+// MISSING LINE 580
+// MISSING LINE 581
+// MISSING LINE 582
+// MISSING LINE 583
+// MISSING LINE 584
+// MISSING LINE 585
+// MISSING LINE 586
+// MISSING LINE 587
+// MISSING LINE 588
+// MISSING LINE 589
+// MISSING LINE 590
+// MISSING LINE 591
+// MISSING LINE 592
+// MISSING LINE 593
+// MISSING LINE 594
+// MISSING LINE 595
+// MISSING LINE 596
+// MISSING LINE 597
+// MISSING LINE 598
+// MISSING LINE 599
+// MISSING LINE 600
+// MISSING LINE 601
+// MISSING LINE 602
+// MISSING LINE 603
+// MISSING LINE 604
+// MISSING LINE 605
+// MISSING LINE 606
+// MISSING LINE 607
+// MISSING LINE 608
+// MISSING LINE 609
+// MISSING LINE 610
+// MISSING LINE 611
+// MISSING LINE 612
+// MISSING LINE 613
+// MISSING LINE 614
+// MISSING LINE 615
+// MISSING LINE 616
+// MISSING LINE 617
+// MISSING LINE 618
+// MISSING LINE 619
+// MISSING LINE 620
+// MISSING LINE 621
+// MISSING LINE 622
+// MISSING LINE 623
+// MISSING LINE 624
+// MISSING LINE 625
+// MISSING LINE 626
+// MISSING LINE 627
+// MISSING LINE 628
+// MISSING LINE 629
+// MISSING LINE 630
+// MISSING LINE 631
+// MISSING LINE 632
+// MISSING LINE 633
+// MISSING LINE 634
+// MISSING LINE 635
+// MISSING LINE 636
+// MISSING LINE 637
+// MISSING LINE 638
+// MISSING LINE 639
+// MISSING LINE 640
+// MISSING LINE 641
+// MISSING LINE 642
+// MISSING LINE 643
+// MISSING LINE 644
+// MISSING LINE 645
+// MISSING LINE 646
+// MISSING LINE 647
+// MISSING LINE 648
+// MISSING LINE 649
+// MISSING LINE 650
+// MISSING LINE 651
+// MISSING LINE 652
+// MISSING LINE 653
+// MISSING LINE 654
+// MISSING LINE 655
+// MISSING LINE 656
+// MISSING LINE 657
+// MISSING LINE 658
+// MISSING LINE 659
+// MISSING LINE 660
+// MISSING LINE 661
+// MISSING LINE 662
+// MISSING LINE 663
+// MISSING LINE 664
+// MISSING LINE 665
+// MISSING LINE 666
+// MISSING LINE 667
+// MISSING LINE 668
+// MISSING LINE 669
+// MISSING LINE 670
+// MISSING LINE 671
+// MISSING LINE 672
+// MISSING LINE 673
+// MISSING LINE 674
+// MISSING LINE 675
+// MISSING LINE 676
+// MISSING LINE 677
+// MISSING LINE 678
+// MISSING LINE 679
+// MISSING LINE 680
+// MISSING LINE 681
+// MISSING LINE 682
+// MISSING LINE 683
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .zoom-btn:hover {
+        background: #e8b85a;
+        color: #0a0c0e;
+        transform: translateY(-1px);
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Create lightbox modal elements
+    const modal = document.createElement('div');
+    modal.className = 'lightbox-modal';
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.innerHTML = '&times;';
+    
+    const img = document.createElement('img');
+    img.className = 'lightbox-content';
+    
+    const hint = document.createElement('div');
+    hint.className = 'lightbox-hint';
+    hint.innerText = 'اضغط في أي مكان لإغلاق الصورة';
+    
+    modal.appendChild(closeBtn);
+    modal.appendChild(img);
+    modal.appendChild(hint);
+    document.body.appendChild(modal);
+
+    // Open lightbox helper
+    const openLightbox = (src) => {
+      img.src = src;
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    };
+
+    // Close lightbox helper
+    const closeModal = () => {
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(() => { img.src = ''; }, 300);
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target !== img) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        closeModal();
+      }
+    });
+// MISSING LINE 742
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      
+      // Periodically spawn floating background stars
+      if (keepSpawning && Math.random() < 0.2) {
+        particles.push(new Particle(
+          Math.random() * canvas.width,
+          canvas.height + 10,
+          colors[Math.floor(Math.random() * colors.length)],
+          false
+        ));
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Mouse trailing interaction
+    function handleMouseMove(e) {
+      for (let i = 0; i < 2; i++) {
+        particles.push(new Particle(
+          e.clientX,
+          e.clientY,
+          colors[Math.floor(Math.random() * colors.length)],
+          false
+        ));
+      }
+    }
+    overlay.addEventListener('mousemove', handleMouseMove);
+    
+    // Sequencing the cards
+    const card1 = document.getElementById('card-step-1');
+    const card2 = document.getElementById('card-step-2');
+    const card3 = document.getElementById('card-step-3');
+    
+    // Reset states
+    card1.classList.remove('active');
+    card2.classList.remove('active');
+    card3.classList.remove('active');
+    
+    // Step 1
+    setTimeout(() => {
+      card1.classList.add('active');
+    }, 200);
+    
+    // Step 2
+    <!-- 1. Quest Selector View -->
+    <div id="quest-selector-screen" class="quest-selector-view">
+      <div class="quest-intro">
+        <h2>مرحباً بك في طور المغامرة التفاعلي 🎮</h2>
+        <p>بدلاً من تصفح الملاحظات الجامدة، انطلق في مهام برمجية عملية مع <b>أبو عيد</b>! واجه مشاكل حقيقية تواجه الشركات الكبرى والعملاء، وحلها مستعيناً بما درسته لتجمع الذهب، وترتقي بمستواك وتثبت فهمك للمادة.</p>
+      </div>
+
+      <div class="quest-grid">
+        <!-- Quest 1 -->
+        <div class="quest-card unlocked" onclick="startQuest(1)">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="quest-num">Quest 01</span>
+              <span id="q1-badge" class="quest-badge play">ابدأ المغامرة ⚔️</span>
+            </div>
+            <h3 style="margin-top:10px;">بوابة مملكة الكود</h3>
+            <p style="font-size:0.85rem; color:var(--muted); margin-top:5px; line-height:1.5;">المحاضرة الأولى: مقدمة هندسة البرمجيات، مثلث التصميم، كوارث برمجية مشهورة.</p>
+          </div>
+          <div class="quest-meta">
+            <span>الصعوبة: 🟢 سهلة</span>
+            <span style="color: var(--gold-soft);">+100 XP | +50 🪙</span>
+          </div>
+        </div>
+
+        <!-- Quest 2 -->
+        <div class="quest-card locked">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="quest-num">Quest 02</span>
+              <span class="quest-badge lock">قريباً 🔒</span>
+            </div>
+            <h3 style="margin-top:10px;">معبر الأخلاق والأمان</h3>
+            <p style="font-size:0.85rem; color:var(--muted); margin-top:5px; line-height:1.5;">المحاضرة الثانية: صفا
+// MISSING LINE 834
+// MISSING LINE 835
+// MISSING LINE 836
+// MISSING LINE 837
+// MISSING LINE 838
+// MISSING LINE 839
+// MISSING LINE 840
+// MISSING LINE 841
+// MISSING LINE 842
+// MISSING LINE 843
+// MISSING LINE 844
+// MISSING LINE 845
+// MISSING LINE 846
+// MISSING LINE 847
+// MISSING LINE 848
+// MISSING LINE 849
+// MISSING LINE 850
+// MISSING LINE 851
+// MISSING LINE 852
+// MISSING LINE 853
+// MISSING LINE 854
+// MISSING LINE 855
+// MISSING LINE 856
+// MISSING LINE 857
+// MISSING LINE 858
+// MISSING LINE 859
+// MISSING LINE 860
+// MISSING LINE 861
+// MISSING LINE 862
+// MISSING LINE 863
+// MISSING LINE 864
+// MISSING LINE 865
+// MISSING LINE 866
+// MISSING LINE 867
+// MISSING LINE 868
+// MISSING LINE 869
+// MISSING LINE 870
+// MISSING LINE 871
+// MISSING LINE 872
+        <!-- Quest 5 -->
+        <div class="quest-card locked">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="quest-num">Quest 05</span>
+              <span class="quest-badge lock">قريباً 🔒</span>
+            </div>
+            <h3 style="margin-top:10px;">زعيم السكرام المخطط</h3>
+            <p style="font-size:0.85rem; color:var(--muted); margin-top:5px; line-height:1.5;">المحاضرة الخامسة: إدارة المشاريع بـ Scrum ولوحة السبرنت وتقدير المهام.</p>
+          </div>
+          <div class="quest-meta">
+            <span>الصعوبة: 🔴 صعبة</span>
+            <span>مغلق مؤقتاً</span>
+          </div>
+        </div>
+
+        <!-- Quest 6 -->
+        <div class="quest-card locked">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="quest-num">Quest 06</span>
+              <span class="quest-badge lock">قريباً 🔒</span>
+            </div>
+            <h3 style="margin-top:10px;">طلاسم لغة العميل</h3>
+            <p style="font-size:0.85rem; color:var(--muted); margin-top:5px; line-height:1.5;">المحاضرة السادسة: هندسة المتطلبات الوظيفية وغير الوظيفية Functional & Non-Functional.</p>
+          </div>
+          <div class="quest-meta">
+            <span>الصعوبة: 🟡 متوسطة</span>
+            <span>مغلق مؤقتاً</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Active Game Screen -->
+    <div id="active-game-screen" class="game-console" style="display: none;">
+      
+      <!-- Character View -->
+      <aside class="character-card">
+        <div class="avatar-wrapper">
+          <!-- Animated CSS/SVG Abu Eid Avatar -->
+          <svg class="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background glow -->
+// MISSING LINE 916
+// MISSING LINE 917
+// MISSING LINE 918
+// MISSING LINE 919
+// MISSING LINE 920
+// MISSING LINE 921
+// MISSING LINE 922
+// MISSING LINE 923
+// MISSING LINE 924
+// MISSING LINE 925
+// MISSING LINE 926
+// MISSING LINE 927
+// MISSING LINE 928
+// MISSING LINE 929
+// MISSING LINE 930
+// MISSING LINE 931
+// MISSING LINE 932
+// MISSING LINE 933
+// MISSING LINE 934
+// MISSING LINE 935
+// MISSING LINE 936
+// MISSING LINE 937
+// MISSING LINE 938
+// MISSING LINE 939
+// MISSING LINE 940
+// MISSING LINE 941
+// MISSING LINE 942
+// MISSING LINE 943
+// MISSING LINE 944
+// MISSING LINE 945
+// MISSING LINE 946
+// MISSING LINE 947
+// MISSING LINE 948
+// MISSING LINE 949
+// MISSING LINE 950
+// MISSING LINE 951
+// MISSING LINE 952
+// MISSING LINE 953
+// MISSING LINE 954
+// MISSING LINE 955
+// MISSING LINE 956
+// MISSING LINE 957
+// MISSING LINE 958
+// MISSING LINE 959
+// MISSING LINE 960
+// MISSING LINE 961
+// MISSING LINE 962
+// MISSING LINE 963
+// MISSING LINE 964
+// MISSING LINE 965
+// MISSING LINE 966
+// MISSING LINE 967
+// MISSING LINE 968
+// MISSING LINE 969
+// MISSING LINE 970
+// MISSING LINE 971
+// MISSING LINE 972
+// MISSING LINE 973
+// MISSING LINE 974
+// MISSING LINE 975
+// MISSING LINE 976
+// MISSING LINE 977
+// MISSING LINE 978
+// MISSING LINE 979
+// MISSING LINE 980
+// MISSING LINE 981
+// MISSING LINE 982
+// MISSING LINE 983
+// MISSING LINE 984
+// MISSING LINE 985
+// MISSING LINE 986
+// MISSING LINE 987
+// MISSING LINE 988
+// MISSING LINE 989
+// MISSING LINE 990
+// MISSING LINE 991
+// MISSING LINE 992
+// MISSING LINE 993
+// MISSING LINE 994
+// MISSING LINE 995
+// MISSING LINE 996
+// MISSING LINE 997
+// MISSING LINE 998
+// MISSING LINE 999
+// MISSING LINE 1000
+// MISSING LINE 1001
+// MISSING LINE 1002
+// MISSING LINE 1003
+// MISSING LINE 1004
+// MISSING LINE 1005
+// MISSING LINE 1006
+// MISSING LINE 1007
+// MISSING LINE 1008
+// MISSING LINE 1009
+// MISSING LINE 1010
+// MISSING LINE 1011
+// MISSING LINE 1012
+// MISSING LINE 1013
+// MISSING LINE 1014
+// MISSING LINE 1015
+// MISSING LINE 1016
+// MISSING LINE 1017
+// MISSING LINE 1018
+// MISSING LINE 1019
+// MISSING LINE 1020
+// MISSING LINE 1021
+// MISSING LINE 1022
+// MISSING LINE 1023
+// MISSING LINE 1024
+// MISSING LINE 1025
+// MISSING LINE 1026
+// MISSING LINE 1027
+// MISSING LINE 1028
+// MISSING LINE 1029
+// MISSING LINE 1030
+// MISSING LINE 1031
+// MISSING LINE 1032
+// MISSING LINE 1033
+// MISSING LINE 1034
+// MISSING LINE 1035
+// MISSING LINE 1036
+// MISSING LINE 1037
+// MISSING LINE 1038
+// MISSING LINE 1039
+// MISSING LINE 1040
+// MISSING LINE 1041
+// MISSING LINE 1042
+// MISSING LINE 1043
+// MISSING LINE 1044
+// MISSING LINE 1045
+// MISSING LINE 1046
+// MISSING LINE 1047
+// MISSING LINE 1048
+// MISSING LINE 1049
+// MISSING LINE 1050
+// MISSING LINE 1051
+// MISSING LINE 1052
+// MISSING LINE 1053
+// MISSING LINE 1054
+// MISSING LINE 1055
+// MISSING LINE 1056
+// MISSING LINE 1057
+// MISSING LINE 1058
+// MISSING LINE 1059
+// MISSING LINE 1060
+// MISSING LINE 1061
+// MISSING LINE 1062
+// MISSING LINE 1063
+// MISSING LINE 1064
+// MISSING LINE 1065
+// MISSING LINE 1066
+// MISSING LINE 1067
+// MISSING LINE 1068
+// MISSING LINE 1069
+// MISSING LINE 1070
+// MISSING LINE 1071
+// MISSING LINE 1072
+// MISSING LINE 1073
+// MISSING LINE 1074
+// MISSING LINE 1075
+// MISSING LINE 1076
+// MISSING LINE 1077
+// MISSING LINE 1078
+// MISSING LINE 1079
+// MISSING LINE 1080
+// MISSING LINE 1081
+// MISSING LINE 1082
+// MISSING LINE 1083
+// MISSING LINE 1084
+// MISSING LINE 1085
+// MISSING LINE 1086
+// MISSING LINE 1087
+// MISSING LINE 1088
+// MISSING LINE 1089
+        <span>العودة للبوابة الرئيسية 🌟</span>
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    CSE 302 · SOFTWARE ENGINEERING QUEST · FACULTY OF       playClick() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.06);
+      },
+
+      playCorrect() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.08, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3)
+// MISSING LINE 1128
+// MISSING LINE 1129
+// MISSING LINE 1130
+// MISSING LINE 1131
+// MISSING LINE 1132
+// MISSING LINE 1133
+// MISSING LINE 1134
+// MISSING LINE 1135
+// MISSING LINE 1136
+// MISSING LINE 1137
+// MISSING LINE 1138
+// MISSING LINE 1139
+// MISSING LINE 1140
+// MISSING LINE 1141
+// MISSING LINE 1142
+// MISSING LINE 1143
+// MISSING LINE 1144
+// MISSING LINE 1145
+// MISSING LINE 1146
+// MISSING LINE 1147
+// MISSING LINE 1148
+// MISSING LINE 1149
+// MISSING LINE 1150
+// MISSING LINE 1151
+// MISSING LINE 1152
+// MISSING LINE 1153
+// MISSING LINE 1154
+// MISSING LINE 1155
+// MISSING LINE 1156
+// MISSING LINE 1157
+// MISSING LINE 1158
+// MISSING LINE 1159
+// MISSING LINE 1160
+// MISSING LINE 1161
+// MISSING LINE 1162
+// MISSING LINE 1163
+// MISSING LINE 1164
+// MISSING LINE 1165
+// MISSING LINE 1166
+// MISSING LINE 1167
+// MISSING LINE 1168
+// MISSING LINE 1169
+// MISSING LINE 1170
+// MISSING LINE 1171
+// MISSING LINE 1172
+// MISSING LINE 1173
+// MISSING LINE 1174
+// MISSING LINE 1175
+// MISSING LINE 1176
+// MISSING LINE 1177
+// MISSING LINE 1178
+// MISSING LINE 1179
+// MISSING LINE 1180
+// MISSING LINE 1181
+// MISSING LINE 1182
+// MISSING LINE 1183
+// MISSING LINE 1184
+// MISSING LINE 1185
+// MISSING LINE 1186
+// MISSING LINE 1187
+// MISSING LINE 1188
+// MISSING LINE 1189
+// MISSING LINE 1190
+// MISSING LINE 1191
+// MISSING LINE 1192
+// MISSING LINE 1193
+// MISSING LINE 1194
+// MISSING LINE 1195
+// MISSING LINE 1196
+// MISSING LINE 1197
+// MISSING LINE 1198
+// MISSING LINE 1199
+// MISSING LINE 1200
+// MISSING LINE 1201
+// MISSING LINE 1202
+// MISSING LINE 1203
+// MISSING LINE 1204
+// MISSING LINE 1205
+// MISSING LINE 1206
+// MISSING LINE 1207
+// MISSING LINE 1208
+// MISSING LINE 1209
+// MISSING LINE 1210
+// MISSING LINE 1211
+// MISSING LINE 1212
+// MISSING LINE 1213
+// MISSING LINE 1214
+// MISSING LINE 1215
+// MISSING LINE 1216
+// MISSING LINE 1217
+// MISSING LINE 1218
+// MISSING LINE 1219
+// MISSING LINE 1220
+// MISSING LINE 1221
+// MISSING LINE 1222
+// MISSING LINE 1223
+// MISSING LINE 1224
+// MISSING LINE 1225
+// MISSING LINE 1226
+// MISSING LINE 1227
+// MISSING LINE 1228
+// MISSING LINE 1229
+// MISSING LINE 1230
+// MISSING LINE 1231
+// MISSING LINE 1232
+// MISSING LINE 1233
+// MISSING LINE 1234
+// MISSING LINE 1235
+// MISSING LINE 1236
+// MISSING LINE 1237
+// MISSING LINE 1238
+// MISSING LINE 1239
+// MISSING LINE 1240
+// MISSING LINE 1241
+// MISSING LINE 1242
+// MISSING LINE 1243
+// MISSING LINE 1244
+// MISSING LINE 1245
+// MISSING LINE 1246
+// MISSING LINE 1247
+// MISSING LINE 1248
+// MISSING LINE 1249
+// MISSING LINE 1250
+// MISSING LINE 1251
+// MISSING LINE 1252
+// MISSING LINE 1253
+// MISSING LINE 1254
+// MISSING LINE 1255
+// MISSING LINE 1256
+// MISSING LINE 1257
+// MISSING LINE 1258
+// MISSING LINE 1259
+          },
+          // Step 11: Question (Ariane 5)
+          {
+            type: "question",
+            text: "سؤال مضمون جداً في امتحانات الترم، جاوب عليه بتركيز:<br><br><span dir=\"ltr\" style=\"display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;\">Q5: What software error caused the Ariane 5 rocket disaster in 1996?</span>",
+            choices: [
+              { english: "A mechanical valve failure in the solid boosters.", arabic: "فشل صمام ميكانيكي في معززات الصاروخ", isCorrect: false },
+              { english: "A data conversion overflow error trying to store a 64-bit float into a 16-bit space.", arabic: "خطأ تجاوز سعة التخزين (overflow) بمحاولة تحويل رقم 64 بت إلى 16 بت", isCorrect: true },
+              { english: "An overload of diagnostic sensor messages on the main bus.", arabic: "حمولة زائدة من رسائل مستشعرات الفحص على الناقل الرئيسي", isCorrect: false }
+            ],
+            hint: "أبو عيد: الصاروخ انفجر عشان الـ compiler حاول يحط رقم عشري كبير 64 بت في مكان رقم صحيح صغير 16 بت! ده اسمه overflow.",
+            feedback: "عبقري! خطأ تحويل البيانات (Data Conversion Overflow) هو السبب في انفجار الصاروخ."
+          },
+          // Step 12: Study (Process Activities & Application Types)
+          {
+            type: "dialogue",
+            text: "آخر نقطة في المحاضرة الأولى يا بطل:<br>أي تطوير سوفتوير بيمر بأربعة أنشطة أساسية نختصرها في <b>S-D-V-E</b>:<br>1. <b>Specification (S)</b>: التحديد وكتابة المتطلبات الكلية.<br>2. <b>Development (D)</b>: التصميم وكتابة الكود والبرمجة.<br>3. <b>Validation (V)</b>: التحقق والاختبار للتأكد من موافقة شروط العميل.<br>4. <b>Evolution (E)</b>: التعديل والتحديث المستمر للسوفتوير.<br><br>وعندنا 8 أنواع من التطبيقات (Application types)، أهمها للامتحان:<br>- <b>Embedded control systems</b>: أنظمة مدمجة تتحكم في الهاردوير (زي الغسالة الأوتوماتيك). وهي الأكثر عدداً في العالم!<br>- <b>Interactive transaction-based</b>: منصات تعمل على خادم بعيد تفاعلياً (زي مواقع البيع والشراء والـ E-commerce)."
+          },
+// MISSING LINE 1278
+// MISSING LINE 1279
+// MISSING LINE 1280
+// MISSING LINE 1281
+// MISSING LINE 1282
+// MISSING LINE 1283
+// MISSING LINE 1284
+// MISSING LINE 1285
+// MISSING LINE 1286
+// MISSING LINE 1287
+// MISSING LINE 1288
+// MISSING LINE 1289
+// MISSING LINE 1290
+// MISSING LINE 1291
+// MISSING LINE 1292
+// MISSING LINE 1293
+// MISSING LINE 1294
+// MISSING LINE 1295
+// MISSING LINE 1296
+// MISSING LINE 1297
+// MISSING LINE 1298
+// MISSING LINE 1299
+// MISSING LINE 1300
+// MISSING LINE 1301
+// MISSING LINE 1302
+// MISSING LINE 1303
+// MISSING LINE 1304
+// MISSING LINE 1305
+// MISSING LINE 1306
+// MISSING LINE 1307
+// MISSING LINE 1308
+// MISSING LINE 1309
+// MISSING LINE 1310
+// MISSING LINE 1311
+// MISSING LINE 1312
+// MISSING LINE 1313
+// MISSING LINE 1314
+// MISSING LINE 1315
+// MISSING LINE 1316
+// MISSING LINE 1317
+// MISSING LINE 1318
+// MISSING LINE 1319
+// MISSING LINE 1320
+// MISSING LINE 1321
+// MISSING LINE 1322
+// MISSING LINE 1323
+// MISSING LINE 1324
+// MISSING LINE 1325
+// MISSING LINE 1326
+// MISSING LINE 1327
+// MISSING LINE 1328
+// MISSING LINE 1329
+// MISSING LINE 1330
+// MISSING LINE 1331
+// MISSING LINE 1332
+// MISSING LINE 1333
+// MISSING LINE 1334
+// MISSING LINE 1335
+// MISSING LINE 1336
+// MISSING LINE 1337
+// MISSING LINE 1338
+// MISSING LINE 1339
+          {
+            type: "question",
+            text: "ما هي الأنشطة الأربعة الأساسية لعملية هندسة البرمجيات (Software Engineering Activities) طبقاً لترتيبها المعتاد؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q6: What are the four fundamental process activities in Software Engineering?</span>",
+            choices: [
+              { text: "A) Specification, Development, Validation, and Evolution.<br><small style='color:var(--muted); font-size:0.8rem; font-family:var(--font-arabic);'>(التحديد -> التطوير -> التحقق والاختبار -> التطور والتعديل المستمر)</small>", isCorrect: true },
+              { text: "B) Scripting, Debugging, Verification, and Execution.<br><small style='color:var(--muted); font-size:0.8rem; font-family:var(--font-arabic);'>(الكتابة -> إزالة الأخطاء -> التحقق -> التشغيل)</small>", isCorrect: false },
+              { text: "C) Security, Design, Version-control, and Deployment.<br><small style='color:var(--muted); font-size:0.8rem; font-family:var(--font-arabic);'>(الحماية -> التصميم -> التحكم في الإصدارات -> الرفع للمستخدم)</small>", isCorrect: false }
+            ],
+            hint: "أبو عيد: افتكر كلمة SDVE يا بطل: نحدد شروط العميل الأول (Specification) -> نبرمج ونبني (Development) -> نختبر ونراجع مع العميل (Validation) -> نحدث السيستم لما يطلب تعديل مستقبلي (Evolution)!",
+            feedback: "الله ينور عليك يا وحش! SDVE هي الدورة الكاملة والأساسية لبناء أي سوفتوير ناجح."
+          }
+        ]
+      }
+    };
+
+    // --- GAME PLAYER STATE ---
+    const Player = {
+      hp: 100,
+      xp: 0,
+      gold: 0,
+      level: 1,
+// MISSING LINE 1361
+// MISSING LINE 1362
+// MISSING LINE 1363
+// MISSING LINE 1364
+// MISSING LINE 1365
+// MISSING LINE 1366
+// MISSING LINE 1367
+// MISSING LINE 1368
+// MISSING LINE 1369
+// MISSING LINE 1370
+// MISSING LINE 1371
+// MISSING LINE 1372
+// MISSING LINE 1373
+// MISSING LINE 1374
+// MISSING LINE 1375
+// MISSING LINE 1376
+// MISSING LINE 1377
+// MISSING LINE 1378
+// MISSING LINE 1379
+// MISSING LINE 1380
+// MISSING LINE 1381
+// MISSING LINE 1382
+// MISSING LINE 1383
+// MISSING LINE 1384
+// MISSING LINE 1385
+// MISSING LINE 1386
+// MISSING LINE 1387
+// MISSING LINE 1388
+// MISSING LINE 1389
+// MISSING LINE 1390
+
+        // Visual alert on low HP
+        const hpBadge = document.querySelector('.stat-badge.hp');
+        if (this.hp <= 30) {
+          hpBadge.style.animation = 'buttonPulse 1.5s infinite';
+          hpBadge.style.borderColor = 'var(--red)';
+        } else {
+          hpBadge.style.animation = 'none';
+          hpBadge.style.borderColor = 'rgba(224, 138, 122, 0.3)';
+        }
+      },
+
+      damage(amount) {
+        this.hp = Math.max(0, this.hp - amount);
+        this.saveStats();
+        if (this.hp <= 0) {
+          showFaintScreen();
+        }
+      },
+
+      reward(xpAmount, goldAmount) {
+        this.xp += xpAmount;
+        this.gold += goldAmount;
+        
+        // Level up algorithm (100 XP per level)
+        const oldLvl = this.level;
+        this.level = Math.floor(this.xp / 100) + 1;
+        if (this.level > oldLvl) {
+          setTimeout(() => {
+            AudioEngine.playLevelUp();
+            alert(`🎉 مبارك! ارتفعت إلى المستوى ${this.level} (Junior Dev Elite)!`);
+          }, 600);
+        }
+        this.saveStats();
+      }
+    };
+
+    // --- GAMEPLAY CONTROLLER ---
+    let currentQuestId = null;
+    let currentStepIdx = 0;
+    let typingIntervalId = null;
+
+    // Load initial stats
+    Player.loadStats();
+    updateQuestGridBadges();
+
+    function updateQuestGridBadges() {
+      if (Player.completedQuests.includes(1)) {
+        const badge = document.getElementById('q1-badge');
+        badge.textContent = 'تم الإنجاز 🏆';
+        badge.className = 'quest-badge conquered';
+      }
+    }
+
+    function startQuest(id) {
+      AudioEngine.playClick();
+      currentQuestId = id;
+      currentStepIdx = 0;
+
+        document.getElementById('hud-hp').textContent = this.hp;
+        document.getElementById('hud-xp').textContent = this.xp;
+        document.getElementById('hud-gold').textContent = this.gold;
+        document.getElementById('hud-lvl').textContent = this.level;
+
+        // Visual alert on low HP
+        const hpBadge = document.querySelector('.stat-badge.hp');
+        if (this.hp <= 30) {
+          hpBadge.style.animation = 'buttonPulse 1.5s infinite';
+          hpBadge.style.borderColor = 'var(--red)';
+        } else {
+          hpBadge.style.animation = 'none';
+          hpBadge.style.borderColor = 'rgba(224, 138, 122, 0.3)';
+        }
+      },
+
+      damage(amount) {
+        this.hp = Math.max(0, this.hp - amount);
+        this.saveStats();
+        if (this.hp <= 0) {
+          showFaintScreen();
+        }
+      },
+
+      reward(xpAmount, goldAmount) {
+        this.xp += xpAmount;
+        this.gold += goldAmount;
+        
+        // Level up algorithm (100 XP per level)
+        const oldLvl = this.level;
+        this.level = Math.floor(this.xp / 100) + 1;
+        if (this.level > oldLvl) {
+          setTimeout(() => {
+            AudioEngine.playLevelUp();
+            alert(`ًںژ‰ ظ…ط¨ط§ط±ظƒ! ط§ط±طھظپط¹طھ ط¥ظ„ظ‰ ط§ظ„ظ…ط³طھظˆظ‰ ${this.level} (Junior Dev Elite)!`);
+          }, 600);
+        }
+        this.saveStats();
+      }
+    };
+
+    // --- GAMEPLAY CONTROLLER ---
+    let currentQuestId = null;
+    let currentStepIdx = 0;
+    let typingIntervalId = null;
+
+    // Load initial stats
+    Player.loadStats();
+    updateQuestGridBadges();
+
+    function updateQuestGridBadges() {
+      if (Player.completedQuests.includes(1)) {
+        const badge = document.getElementById('q1-badge');
+        badge.textContent = 'طھظ… ط§ظ„ط¥ظ†ط¬ط§ط² ًںڈ†';
+        badge.className = 'quest-badge conquered';
+      }
+    }
+
+        let playMode = 'study'; // 'study' or 'challenge'
+
+    function openModeSelector(id) {
+      AudioEngine.playClick();
+      currentQuestId = id;
+      
+      const quest = QuestData[id] || { title: "بوابة مملكة الكود", description: "المحاضرة الأولى: مقدمة هندسة البرمجيات" };
+      document.getElementById('selected-quest-title').textContent = quest.title;
+      
+      let desc = "المحاضرة الأولى: مقدمة هندسة البرمجيات، مثلث التصميم، كوارث برمجية مشهورة.";
+      if (id === 2) desc = "المحاضرة الثانية: صفات السوفتوير الأربعة MDEA وأخلاقيات المهنة للمهندسين.";
+      if (id === 3) desc = "المحاضرة الثالثة: نماذج العمليات (Waterfall, Spiral, V-Model, Prototyping).";
+      if (id === 4) desc = "المحاضرة الرابعة: قيم الـ Agile وطرق التطوير السريع للمشاريع الناشئة.";
+      const container = document.getElementById('choices-container');
+      container.innerHTML = '';
+
+      const bullets = ['A', 'B', 'C', 'D'];
+
+      step.choices.forEach((choice, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerHTML = `
+          <span class="bullet" style="margin-left: 15px; flex-shrink: 0;">${bullets[idx]}</span>
+          <div style="display: flex; flex-direction: column; gap: 4px; text-align: right; flex: 1; width: 100%;">
+            <div dir="ltr" style="text-align: right; font-family: var(--font-english); font-weight: 600; color: var(--ink); font-size: 1.05rem;">${choice.english}</div>
+            <div style="font-family: var(--font-arabic); font-size: 0.85rem; color: var(--muted);">${choice.arabic}</div>
+          </div>
+        `;
+        btn.onclick = () => selectChoice(choice, btn, step);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectChoice(choice, btn, step) {
+      const feedbackPanel = document.getElementById('feedback-panel');
+      const allButtons = document.querySelectorAll('.choice-btn');
+
+      if (choice.isCorrect) {
+        // Correct answer
+        AudioEngine.playCorrect();
+        
+        // Disable all and style correct one
+        allButtons.forEach(b => {
+          b.disabled = true;
+          if (b === btn) {
+            b.classList.add('correct');
+          }
+        });
+
+        // Show positive feedback
+        feedbackPanel.style.display = 'block';
+        feedbackPanel.className = 'feedback-box';
+        feedbackPanel.innerHTML = `🌟 <b>عاش يا وحش!</b> ${step.feedback}`;
+        
+        // Show next button
+        document.getElementById('next-dialogue-btn').style.display = 'inline-flex';
+        document.getElementById('avatar-mouth').setAttribute('d', 'M 42 61 Q 50 72 58 61'); // happy open mouth
+
+        // Small reward
+        Player.reward(15, 8);
+      } else {
+        // Wrong answer
+        AudioEngine.playWrong();
+        
+        btn.classList.add('wrong');
+        btn.disabled = true;
+
+        // Lose HP/Energy
+        Player.damage(15);
+        document.getElementById('avatar-mouth').setAttribute('d', 'M 44 63 Q 50 59 56 63'); // sad/concerned mouth
+
+        // Show hints
+        feedbackPanel.style
+// MISSING LINE 1581
+// MISSING LINE 1582
+// MISSING LINE 1583
+// MISSING LINE 1584
+// MISSING LINE 1585
+// MISSING LINE 1586
+// MISSING LINE 1587
+// MISSING LINE 1588
+// MISSING LINE 1589
+// MISSING LINE 1590
+// MISSING LINE 1591
+// MISSING LINE 1592
+// MISSING LINE 1593
+// MISSING LINE 1594
+// MISSING LINE 1595
+// MISSING LINE 1596
+// MISSING LINE 1597
+// MISSING LINE 1598
+// MISSING LINE 1599
+// MISSING LINE 1600
+// MISSING LINE 1601
+// MISSING LINE 1602
+// MISSING LINE 1603
+      AudioEngine.playClick();
+      Player.hp = 100;
+      Player.saveStats();
+      document.getElementById('faint-screen').style.display = 'none';
+      loadStep(); // retry step
+    }
+
+    function showCompleteScreen() {
+      // Set rewards
+      document.getElementById('reward-xp').textContent = 100;
+      document.getElementById('reward-gold').textContent = 50;
+
+      document.getElementById('complete-congrats-text').innerHTML = `يا بطل! لقد أنهيت <b>"${QuestData[currentQuestId].title}"</b> بنجاح وسرعت من كفاءة الشركة وأرضيت العميل. المهندس أبو عيد يحييك ويقول لك: <i>"رجل حقيقي وهندسة البرمجيات لعبتك!"</i>`;
+      
+      document.getElementById('complete-screen').style.display = 'flex';
+      AudioEngine.playLevelUp();
+    }
+
+    function finishQuest() {
+      AudioEngine.playClick();
+      
+      // Add rewards to stats
+      Player.reward(100, 50);
+      
+      // Save completed quest id
+      if (!Player.completedQuests.includes(currentQuestId)) {
+        Player.completedQuests.push(currentQuestId);
+        localStorage.setItem('se_quest_completed', JSON.stringify(Player.completedQuests));
+      }
+
+      // Hide overlays
+      document.getElementById('complete-screen').style.display = 'none';
+      document.getElementById('active-game-screen').style.display = 'none';
+      
+      // Update portal dashboard
+      updateQuestGridBadges();
+      document.getElementById('quest-selector-screen').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
