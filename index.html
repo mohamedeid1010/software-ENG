@@ -425,6 +425,168 @@
       text-shadow: 0 0 35px rgba(232, 184, 90, 0.8), 0 0 50px rgba(232, 184, 90, 0.3);
     }
   }
+
+  /* Visitor Counter Modal */
+  .visitor-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 4, 6, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+    animation: modalFadeIn 0.4s ease;
+  }
+
+  .visitor-modal-overlay.active {
+    display: flex;
+  }
+
+  .visitor-modal {
+    background: linear-gradient(145deg, rgba(30, 28, 24, 0.95), rgba(15, 14, 12, 0.98));
+    border: 1px solid rgba(232, 184, 90, 0.25);
+    border-radius: 28px;
+    padding: 45px 40px;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 
+      0 25px 60px rgba(0, 0, 0, 0.7),
+      0 0 40px rgba(232, 184, 90, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    animation: modalSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .visitor-modal-icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    animation: floatIcon 3s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 15px rgba(232, 184, 90, 0.4));
+  }
+
+  .visitor-modal-title {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--gold-soft);
+    margin-bottom: 8px;
+    text-shadow: 0 0 20px rgba(232, 184, 90, 0.3);
+  }
+
+  .visitor-modal-subtitle {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 25px;
+    font-weight: 500;
+  }
+
+  .visitor-count-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px 0;
+    padding: 20px;
+    background: rgba(232, 184, 90, 0.06);
+    border: 1px solid rgba(232, 184, 90, 0.15);
+    border-radius: 18px;
+  }
+
+  .visitor-count-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold-soft), var(--gold), #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    animation: countPulse 2s infinite alternate;
+    letter-spacing: 2px;
+  }
+
+  .visitor-count-label {
+    font-size: 1.1rem;
+    color: var(--ink);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .visitor-count-sublabel {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .visitor-modal-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .visitor-modal-close {
+    margin-top: 25px;
+    background: var(--gold);
+    border: none;
+    color: #07070a;
+    padding: 12px 40px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(232, 184, 90, 0.35);
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .visitor-modal-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(232, 184, 90, 0.55);
+    background: #fff;
+  }
+
+  .visitor-loading {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(232, 184, 90, 0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modalSlideUp {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes countPulse {
+    from { opacity: 0.85; }
+    to { opacity: 1; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -433,7 +595,7 @@
   <header>
     <span class="kicker">Misr University · CSE 302</span>
     <h1>Software <em>Engineering</em></h1>
-    <div style="font-family: 'Tajawal', sans-serif; color: var(--gold-soft); font-size: 1.15rem; margin-top: -5px; margin-bottom: 8px; font-weight: 500;">أبو عيد بيمسي 👋</div>
+    <div id="abu-eid-text" style="font-family: 'Tajawal', sans-serif; color: var(--gold-soft); font-size: 1.15rem; margin-top: -5px; margin-bottom: 8px; font-weight: 500; cursor: default; user-select: none; -webkit-user-select: none;">أبو عيد بيمسي 👋</div>
     <p class="subtitle">Study Portal & Hub</p>
   </header>
 
@@ -841,6 +1003,128 @@
       }, 500);
     }, { once: true });
   });
+
+  // ===== أبو عيد Easter Egg: Triple-Click Visitor Counter =====
+  (function() {
+    const abuEidEl = document.getElementById('abu-eid-text');
+    let clickCount = 0;
+    let clickTimer = null;
+    const CLICK_TIMEOUT = 800; // ms window for triple click
+
+    abuEidEl.addEventListener('click', function() {
+      clickCount++;
+      
+      // Small scale feedback on each click
+      abuEidEl.style.transition = 'transform 0.15s ease';
+      abuEidEl.style.transform = 'scale(1.08)';
+      setTimeout(() => {
+        abuEidEl.style.transform = 'scale(1)';
+      }, 150);
+
+      if (clickTimer) clearTimeout(clickTimer);
+
+      if (clickCount >= 3) {
+        clickCount = 0;
+        clearTimeout(clickTimer);
+        showVisitorModal();
+      } else {
+        clickTimer = setTimeout(() => {
+          clickCount = 0;
+        }, CLICK_TIMEOUT);
+      }
+    });
+
+    // Create the modal HTML
+    const modalHTML = `
+    <div id="visitor-modal-overlay" class="visitor-modal-overlay">
+      <div class="visitor-modal">
+        <div class="visitor-modal-icon">👁️‍🗨️</div>
+        <div class="visitor-modal-title">إحصائيات أبو عيد 📊</div>
+        <div class="visitor-modal-subtitle">عدد الزوار اللي دخلوا الموقع (جهاز واحد = زيارة واحدة)</div>
+        <div class="visitor-count-display">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+            <div id="visitor-count-num" class="visitor-count-number"><span class="visitor-loading"></span></div>
+            <div class="visitor-count-label">زائر فريد 🎯</div>
+            <div class="visitor-count-sublabel">من ساعت ما الموقع اترفع على GitHub</div>
+          </div>
+        </div>
+        <div class="visitor-modal-note">🔒 كل جهاز بيتحسب مرة واحدة بس</div>
+        <button id="visitor-modal-close-btn" class="visitor-modal-close">تمام يا كبير 💛</button>
+      </div>
+    </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Close modal
+    document.getElementById('visitor-modal-close-btn').addEventListener('click', function() {
+      const overlay = document.getElementById('visitor-modal-overlay');
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => {
+        overlay.classList.remove('active');
+        overlay.style.opacity = '';
+        overlay.style.transition = '';
+      }, 300);
+    });
+
+    // Click outside modal to close
+    document.getElementById('visitor-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        document.getElementById('visitor-modal-close-btn').click();
+      }
+    });
+
+    // === Auto-register unique visitor on page load ===
+    const STORAGE_KEY = 'abu_eid_visitor_counted';
+    const COUNTER_NAMESPACE = 'se-website-abu-eid';
+    const COUNTER_KEY = 'unique-visitors';
+
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      // First visit from this device — increment the counter silently
+      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`)
+        .then(res => res.json())
+        .then(() => {
+          localStorage.setItem(STORAGE_KEY, 'true');
+        })
+        .catch(() => {
+          localStorage.setItem(STORAGE_KEY, 'true');
+        });
+    }
+
+    function showVisitorModal() {
+      const overlay = document.getElementById('visitor-modal-overlay');
+      const countEl = document.getElementById('visitor-count-num');
+      countEl.innerHTML = '<span class="visitor-loading"></span>';
+      overlay.classList.add('active');
+
+      // Fetch current count (already incremented on page load if first visit)
+      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`)
+        .then(res => res.json())
+        .then(data => {
+          animateCount(countEl, data.count || 1);
+        })
+        .catch(() => {
+          countEl.textContent = '—';
+        });
+    }
+
+    // Animated count-up effect
+    function animateCount(el, target) {
+      let current = 0;
+      const duration = 1200; // ms
+      const steps = 40;
+      const stepTime = duration / steps;
+      const increment = target / steps;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        el.textContent = Math.floor(current).toLocaleString('ar-EG');
+      }, stepTime);
+    }
+  })();
 </script>
 
 </body>
