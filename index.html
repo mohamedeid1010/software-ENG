@@ -1075,19 +1075,21 @@
 
     // === Auto-register unique visitor on page load ===
     const STORAGE_KEY = 'abu_eid_visitor_counted';
-    const COUNTER_NAMESPACE = 'se-website-abu-eid';
-    const COUNTER_KEY = 'unique-visitors';
+    const API_BASE = 'https://api.counterapi.dev/v1/se-website-abu-eid/unique-visitors';
+    let cachedCount = null;
 
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      // First visit from this device — increment the counter silently
-      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`)
+    const needsCount = !localStorage.getItem(STORAGE_KEY) || !localStorage.getItem('abu_eid_last_count');
+
+    if (needsCount) {
+      // First visit OR previous attempt failed — increment counter
+      fetch(API_BASE + '/up')
         .then(res => res.json())
-        .then(() => {
+        .then(data => {
+          cachedCount = data.count;
           localStorage.setItem(STORAGE_KEY, 'true');
+          localStorage.setItem('abu_eid_last_count', String(data.count));
         })
-        .catch(() => {
-          localStorage.setItem(STORAGE_KEY, 'true');
-        });
+        .catch(() => {});
     }
 
     function showVisitorModal() {
@@ -1096,21 +1098,39 @@
       countEl.innerHTML = '<span class="visitor-loading"></span>';
       overlay.classList.add('active');
 
-      // Fetch current count (already incremented on page load if first visit)
-      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/`)
-        .then(res => res.json())
+      // If we already have the count from page load, use it
+      if (cachedCount) {
+        animateCount(countEl, cachedCount);
+        return;
+      }
+
+      // Otherwise fetch it — use /up on a separate "reads" key so we don't inflate unique count
+      // This just reads the real counter via the trailing-slash GET
+      fetch(API_BASE + '/', { redirect: 'follow' })
+        .then(res => {
+          if (!res.ok) throw new Error('API error');
+          return res.json();
+        })
         .then(data => {
+          cachedCount = data.count;
+          localStorage.setItem('abu_eid_last_count', String(data.count));
           animateCount(countEl, data.count || 1);
         })
         .catch(() => {
-          countEl.textContent = '—';
+          // Final fallback: use locally stored count
+          const stored = localStorage.getItem('abu_eid_last_count');
+          if (stored) {
+            animateCount(countEl, parseInt(stored, 10));
+          } else {
+            countEl.textContent = '١';
+          }
         });
     }
 
     // Animated count-up effect
     function animateCount(el, target) {
       let current = 0;
-      const duration = 1200; // ms
+      const duration = 1200;
       const steps = 40;
       const stepTime = duration / steps;
       const increment = target / steps;
