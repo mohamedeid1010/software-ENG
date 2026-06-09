@@ -2250,6 +2250,191 @@
             feedback: "مية مية! متطلبات المجال تستمد من طبيعة ومجال عمل النظام الفعلي."
           }
         ]
+      },
+      7: {
+        title: "لعبة جمع المتطلبات",
+        studySteps: [
+          // Step 1: Intro
+          {
+            type: "dialogue",
+            text: "يا هلا يا بطل! 🕵️ أبو عيد هنا، والنهارده هنبدأ مهمة من أصعب المهام في هندسة البرمجيات — <b>المحاضرة السابعة: عملية هندسة المتطلبات (Requirements Engineering Process)</b>.<br><br>تخيل إنك دكتور جديد وعندك مريض بيقولك: 'أنا تعبان!' — بس مش عارف يحدد بالظبط الألم فين. ده بالظبط اللي بيحصل مع الـ software engineer لما العميل مش عارف هو عايز إيه!<br><br>المحاضرة دي هتعلمك <b>4 أنشطة رئيسية</b> في الـ RE، وأشهر طرق جمع المتطلبات زي الـ Interviews والـ Ethnography والـ Validation. يلا نبدأ!"
+          },
+          // Step 2: 4 RE Activities
+          {
+            type: "dialogue",
+            text: "🔄 <b>الـ 4 أنشطة الرئيسية في Requirements Engineering:</b><br><br>1️⃣ <b>Elicitation (الاستخلاص)</b> — جمع المعلومات من الـ stakeholders وتحديد المتطلبات<br>2️⃣ <b>Analysis (التحليل)</b> — تحليل المتطلبات وفهم التناقضات والأولويات<br>3️⃣ <b>Validation (التحقق)</b> — التأكد إن المتطلبات بتعبر فعلاً عما يريده العميل<br>4️⃣ <b>Management (الإدارة)</b> — إدارة التغييرات في المتطلبات طول دورة حياة النظام<br><br>⚡ <b>نقطة مهمة جداً:</b> الـ RE في الواقع مش خطوات متتالية — هي <b>Iterative ومتشابكة</b>. بتعمل elicitation وفي نفس الوقت بتعمل analysis وvalidation!"
+          },
+          // Step 3: Spiral View
+          {
+            type: "dialogue",
+            text: "🌀 <b>الـ Spiral View لعملية الـ RE:</b><br><br>تخيل الـ RE كـ spiral (حلزون) — كل دورة بتضيف مستوى تفصيل أعمق:<br><br>🔵 <b>الجانب الأيسر (Elicitation):</b><br>• System Requirements Elicitation<br>• User Requirements Elicitation<br><br>🟣 <b>الجانب الأيمن (Validation):</b><br>• Requirements Validation بعد كل دورة<br><br>📋 <b>الحلقات من الخارج للداخل:</b><br>• System Requirements Spec & Modeling<br>• User Requirements Specification<br>• Business Requirements Specification<br><br>وينتهي الـ Spiral بـ <b>System Requirements Document</b> الكامل"
+          },
+          // Step 4: Requirements Discovery Definition
+          {
+            type: "dialogue",
+            text: "🔍 <b>Requirements Elicitation والـ Discovery — إيه الفرق؟</b><br><br>الـ <b>Requirements Elicitation</b> (أو Requirements Discovery) هي:<br><br>عملية جمع المعلومات عن النظام المطلوب والنظام القائم وتقطير الـ user وsystem requirements منها.<br><br>بتشمل فريق تقني بيشتغل مع الـ customers لاكتشاف:<br>• <b>Application Domain</b> — طبيعة مجال عمل النظام (طبي، مالي، إلخ)<br>• <b>Services Required</b> — الخدمات المطلوبة من النظام بالتفصيل<br>• <b>Operational Constraints</b> — القيود على تشغيل النظام"
+          },
+          // Step 5: Stakeholders
+          {
+            type: "dialogue",
+            text: "👥 <b>الـ Stakeholders — مين هم في نظام MHC-PMS؟</b><br><br>الـ Stakeholders هم كل من له علاقة أو مصلحة في النظام:<br><br>🏥 <b>Patients</b> — بياناتهم بتتسجل في النظام<br>👨‍⚕️ <b>Doctors</b> — مسؤولون عن تقييم وعلاج المرضى<br>👩‍⚕️ <b>Nurses</b> — ينسقون الاستشارات ويديرون بعض العلاجات<br>📋 <b>Medical Receptionists</b> — يديرون مواعيد المرضى<br>💻 <b>IT Staff</b> — مسؤولون عن تنصيب وصيانة النظام<br>⚖️ <b>Ethics Manager</b> — يتأكد إن النظام يلتزم بالمبادئ الأخلاقية<br>📊 <b>Health Care Managers</b> — يحصلون على معلومات الإدارة<br>📁 <b>Medical Records Staff</b> — مسؤولون عن حفظ السجلات الطبية<br><br>🔑 <b>في الامتحان:</b> المطلوب تعرف الـ 8 Stakeholders دول!"
+          },
+          // Step 6: 5 Problems of Elicitation
+          {
+            type: "dialogue",
+            text: "💥 <b>الـ 5 مشاكل الكبيرة في الـ Requirements Elicitation:</b><br><br>1️⃣ <b>Stakeholders لا يعرفون ما يريدون</b> — الناس مش دايماً عارفة هي محتاجة إيه حتى لما تشوفه<br><br>2️⃣ <b>يعبّرون بلغتهم الخاصة</b> — الدكتور بيتكلم طب، المحاسب بيتكلم مالية، والمهندس مش بيفهمهم!<br><br>3️⃣ <b>تعارض المتطلبات بين Stakeholders مختلفين</b> — الـ nurse عايزة سرعة، الـ IT manager عايز أمان — ممكن يتعارضوا<br><br>4️⃣ <b>العوامل التنظيمية والسياسية تؤثر</b> — السياسة الداخلية في الشركة ممكن تأثر على المتطلبات<br><br>5️⃣ <b>المتطلبات تتغير أثناء التحليل</b> — لما الناس تفهم أكتر، بتعرف إنها عايزة حاجة تانية"
+          },
+          // Step 7: 4-Stage Elicitation Cycle
+          {
+            type: "dialogue",
+            text: "🔁 <b>الـ 4-Stage Elicitation Cycle — إزاي تجمع الـ requirements؟</b><br><br>المراحل بتتكرر في cycle:<br><br>🔵 <b>Stage 1: Requirements Discovery</b><br>التفاعل مع الـ stakeholders لاكتشاف متطلباتهم + الـ domain requirements<br><br>🟢 <b>Stage 2: Classification & Organisation</b><br>تجميع المتطلبات المترابطة في clusters متسقة ومنطقية<br><br>🟣 <b>Stage 3: Prioritization & Negotiation</b><br>ترتيب المتطلبات حسب الأولوية وحل التعارضات بين الـ stakeholders<br><br>🟠 <b>Stage 4: Requirements Specification</b><br>توثيق المتطلبات وإدخالها كـ input للدورة القادمة من الـ spiral<br><br>⚡ <b>الـ Specification مش نهاية المطاف — هي input للدورة القادمة!</b>"
+          },
+          // Step 8: Interviews
+          {
+            type: "dialogue",
+            text: "🎤 <b>Interviews — الأداة الأولى للـ Requirements Discovery:</b><br><br>فيه نوعين من الـ Interviews:<br><br>🔵 <b>Closed Interviews:</b> أسئلة محددة مسبقاً — الـ stakeholder بيجاوب على أسئلة معينة. مفيد لجمع بيانات محددة.<br><br>🟢 <b>Open Interviews:</b> استكشاف مفتوح بدون أسئلة محددة مسبقاً — الـ stakeholder بيتكلم بحرية. مفيد للفهم العام.<br><br>✅ <b>3 نصائح للـ Effective Interviewing:</b><br>① <b>Open-minded</b> — تجنب الأفكار المسبقة<br>② <b>Springboard questions</b> — أسئلة تفتح نقاش<br>③ <b>Prototype system</b> — اشتغل مع الـ stakeholder على prototype<br><br>⚠️ <b>Interviews مش كافية لـ Domain Requirements</b> — لأن الـ Tacit Knowledge صعب التعبير عنه!"
+          },
+          // Step 9: Ethnography
+          {
+            type: "dialogue",
+            text: "👁️ <b>Ethnography — 'ارقب ولا تسأل':</b><br><br>الـ Ethnography تقنية مستعارة من العلوم الاجتماعية — عالم اجتماعي بيقضي وقت طويل يراقب ويحلل <b>إزاي الناس بتشتغل فعلاً</b> — مش إزاي بيقولوا إنهم بيشتغلوا!<br><br>✅ <b>مزايا الـ Ethnography:</b><br>• الناس مش مضطرة تشرح شغلها — الـ observer بيشوف بنفسه<br>• الـ social وorganisational factors بتتكشف تلقائياً<br>• الشغل دايماً أعقد وأغنى مما توحيه الـ simple models<br><br>❌ <b>عيوب الـ Ethnography:</b><br>• ممتازة لفهم الـ existing processes فقط<br>• <b>لا تستطيع تحديد features جديدة</b> يجب إضافتها للنظام<br>• ممكن تدرس ممارسات قديمة غير relevant للنظام الجديد<br><br>🎯 <b>Focused Ethnography:</b> بتدمج الـ ethnography مع الـ prototyping — طُوِّرت في مشروع air traffic control!"
+          },
+          // Step 10: Requirements Validation (100x)
+          {
+            type: "dialogue",
+            text: "💸 <b>Requirements Validation — غلطة في الـ Requirements تساوي 100× تكلفة غلطة في الـ Code!</b><br><br>الـ Requirements Validation بتثبت إن المتطلبات بتعرّف النظام اللي العميل <b>فعلاً</b> يريده.<br><br>✅ <b>الـ 5 Checking Criteria:</b><br>① <b>Validity</b> — هل النظام بيقدم الوظائف اللي العميل محتاجها؟<br>② <b>Consistency</b> — فيه تعارضات بين المتطلبات؟<br>③ <b>Completeness</b> — كل الوظائف المطلوبة متضمنة؟<br>④ <b>Realism</b> — المتطلبات قابلة للتنفيذ ضمن الـ budget؟<br>⑤ <b>Verifiability</b> — نقدر نكتب tests تثبت إن الـ requirement اتحقق؟<br><br>🔧 <b>الـ 3 Validation Techniques:</b><br>① Requirements Reviews<br>② Prototyping<br>③ Test-case Generation"
+          },
+          // Step 11: Review Checks (Slide 24 & 25)
+          {
+            type: "dialogue",
+            text: "📋 <b>Requirements Reviews — الـ Checks المهمة للامتحان:</b><br><br>🔍 <b>Slide 24 — الـ 4 Review Checks:</b><br>① <b>Verifiability</b> — هل الـ requirement قابل للاختبار فعلاً؟<br>② <b>Comprehensibility</b> — هل المراجعون فهموا الـ requirement كويس؟<br>③ <b>Traceability</b> — هل مصدر الـ requirement واضح ومحدد؟<br>④ <b>Adaptability</b> — هل ينفع تغييره بدون تأثير كبير على باقي المتطلبات؟<br><br>📄 <b>Slide 25 — الـ 5 Detailed Checks:</b><br>① <b>Validity checks</b> — المستخدم ممكن يحتاج functions إضافية<br>② <b>Consistency checks</b> — مفيش قيود متناقضة<br>③ <b>Completeness checks</b> — كل الوظائف والقيود موجودة<br>④ <b>Realism checks</b> — المتطلبات قابلة للتنفيذ ضمن الـ budget والجدول<br>⑤ <b>Verifiability</b> — تقليل نزاعات العميل والـ contractor"
+          },
+          // Step 12: Requirements Management
+          {
+            type: "dialogue",
+            text: "📈 <b>Requirements Management — الـ Requirements بتتغير دايماً!</b><br><br>الـ Requirements Management هو عملية إدارة الـ requirements المتغيرة أثناء عملية الـ RE وتطوير النظام.<br><br>💡 <b>ليه بتتغير؟</b><br>① <b>التقنية والبيئة البزنس</b> — Hardware جديد، قوانين جديدة، أولويات بيزنس متغيرة<br>② <b>مجموعات Stakeholders مختلفة</b> — الـ payers ≠ الـ users، وبعد الـ delivery features جديدة مطلوبة<br><br>📊 <b>الـ 4 عناصر لـ Requirements Change Management:</b><br>① <b>Requirements Identification</b> — كل requirement له ID فريد للـ traceability<br>② <b>Change Management Process</b> — تقييم الـ impact والـ cost للتغييرات<br>③ <b>Traceability Policies</b> — العلاقات بين كل requirement والـ system design المقابل<br>④ <b>Tool Support</b> — من specialist tools لـ spreadsheets<br><br>🔄 <b>Change Process:</b> Identified Problem → Problem Analysis & Change Spec → Change Analysis & Costing → Change Implementation → Revised Requirements"
+          },
+          // Step 13: MHC-PMS Use Cases
+          {
+            type: "dialogue",
+            text: "📊 <b>MHC-PMS Use Cases — الجدول اللي بيجي في الامتحان:</b><br><br><table style='width:100%; border-collapse:collapse; font-size:0.9rem; margin:10px 0;'><tr style='background:rgba(232,184,90,0.15); color:var(--gold-soft);'><th style='padding:8px; text-align:right;'>Actor</th><th style='padding:8px; text-align:left;'>Use Cases</th></tr><tr style='border-bottom:1px solid rgba(255,255,255,0.1);'><td style='padding:8px; text-align:right;'>Medical Receptionist</td><td style='padding:8px; font-family:monospace; font-size:0.85rem;'>Register Patient, View Personal Info</td></tr><tr style='border-bottom:1px solid rgba(255,255,255,0.1);'><td style='padding:8px; text-align:right;'>Nurse</td><td style='padding:8px; font-family:monospace; font-size:0.85rem;'>View Record, Edit Record, Setup Consultation</td></tr><tr style='border-bottom:1px solid rgba(255,255,255,0.1);'><td style='padding:8px; text-align:right;'>Doctor</td><td style='padding:8px; font-family:monospace; font-size:0.85rem;'>View Record, Edit Record, Setup Consultation, Generate Report</td></tr><tr><td style='padding:8px; text-align:right;'>Manager</td><td style='padding:8px; font-family:monospace; font-size:0.85rem;'>Export Statistics, Generate Report</td></tr></table><br>🎓 <b>ملخص الرحلة:</b> دلوقتي عارف الـ RE Spiral، الـ 4-stage elicitation cycle، الـ 5 مشاكل، الـ Interviews، الـ Ethnography، الـ 5 Validation Checks، والـ 4 عناصر لـ Change Management. أنت كده جاهز للفاينال في المحاضرة دي! 🏆"
+          },
+          // Step 14: Final Question
+          {
+            type: "question",
+            text: "🧠 سؤال المراجعة النهائية:<br><br>في الـ Requirements Engineering، ما هو الـ <b>Tacit Knowledge problem</b>؟ وليه الـ Interviews وحدها مش كافية للـ Domain Requirements؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.05rem;'>Which statement best explains why interviews alone are insufficient for understanding domain requirements?</span>",
+            choices: [
+              { english: "Interviews are too expensive and time-consuming compared to other methods.", arabic: "الـ Interviews مكلفة جداً ومستهلكة للوقت مقارنة بالطرق الأخرى", isCorrect: false },
+              { english: "Domain experts do things automatically without thinking — they can't articulate this tacit knowledge in an interview.", arabic: "الخبراء بيعملوا حاجات تلقائياً بدون تفكير — ومش هيذكروها في الـ Interview لأنهم مش واعيين بيها", isCorrect: true },
+              { english: "Stakeholders always lie during interviews to protect their interests.", arabic: "الـ Stakeholders دايماً بيكذبوا في الـ Interviews لحماية مصالحهم", isCorrect: false }
+            ],
+            hint: "أبو عيد: الخبير في أي مجال بيعمل حاجات تلقائياً — زي الجراح اللي عارف إمتى يغير خطة العملية بحدسه. مش هيقولك كده في interview لأنه مش واعي إنه بيعملها!",
+            feedback: "عاش يا وحش! ده هو الـ Tacit Knowledge problem — السبب اللي خلى الـ Ethnography (المراقبة الفعلية) ضرورة في جمع الـ Domain Requirements."
+          }
+        ],
+        challengeSteps: [
+          // Step 1: Challenge Intro
+          {
+            type: "dialogue",
+            text: "يا هلا يا بطل في طور التحدي! ⚔️ المحاضرة السابعة — Requirements Engineering Process. هنا مفيش شرح، بس أسئلة مباشرة تختبر معلوماتك. كل إجابة غلط = 15 HP خصم. جاهز؟ 🎯"
+          },
+          // Step 2: Q1
+          {
+            type: "question",
+            text: "ما هو عدد الأنشطة الرئيسية في عملية الـ Requirements Engineering (RE)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q1: How many generic activities are there in the Requirements Engineering process?</span>",
+            choices: [
+              { english: "Three activities: Elicitation, Design, and Testing.", arabic: "ثلاثة أنشطة: الاستخلاص، التصميم، والاختبار", isCorrect: false },
+              { english: "Four activities: Elicitation, Analysis, Validation, and Management.", arabic: "أربعة أنشطة: الاستخلاص، التحليل، التحقق، والإدارة", isCorrect: true },
+              { english: "Five activities: Discovery, Classification, Prioritization, Specification, and Review.", arabic: "خمسة أنشطة: الاكتشاف، التصنيف، الأولويات، التوثيق، والمراجعة", isCorrect: false }
+            ],
+            hint: "أبو عيد: افتكر الـ 4 بالترتيب — Elicitation → Analysis → Validation → Management. الـ 4-Stage cycle ده شيء تاني!",
+            feedback: "صح! الـ 4 أنشطة الرئيسية هي Elicitation, Analysis, Validation, Management."
+          },
+          // Step 3: Q2
+          {
+            type: "question",
+            text: "ما هو الـ Tacit Knowledge وليه يخلي الـ Interviews وحدها غير كافية للـ Domain Requirements؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q2: What makes interviews insufficient for understanding domain requirements?</span>",
+            choices: [
+              { english: "Interviews are limited by time and cost factors.", arabic: "الـ Interviews محدودة بعوامل الوقت والتكلفة", isCorrect: false },
+              { english: "Domain experts perform actions automatically without conscious thought, making this knowledge hard to verbalize.", arabic: "خبراء المجال بيعملوا أشياء تلقائياً بدون وعي، مما يجعل هذه المعرفة صعبة التعبير عنها لفظياً", isCorrect: true },
+              { english: "Stakeholders are unwilling to share their knowledge in formal interview settings.", arabic: "الـ Stakeholders مش مستعدين يشاركوا معلوماتهم في بيئة الـ interview الرسمية", isCorrect: false }
+            ],
+            hint: "أبو عيد: الـ Tacit Knowledge = المعرفة التلقائية. الخبير يعمل حاجات تلقائياً مش واعي بيها ومش هيقولها في interview!",
+            feedback: "ممتاز! الـ Tacit Knowledge هو السبب اللي خلى الـ Ethnography ضرورة بجانب الـ Interviews."
+          },
+          // Step 4: Q3
+          {
+            type: "question",
+            text: "ما هو الاختلاف الجوهري بين الـ Closed Interviews والـ Open Interviews في جمع المتطلبات؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q3: What distinguishes Closed from Open interviews in requirements elicitation?</span>",
+            choices: [
+              { english: "Closed interviews use phone calls while open interviews are face-to-face.", arabic: "الـ Closed بيستخدم التليفون والـ Open وجهاً لوجه", isCorrect: false },
+              { english: "Closed interviews use pre-determined questions; Open interviews explore issues freely.", arabic: "الـ Closed بيستخدم أسئلة محددة مسبقاً؛ الـ Open بيستكشف المسائل بحرية", isCorrect: true },
+              { english: "Closed interviews are private while open interviews include all stakeholders.", arabic: "الـ Closed سري والـ Open يشمل كل الـ stakeholders", isCorrect: false }
+            ],
+            hint: "أبو عيد: Closed = محدود بأسئلة محددة. Open = حرية كاملة في الاستكشاف. ركّز على طبيعة الأسئلة!",
+            feedback: "صح! الـ Closed بأسئلة محددة والـ Open باستكشاف حر."
+          },
+          // Step 5: Q4
+          {
+            type: "question",
+            text: "ما هي أبرز <b>ميزة</b> للـ Ethnography كأداة لجمع المتطلبات، وما هو <b>أبرز قيد</b> عليها؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q4: What is the key advantage AND main limitation of Ethnography?</span>",
+            choices: [
+              { english: "Advantage: Reveals actual work practices. Limitation: Cannot identify new system features to be added.", arabic: "الميزة: تكشف ممارسات العمل الفعلية. القيد: لا تستطيع تحديد Features جديدة يجب إضافتها", isCorrect: true },
+              { english: "Advantage: Fast data collection. Limitation: Requires expensive tools.", arabic: "الميزة: سرعة جمع البيانات. القيد: تتطلب أدوات مكلفة", isCorrect: false },
+              { english: "Advantage: Discovers future requirements. Limitation: Only works in medical domains.", arabic: "الميزة: تكتشف المتطلبات المستقبلية. القيد: تعمل في المجالات الطبية فقط", isCorrect: false }
+            ],
+            hint: "أبو عيد: الـ Ethnography ممتازة لفهم الحاضر (existing processes)، لكن مش قادرة تقترح المستقبل (new features)!",
+            feedback: "مية مية! الـ Ethnography بتكشف الواقع الفعلي لكنها لا تقترح features جديدة."
+          },
+          // Step 6: Q5
+          {
+            type: "question",
+            text: "لماذا تعتبر تكلفة إصلاح خطأ في الـ Requirements بعد التسليم أكبر بكثير من إصلاح خطأ في الـ Implementation؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q5: Why does fixing a requirements error after delivery cost up to 100× more than fixing an implementation error?</span>",
+            choices: [
+              { english: "Because requirements documents are more complex than code.", arabic: "لأن وثائق المتطلبات أكثر تعقيداً من الكود", isCorrect: false },
+              { english: "Because a wrong requirement affects all design, code, and testing built on top of it — everything must be redone.", arabic: "لأن متطلب خاطئ يؤثر على كل التصميم والكود والاختبار المبني عليه — كل حاجة لازم تتعمل من أول", isCorrect: true },
+              { english: "Because clients charge extra fees for late requirement changes.", arabic: "لأن العملاء بيفرضوا رسوم إضافية على تغييرات المتطلبات المتأخرة", isCorrect: false }
+            ],
+            hint: "أبو عيد: تخيل إن الـ requirements هي الأساس. لو الأساس غلط — التصميم غلط، الكود غلط، الاختبارات غلط. لازم تهد وتعيد من الصفر!",
+            feedback: "بالظبط! الـ Requirements هي الأساس اللي كل حاجة اتبنت عليه."
+          },
+          // Step 7: Q6
+          {
+            type: "question",
+            text: "في الـ 4-Stage Elicitation Cycle، ما هو الهدف من مرحلة الـ <b>Prioritization & Negotiation</b>؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q6: What is the purpose of the 'Prioritization & Negotiation' stage in the elicitation cycle?</span>",
+            choices: [
+              { english: "To write the final requirements document and submit it to the client.", arabic: "لكتابة وثيقة المتطلبات النهائية وتسليمها للعميل", isCorrect: false },
+              { english: "To group related requirements into coherent logical clusters.", arabic: "لتجميع المتطلبات المترابطة في clusters منطقية متسقة", isCorrect: false },
+              { english: "To order requirements by importance and resolve conflicts between stakeholders.", arabic: "لترتيب المتطلبات حسب الأهمية وحل التعارضات بين الـ stakeholders", isCorrect: true }
+            ],
+            hint: "أبو عيد: التفاوض والتفاضل بين المتطلبات المتعارضة — اللي يحصل لما الـ nurse عايزة سرعة والـ IT عايز أمان!",
+            feedback: "ممتاز! الـ Prioritization & Negotiation لحل التعارضات وترتيب الأولويات."
+          },
+          // Step 8: Q7
+          {
+            type: "question",
+            text: "ما هي الـ 4 عناصر الرئيسية لـ Requirements Change Management؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q7: What are the 4 elements of Requirements Change Management?</span>",
+            choices: [
+              { english: "Planning, Development, Testing, and Deployment.", arabic: "التخطيط، التطوير، الاختبار، والنشر", isCorrect: false },
+              { english: "Requirements Identification, Change Management Process, Traceability Policies, and Tool Support.", arabic: "تعريف المتطلبات، عملية إدارة التغيير، سياسات التتبع، ودعم الأدوات", isCorrect: true },
+              { english: "Discovery, Classification, Validation, and Documentation.", arabic: "الاكتشاف، التصنيف، التحقق، والتوثيق", isCorrect: false }
+            ],
+            hint: "أبو عيد: افتكر الـ 4 — ID فريد لكل requirement + عملية التغيير + سياسات التتبع + الأدوات!",
+            feedback: "عاش! الـ 4 عناصر: Requirements Identification, Change Management Process, Traceability Policies, Tool Support."
+          },
+          // Step 9: Q8
+          {
+            type: "question",
+            text: "أيٌّ من العبارات التالية يصف <b>Focused Ethnography</b> بشكل صحيح؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q8: Which statement correctly describes 'Focused Ethnography'?</span>",
+            choices: [
+              { english: "It is an interview technique focused exclusively on domain experts.", arabic: "هي تقنية مقابلة مركزة حصرياً على خبراء المجال", isCorrect: false },
+              { english: "It combines ethnographic observation with prototyping — prototype gaps drive focused ethnographic analysis.", arabic: "تدمج المراقبة الإثنوغرافية مع الـ Prototyping — الأسئلة التي يكشفها الـ prototype توجّه تحليل إثنوغرافي مركّز", isCorrect: true },
+              { english: "It is a formal review process conducted after system delivery.", arabic: "هي عملية مراجعة رسمية تُجرى بعد تسليم النظام", isCorrect: false }
+            ],
+            hint: "أبو عيد: Focused Ethnography = ethnography + prototyping. الـ prototype بيكشف أسئلة جديدة، ودي الأسئلة بتوجّه الـ ethnographic analysis التالية!",
+            feedback: "مية مية! الـ Focused Ethnography دمجت الـ ethnography مع الـ prototyping وطُوِّرت في مشروع air traffic control."
+          }
+        ]
       }
     };
 
@@ -2359,6 +2544,13 @@
       }
       if (Player.completedQuests.includes(6)) {
         const badge = document.getElementById('q6-badge');
+        if (badge) {
+          badge.textContent = 'تم الإنجاز 🏆';
+          badge.className = 'quest-badge conquered';
+        }
+      }
+      if (Player.completedQuests.includes(7)) {
+        const badge = document.getElementById('q7-badge');
         if (badge) {
           badge.textContent = 'تم الإنجاز 🏆';
           badge.className = 'quest-badge conquered';
