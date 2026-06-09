@@ -919,34 +919,34 @@
         </div>
 
         <!-- Quest 8 -->
-        <div class="quest-card locked">
+        <div class="quest-card unlocked" onclick="openModeSelector(8)" style="cursor:pointer;">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="quest-num">Quest 08</span>
-              <span class="quest-badge lock">قريباً 🔒</span>
+              <span class="quest-badge available" id="q8-badge">متاح ✅</span>
             </div>
             <h3 style="margin-top:10px;">خرائط النماذج الهيكلية</h3>
             <p style="font-size:0.85rem; color:var(--muted); margin-top:5px; line-height:1.5;">المحاضرة الثامنة: نمذجة الأنظمة، نماذج السياق، التفاعل، البنية، والسلوك.</p>
           </div>
           <div class="quest-meta">
             <span>الصعوبة: 🔴 صعبة</span>
-            <span>مغلق مؤقتاً</span>
+            <span style="color: var(--gold-soft);">+100 XP | +50 🪙</span>
           </div>
         </div>
 
         <!-- Quest 9 -->
-        <div class="quest-card locked">
+        <div class="quest-card unlocked" onclick="openModeSelector(9)" style="cursor:pointer;">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="quest-num">Quest 09</span>
-              <span class="quest-badge lock">قريباً 🔒</span>
+              <span class="quest-badge available" id="q9-badge">متاح ✅</span>
             </div>
             <h3 style="margin-top:10px;">حصن التصميم والتنفيذ</h3>
             <p style="font-size:0.85rem; color:var(--muted); margin-top:5px; line-height:1.5;">المحاضرة التاسعة: التصميم الكائني وتطوير البرمجيات وإعادة الاستخدام.</p>
           </div>
           <div class="quest-meta">
             <span>الصعوبة: 🟡 متوسطة</span>
-            <span>مغلق مؤقتاً</span>
+            <span style="color: var(--gold-soft);">+100 XP | +50 🪙</span>
           </div>
         </div>
       </div>
@@ -2435,6 +2435,449 @@
             feedback: "مية مية! الـ Focused Ethnography دمجت الـ ethnography مع الـ prototyping وطُوِّرت في مشروع air traffic control."
           }
         ]
+      },
+      8: {
+        title: "خرائط النماذج الهيكلية",
+        studySteps: [
+          // Step 1: Intro
+          {
+            type: "dialogue",
+            text: "يا هلا يا بطل! 📐 أبو عيد هنا، والنهارده هنبدأ <b>المحاضرة الثامنة: System Modeling</b>!<br><br>تخيل إنك معمار — مش هتبني عمارة بدون رسم هندسي! نفس الكلام في البرمجيات. الـ System Modeling هو فن رسم النظام من زوايا مختلفة قبل ما تكتب سطر واحد كود.<br><br>هنتعلم: <b>UML</b> (لغة الرسم العالمية)، الـ <b>4 زوايا</b> لأي نظام، الـ <b>Context Models</b>، الـ <b>Sequence Diagrams</b>، الـ <b>Class Diagrams</b>، الـ <b>Generalization</b>، والـ <b>Aggregation</b>. يلا نبدأ! 🏗️"
+          },
+          // Step 2: System Modeling + UML
+          {
+            type: "dialogue",
+            text: "📐 <b>System Modeling — ليه نرسم قبل ما نكود؟</b><br><br>الـ <b>System Modeling</b> هو عملية تطوير نماذج مجردة (<b>abstract models</b>) للنظام — كل model بيقدم view أو perspective مختلفة.<br><br>🔷 <b>الـ UML (Unified Modeling Language):</b><br>• لغة بصرية <b>standardized</b> لـ model وdesign وdocument الأنظمة<br>• بيعرض: system architecture، functional flow، object interactions، DB design<br><br>📌 <b>نوعين رئيسيين من الـ UML Diagrams:</b><br>① <b>Structural Diagrams</b> — الصورة الساكنة: Class, Object, Component, Deployment, Package<br>② <b>Behavioral Diagrams</b> — الصورة المتحركة: Use Case, Sequence, Activity, State<br><br>⚡ <b>نقطة مهمة للفاينال:</b> الـ model مش بالضرورة يطابق الكود 100%. التجريد (abstraction) بيساعدنا نركز على المفاهيم الكبيرة بدون الغرق في تفاصيل الـ syntax."
+          },
+          // Step 3: 4 Perspectives
+          {
+            type: "dialogue",
+            text: "👁 <b>4 System Perspectives — النظام من 4 زوايا مختلفة</b><br><br>أي نظام بنصممه بنبص عليه من 4 زوايا أساسية عشان نفهمه بالكامل:<br><br>① <b>External perspective</b>: حدود النظام وعلاقته بالبيئة المحيطة (مين جواه ومين براه).<br>② <b>Interaction perspective</b>: التفاعلات بين أجزاء النظام، أو بين النظام والـ users والأنظمة التانية.<br>③ <b>Structural perspective</b>: هيكل النظام الداخلي وتنظيم البيانات جواه.<br>④ <b>Behavioral perspective</b>: سلوك النظام الديناميكي واستجابته للأحداث والتغيرات."
+          },
+          // Step 4: Uses of Graphical Models
+          {
+            type: "dialogue",
+            text: "سؤال مضمون في الفاينال: إيه هي <b>الاستخدامات الثلاثة للنماذج الرسومية (Graphical Models)</b>؟ 🖼️<br>رسمنا للبرنامج بيختلف حسب إحنا عايزين منه إيه بالظبط:<br><br>💬 <b>1. Facilitate discussion (تسهيل النقاش)</b>:<br>بنشخبط على السبورة مع الفريق أو العميل لنقاش فكرة. النماذج هنا عادي تكون <b>incomplete (ناقصة)</b> و <b>incorrect (فيها أخطاء)</b> لأن هدفها بس فتح حوار وتوضيح أفكار!<br><br>📄 <b>2. Document an existing system (توثيق نظام موجود)</b>:<br>عايزين نوثق الكود المكتوب عشان اللي بعدنا يفهمه. النماذج هنا لازم تكون <b>accurate (دقيقة ومطابقة للكود)</b> بس مش لازم تكون complete (مش شرط ترسم كل سطر).<br><br>💻 <b>3. Generate implementation (توليد الكود تلقائياً)</b>:<br>بندخل الرسمة للـ compiler يطلع كود شغال (Model-driven). هنا النماذج لازم تكون <b>correct AND complete (صحيحة وكاملة 100%)</b> وإلا السستم هيعطل والكود مش هيشتغل!"
+          },
+          // Step 5: Self-Check 1 (Graphical Model Uses)
+          {
+            type: "question",
+            text: "اختبر تركيزك في فخ الاستخدامات الدقيق:<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q1: In which scenario can system models be 'incomplete and incorrect' yet still serve their purpose?</span>",
+            choices: [
+              { english: "A) To facilitate discussion about the proposed system design.", arabic: "لتسهيل النقاش حول تصميم النظام المقترح مع الفريق", isCorrect: true },
+              { english: "B) To document an existing system for maintenance.", arabic: "لتوثيق نظام موجود لأغراض الصيانة", isCorrect: false },
+              { english: "C) To generate software implementation automatically.", arabic: "لتوليد كود البرنامج تلقائياً", isCorrect: false }
+            ],
+            hint: "أبو عيد: لما بنشخبط على السبورة عشان نتناقش (Discussion)، مش فارق معانا الدقة 100%، المهم نوصل الفكرة لبعض!",
+            feedback: "صح جداً! لتسهيل النقاش (Facilitate discussion) عادي الرسمة تكون ناقصة وفيها غلطات."
+          },
+          // Step 6: Context Models
+          {
+            type: "dialogue",
+            text: "تعال نشوف <b>Context Models (نماذج السياق)</b> 🗺️<br>قبل ما تبدأ، لازم تحدد حدود النظام (System Boundaries) — مين جوه النظام ومين بره؟ وتحديد الحدود ده <b>قرار سياسي (Political judgment)</b> مش بس تقني، لأن تحديد مين اللي هيعمل إيه بيغير نفوذ الأقسام في الشركة!<br><br>الـ <i>Context Model</i> بيعرض الأنظمة التانية المحيطة بينا في البيئة، بس <b>مش بيعرض إزاي</b> النظام بيستخدم في العمليات (ده دور الـ Process Model).<br><br>💡 <b>مثال نظام Mentcare</b>: محاط بـ 5 أنظمة تانية لازم تحفظهم صم:<br>1. <i>Patient record system</i> ( PRS - نظام سجلات المرضى العام)<br>2. <i>Admissions system</i> (نظام الدخول للمستشفى)<br>3. <i>Management reporting system</i> (نظام تقارير الإدارة)<br>4. <i>Prescription system</i> (نظام الوصفات الطبية)<br>5. <i>HC statistics system & Appointments system</i> (نظام إحصائيات الصحة والمواعيد)"
+          },
+          // Step 7: Process Models & Interaction Models (Use Cases)
+          {
+            type: "dialogue",
+            text: "ندخل على <b>Process Models (نماذج العمليات)</b> ⚙️<br>دي بتكشف إزاي النظام المطوّر بيستخدم في العمليات التجارية الأوسع للشركة، وبتترسم بـ <b>UML Activity Diagrams</b>.<br>مثال: عملية الاحتجاز القسري للمريض (Involuntary Detention Process) في مستشفى Mentcare.<br><br>أما <b>Interaction Models (نماذج التفاعل)</b> 🤝<br>فدي بتوضح تفاعل المستخدم مع النظام أو تواصل الأنظمة مع بعضها، وبنرسمها بـ <b>Use Case Diagrams</b>.<br>كل Use Case بيمثل مهمة منفصلة (Discrete task) وتفاعل خارجي مع النظام.<br>💡 <b>جدول تفصيل الـ Use Case للامتحان (Transfer Data)</b>:<br>- <i>Actors</i>: Medical receptionist, Patient records system (PRS).<br>- <i>Description</i>: نقل بيانات المريض لسجلات الصحة العامة.<br>- <i>Stimulus</i>: أمر المستخدم من موظف الاستقبال.<br>- <i>Response</i>: تأكيد تحديث قاعدة البيانات PRS.<br>- <i>Comments</i>: يتطلب صلاحيات أمان مناسبة للوصول لبيانات المريض."
+          },
+          // Step 8: Sequence Diagrams
+          {
+            type: "dialogue",
+            text: "تعال نشوف <b>Sequence Diagrams (مخططات التتابع)</b> ⏱️<br>دي بتعرض تسلسل التفاعلات والرسايل بين الأوبجكتس وقت التشغيل (Runtime interactions) لكل Use Case.<br>الأوبجكتس والـ Actors بيترصوا فوق بالعرض، وبينزل منهم خط منقط رأسي اسمه <b>Lifeline</b>.<br>الرسايل والتفاعلات بتتمثل بـ <b>أسهم أفقية (Annotated arrows)</b> بتتحرك من lifeline للتانية بالترتيب الزمني من فوق لتحت.<br><br>💡 <b>مثال تتابع عرض بيانات المريض (View Patient Info)</b>:<br>الموظف يطلب العرض (ViewInfo) -> شاشة البيانات تطلب التقرير من قاعدة البيانات (report) -> قاعدة البيانات تطلب التحقق من الصلاحيات من نظام الأمان (authorize) -> نظام الأمان يرد بالموافقة أو الرفض -> الشاشة تعرض البيانات للموظف أو تعرض رسالة خطأ."
+          },
+          // Step 9: Self-Check 2 (Sequence Diagrams)
+          {
+            type: "question",
+            text: "سؤال مهم عن مكونات الـ Sequence Diagram:<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q2: In a UML Sequence Diagram, how are the runtime objects/actors and their interactions represented?</span>",
+            choices: [
+              { english: "A) Objects at the top with vertical lifelines; interactions as annotated horizontal arrows between lifelines.", arabic: "الأوبجكتس بالأعلى مع خطوط حياة رأسية، والتفاعلات كأسهم أفقية بينها", isCorrect: true },
+              { english: "B) Objects inside circular bubbles; interactions as diagonal dashed lines.", arabic: "الأوبجكتس داخل فقاعات دائرية، والتفاعلات كخطوط مائلة منقطة", isCorrect: false },
+              { english: "C) 3-section rectangular boxes showing name, attributes, and methods.", arabic: "صناديق مستطيلة من 3 مقاطع تعرض الاسم والصفات والدوال", isCorrect: false }
+            ],
+            hint: "أبو عيد: افتكر إن التتابع بيتحرك مع الوقت من فوق لتحت، فالأوبجكتس فوق ونازل منها خطوط حياة رأسية، والرسائل رايحة جاية أفقياً!",
+            feedback: "برافو! الأوبجكتس فوق بخطوط رأسية، والرسائل أفقية."
+          },
+          // Step 10: Structural Models (Class Diagram)
+          {
+            type: "dialogue",
+            text: "ندخل على <b>Structural Models (النماذج الهيكلية)</b> 🏗️<br>دي بتعرض تنظيم النظام والأوبجكتس والعلاقات بينها، والعمود الفقري ليها هو الـ <b>Class Diagram</b>.<br><br>علشان ترسم Class في الـ UML، بنحطه في صندوق مستطيل مقسم لـ <b>3 مقاطع (Sections) بالترتيب</b>:<br>1. <b>Class Name</b> (اسم الكلاس في أول مقطع فوق)<br>2. <b>Attributes</b> (الصفات والمتغيرات في المقطع الأوسط)<br>3. <b>Methods / Operations</b> (الدوال والعمليات في المقطع السفلي)<br><br>💡 <b>العلاقات بين الكلاسات للامتحان (MHC-PMS)</b>:<br>- المريض (Patient) له طبيب عام (GP) مشخصه بمرض (Condition) وبيحضر جلسات (Consultation) بيكتب فيها الطبيب أدوية (Medication) وعلاجات (Treatment)."
+          },
+          // Step 11: Generalization & Aggregation
+          {
+            type: "dialogue",
+            text: "تعال ننهي الدرس بأهم مفهومين في علاقات الكلاسات:<br><br>🧬 <b>1. Generalization (التعميم / الوراثة)</b>:<br>تقنية بنستخدمها لإدارة التعقيد بتجميع الخصائص المشتركة في كلاس عام (Superclass) والكلاسات الفرعية (Subclasses) ترثها وتزود عليها. في الـ OOP دي بنسميها الـ <b>Inheritance</b>.<br>💡 <b>مثال دكتور المستشفى</b>: الكلاس العام <i>Doctor</i> (Name, Phone, Email) -> يرث منه <i>Hospital Doctor</i> (Staff#, Pager#) و <i>General Practitioner</i>. ويرث من Hospital Doctor كل من <i>Consultant</i> و <i>Team Doctor</i>.<br><br>🧩 <b>2. Aggregation (التجميع)</b>:<br>علاقة بتقول إن الكلاس ده عبارة عن مجموعة أو مكوّن من كلاسات تانية (Part-of relationship). بتتمثل بـ <b>معين فارغ (Empty diamond ◇)</b> عند الكلاس المجمِّع.<br>💡 <b>مثال سجل المريض</b>: كلاس <i>PatientRecord</i> ◇ مكوّن من <i>Patient</i> (بنسبة 1 لـ 1) و <i>Consultation</i> (بنسبة 1 لـ 1 أو أكثر)."
+          },
+          // Step 12: Self-Check 3 (Generalization)
+          {
+            type: "question",
+            text: "سؤال مضمون في الفاينال عن الوراثة وإدارة التعقيد:<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q3: What relationship in a UML Class Diagram is used to implement 'inheritance' where subclasses inherit attributes and operations from a superclass?</span>",
+            choices: [
+              { english: "A) Generalization (التعميم/الوراثة).", arabic: "علاقة التعميم والوراثة (Generalization)", isCorrect: true },
+              { english: "B) Aggregation (التجميع).", arabic: "علاقة التجميع (Aggregation)", isCorrect: false },
+              { english: "C) Use Case Interaction.", arabic: "تفاعل حالات الاستخدام", isCorrect: false }
+            ],
+            hint: "أبو عيد: لما كلاس فرعي يرث من كلاس عام الخصائص المشتركة، العلاقة دي بنسميها Generalization!",
+            feedback: "ممتاز! علاقة Generalization هي المقابل المباشر للـ inheritance في الـ OOP."
+          },
+          // Step 13: Behavioral Models & Insulin Pump
+          {
+            type: "dialogue",
+            text: "آخر جزء معانا هو <b>Behavioral Models (النماذج السلوكية)</b> ⚡<br>دي بتعرض السلوك الديناميكي للنظام أثناء التشغيل لما يستجيب لحدث أو محفز (Stimulus).<br><br>🔷 <b>عندنا نوعين من المحفزات (Stimuli):</b><br>1. <b>Data stimuli</b>: بيانات بتوصل للسيستم ومحتاجة معالجة (زي قراءة مستشعر).<br>2. <b>Event stimuli</b>: أحداث بتشغل المعالجة (ممكن تكون ببيانات أو من غيرها).<br><br>🔷 <b>Data-driven Modeling (النمذجة الموجهة بالبيانات):</b><br>بتعرض خطوات معالجة المدخلات (Inputs) خطوة بخطوة لتوليد المخرجات (Outputs).<br><br>💡 <b>مثال تدفق مضخة الإنسولين (Insulin Pump Activity):</b><br>خطوات المعالجة كالتالي بالترتيب:<br>1. <b>Get sensor value</b> (قراءة قيمة مستشعر السكر من المريض)<br>2. <b>Compute sugar level</b> (حساب نسبة السكر)<br>3. <b>Calculate insulin delivery</b> (حساب الإنسولين المطلوب)<br>4. <b>Control pump</b> (التحكم في المضخة لحقن الإنسولين)"
+          }
+        ],
+        challengeSteps: [
+          // Step 1: Challenge Intro
+          {
+            type: "dialogue",
+            text: "يا هلا يا بطل في تحدي المحاضرة الثامنة! ⚔️ هنا هنختبر معلوماتك مباشرة لجمع الذهب والـ XP. خلي بالك، كل إجابة غلط هتخصم 15 من طاقتك (HP)! جاهز؟"
+          },
+          // Step 2: Q1 (Class sections)
+          {
+            type: "question",
+            text: "ما هي المقاطع الثلاثة لكلاس الـ UML بالترتيب من الأعلى للأسفل؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q1: What are the three sections of a UML class box in order?</span>",
+            choices: [
+              { english: "Class Name, Attributes, Methods (Operations).", arabic: "اسم الكلاس -> الصفات والخصائص -> الدوال والعمليات", isCorrect: true },
+              { english: "Methods, Attributes, Class Name.", arabic: "الدوال والعمليات -> الصفات والخصائص -> اسم الكلاس", isCorrect: false },
+              { english: "Attributes, Methods, Relationships.", arabic: "الصفات والخصائص -> الدوال والعمليات -> العلاقات", isCorrect: false }
+            ],
+            hint: "أبو عيد: الصندوق مستطيل، الاسم فوق، الصفات في النص، والدوال تحت!",
+            feedback: "برافو! الترتيب هو الاسم، الصفات، ثم العمليات."
+          },
+          // Step 3: Q2 (Activity diagram)
+          {
+            type: "question",
+            text: "أي مخطط من مخططات الـ UML هو الأنسب لتمثيل العمليات التجارية وخطوات سير العمل (Workflows) في النظام؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q2: Which UML diagram is best suited for modeling business processes and workflow steps?</span>",
+            choices: [
+              { english: "UML Activity Diagrams.", arabic: "مخططات النشاط (Activity Diagrams)", isCorrect: true },
+              { english: "UML Class Diagrams.", arabic: "مخططات الكلاس (Class Diagrams)", isCorrect: false },
+              { english: "UML Sequence Diagrams.", arabic: "مخططات التتابع (Sequence Diagrams)", isCorrect: false }
+            ],
+            hint: "أبو عيد: العمليات التجارية والخطوات التتابعية لسير العمل بنرسمها بـ Activity Diagrams!",
+            feedback: "رائع! الـ Activity Diagrams هي الأنسب لتعريف العمليات."
+          },
+          // Step 4: Q3 (Aggregation symbol)
+          {
+            type: "question",
+            text: "ما الرمز المستخدم في الـ UML لتمثيل علاقة التجميع (Aggregation) بين الكلاسات؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q3: What symbol represents an Aggregation relationship in UML?</span>",
+            choices: [
+              { english: "An empty diamond shape (◇) at the collection class end.", arabic: "شكل معين فارغ (◇) عند كلاس التجميع", isCorrect: true },
+              { english: "A filled black arrow pointing to the subclass.", arabic: "سهم أسود ممتلئ يشير للكلاس الفرعي", isCorrect: false },
+              { english: "A dotted horizontal message line.", arabic: "خط رسالة منقط أفقي", isCorrect: false }
+            ],
+            hint: "أبو عيد: التجميع يعني كلاس مكوّن من كلاسات تانية، بنحط معين فارغ (◇) عند الكلاس المجمِّع الكببر!",
+            feedback: "صح! المعين الفارغ ◇ هو رمز التجميع (Aggregation)."
+          },
+          // Step 5: Q4 (Actors in Transfer Data)
+          {
+            type: "question",
+            text: "من هم الـ Actors المشاركون في جدول تفصيل الـ Use Case لنقل البيانات (Transfer Data) في الـ MHC-PMS؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q4: Who are the actors in the 'Transfer Data' use case?</span>",
+            choices: [
+              { english: "Medical receptionist and Patient records system (PRS).", arabic: "موظف الاستقبال الطبي ونظام سجلات المرضى العام", isCorrect: true },
+              { english: "Doctor and Patient.", arabic: "الطبيب والمريض", isCorrect: false },
+              { english: "System admin and Database server.", arabic: "مدير النظام وسيرفر قاعدة البيانات", isCorrect: false }
+            ],
+            hint: "أبو عيد: الموظف بيضغط الزر والبيانات بتتحول للسجل العام، يعني الموظف والسستم العام هم الـ Actors!",
+            feedback: "ممتاز! الموظف والـ PRS هما الـ Actors."
+          },
+          // Step 6: Q5 (Context Model Perspective)
+          {
+            type: "question",
+            text: "تحت أي من وجهات النظر (Perspectives) الأربعة يقع الـ Context Model للنظام؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q5: Under which perspective does the Context Model fall?</span>",
+            choices: [
+              { english: "External perspective.", arabic: "وجهة النظر الخارجية (علاقة النظام بالبيئة)", isCorrect: true },
+              { english: "Structural perspective.", arabic: "وجهة النظر الهيكلية", isCorrect: false },
+              { english: "Interaction perspective.", arabic: "وجهة النظر التفاعلية", isCorrect: false }
+            ],
+            hint: "أبو عيد: السياق بيشرح النظام من بره وعلاقته باللي حواليه، يعني وجهة نظر خارجية (External)!",
+            feedback: "صح! الـ Context Model يمثل الـ External perspective."
+          },
+          // Step 7: Q6 (Code Generation Requirements)
+          {
+            type: "question",
+            text: "عندما نستخدم النماذج الرسومية لغرض توليد كود السوفتوير تلقائياً (Generate Implementation)، كيف يجب أن تكون هذه النماذج؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q6: How must models be when used to generate software implementation automatically?</span>",
+            choices: [
+              { english: "They must be correct and complete (صحيحة وكاملة).", arabic: "يجب أن تكون صحيحة وكاملة 100% وبدون أي نقص أو خطأ", isCorrect: true },
+              { english: "They can be incomplete and incorrect.", arabic: "عادي تكون ناقصة وفيها أخطاء", isCorrect: false },
+              { english: "They only need to be accurate but not complete.", arabic: "لازم تكون دقيقة بس مش شرط كاملة", isCorrect: false }
+            ],
+            hint: "أبو عيد: الكومبيلر غبي لو اديته رسمة ناقصة أو فيها غلطة مش هيعرف يكتب كود والبرنامج هيبوظ، فلازم كاملة وصحيحة صم!",
+            feedback: "ممتاز! الـ Code generation يتطلب نماذج correct and complete."
+          },
+          // Step 8: Q7 (Mentcare surrounding systems)
+          {
+            type: "question",
+            text: "ما هي الأنظمة الخمسة المحيطة بنظام Mentcare في الـ Context Diagram؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q7: What are the 5 surrounding systems of Mentcare in the context diagram?</span>",
+            choices: [
+              { english: "Patient record system, Admissions system, Management reporting system, Prescription system, and HC statistics & Appointments system.", arabic: "نظام السجلات، القبول، التقارير، الوصفات، والإحصائيات والمواعيد", isCorrect: true },
+              { english: "Windows OS, MySQL DB, Web browser, Apache server, and Internet.", arabic: "نظام التشغيل، قاعدة البيانات، المتصفح، السيرفر، والنت", isCorrect: false },
+              { english: "Doctor class, Patient class, GP class, Clinic class, and Medication class.", arabic: "كلاسات الطبيب، المريض، الطبيب العام، العيادة، والدواء", isCorrect: false }
+            ],
+            hint: "أبو عيد: افتكر الأنظمة الإدارية والطبية المحيطة بالصحة النفسية في مستشفى الدكتور!",
+            feedback: "مظبوط جداً! دي الأنظمة الخمسة المحيطة بنظام Mentcare."
+          },
+          // Step 9: Q8 (First activity in insulin pump)
+          {
+            type: "question",
+            text: "ما هي الخطوة الأولى في نشاط معالجة بيانات مضخة الإنسولين طبقاً لمخطط السلوك الموجه بالبيانات (Data-driven behavioral model)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q8: What is the first activity in the insulin pump processing flow?</span>",
+            choices: [
+              { english: "Get sensor value (قراءة قيمة مستشعر السكر).", arabic: "قراءة قيمة مستشعر السكر من المريض", isCorrect: true },
+              { english: "Compute sugar level.", arabic: "حساب نسبة السكر في الدم", isCorrect: false },
+              { english: "Calculate insulin delivery.", arabic: "حساب كمية الإنسولين المطلوبة للحقن", isCorrect: false }
+            ],
+            hint: "أبو عيد: السستم بيبدأ ياخد البيانات الأول من المستشعر المدمج في جسم المريض (Get sensor value)!",
+            feedback: "عبقري يا بطل! كدة أنت خلصت المذاكرة الشاملة للمحاضرة الثامنة ونمذجة الأنظمة بالكامل ومستعد للامتحان!"
+          }
+        ]
+      },
+      9: {
+        title: "حصن التصميم والتنفيذ",
+        studySteps: [
+          // Step 1: Intro
+          {
+            type: "dialogue",
+            text: "يا هلا يا بطل! 🏗️ أبو عيد هنا، والنهارده هنبدأ <b>المحاضرة التاسعة: Design & Implementation</b>!<br><br>دي المحاضرة اللي بتنقلنا من الكلام النظري للكود الفعلي وتصميم السوفتوير اللي بجد. هنتعلم إيه هو الـ <b>Architectural Design</b> والفرق بينه وبين البرمجة العادية، والـ <b>4 views</b> بتوع المعمارية، وبعض الأنماط المشهورة زي <b>Repository</b> و <b>Pipe-and-Filter</b> و <b>Layered</b>، وكمان موضوع الـ <b>Software Reuse</b> و الـ <b>Configuration Management</b> وتراخيص الـ <b>Open Source</b>. اربط الحزام ويلا بينا! 🚀"
+          },
+          // Step 2: What is Architectural Design & Abstraction Levels
+          {
+            type: "dialogue",
+            text: "🏗️ <b>Architectural Design — المعمارية الكبيرة</b><br><br>بص يا عزيزي، المعمارية هي أول مرحلة في التصميم، بنحدد فيها المكونات الأساسية للنظام <span class='en'>(subsystems / modules)</span> وإزاي بيكلموا بعض.<br><br>💡 عندنا مستويين من التجريد <span class='en'>(Abstraction Levels)</span> لازم تفرق بينهم:<br>1. <b>In the Small</b>: تصميم معمارية برنامج <i>واحد فردي</i> ومكوناته الداخلية.<br>2. <b>In the Large</b>: تصميم معمارية <i>أنظمة معقدة ضخمة</i> للمؤسسات (Enterprise) بتضم كذا سيستم مع بعض.<br><br>🛒 <b>قرارات البناء والشراء (Build or Buy)</b>: مش دايماً صح تبني كل حاجة من الصفر! ساعات الأذكى تشتري أنظمة جاهزة وتدمجها <span class='en'>(COTS — Commercial Off-The-Shelf)</span>، زي ما نظام المستشفى Mentcare ممكن يدمج نظام سجلات مرضى جاهز يوفر ملايين ووقت!"
+          },
+          // Step 3: Self-Check 1 (Abstraction levels)
+          {
+            type: "question",
+            text: "يلا اختبر تركيزك في مستويات التجريد للامتحان:<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q1: What level of architecture is concerned with the design of enterprise systems that include many different software systems?</span>",
+            choices: [
+              { english: "A) Architecture in the Large.", arabic: "المعمارية على المستوى الكبير (In the Large)", isCorrect: true },
+              { english: "B) Architecture in the Small.", arabic: "المعمارية على المستوى الصغير (In the Small)", isCorrect: false },
+              { english: "C) Embedded object-level development.", arabic: "تطوير الكائنات المدمجة", isCorrect: false }
+            ],
+            hint: "المؤسسات الكبيرة والأنظمة المتعددة تندرج تحت الحجم الضخم (In the Large)!",
+            feedback: "مظبوط! In the Large هي معمارية الأنظمة الكبيرة والمؤسسية."
+          },
+          // Step 4: Benefits of Explicit Architecture
+          {
+            type: "dialogue",
+            text: "🎯 <b>ليه بنهتم بكتابة وتوثيق المعمارية صراحة؟ (3 فوائد كبرى)</b><br><br>الدكتور ركز على 3 فوايد لازم تحفظهم صم:<br>1. <b>Stakeholder Communication</b>: لغة تواصل سهلة يفهمها كل أصحاب المصلحة (مطورين، عملاء، إدارة) للنقاش.<br>2. <b>System Analysis</b>: تحليل مبكر للنظام لمعرفة هل هيحقق الـ performance والأمان المطلوب قبل ما نكتب سطر كود واحد.<br>3. <b>Large-scale Reuse</b>: إمكانية إعادة استخدام المعمارية دي بالكامل في مشاريع مشابهة.<br><br>💡 بنمثل المعمارية بـ <b>Box-and-Line diagrams</b> (مخططات الصناديق والخطوط). ورغم إنها غير رسمية (informal) إلا إنها بسيطة ومحبوبة جداً للتواصل السريع!"
+          },
+          // Step 5: Self-Check 2 (Architecture Benefits)
+          {
+            type: "question",
+            text: "ما هي الفوائد الثلاث لتصميم وتوثيق المعمارية بشكل صريح؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q2: Which of the following is NOT one of the three primary advantages of explicit architectural design?</span>",
+            choices: [
+              { english: "A) Automatic generation of clean source code.", arabic: "توليد كود المصدر النظيف تلقائياً", isCorrect: true },
+              { english: "B) Stakeholder communication.", arabic: "تسهيل التواصل بين أصحاب المصلحة", isCorrect: false },
+              { english: "C) Early system analysis for performance and security.", arabic: "التحليل المبكر لأداء وأمان النظام", isCorrect: false }
+            ],
+            hint: "توثيق المعمارية بيشرح النظام ويسهل النقاش والتحليل، مش بيولد كود سحري لوحده!",
+            feedback: "ممتاز! توليد الكود مش جزء من الفوائد الثلاث الأساسية للـ Explicit Architecture."
+          },
+          // Step 6: The 4 Architectural Views (Kruchten's 4+1)
+          {
+            type: "dialogue",
+            text: "👁️ <b>4 Architectural Views — النظرات الأربعة للمعمارية</b><br><br>الدكتور قال إننا بنبص للنظام من 4 زوايا مختلفة لأن كل جمهور محتاج يشوف حاجة تناسبه:<br><br>1. <b>Logical View (🧠)</b>: بتعرض الكيانات المنطقية كـ Classes/Objects وعلاقاتها (تناسب الـ business analyst والعميل).<br>2. <b>Process View (⚙️)</b>: بتعرض التفاعل وقت التشغيل (run-time) وحركة الـ processes وتواصلها.<br>3. <b>Development View (💻)</b>: بتعرض تقسيم السوفتوير لـ modules للتطوير وكتابة الكود (تناسب المبرمجين).<br>4. <b>Physical View (🖥️)</b>: بتعرض توزيع النظام على الهاردوير والسيرفرات (تناسب الـ System Admins).<br><br>💡 بالإضافة للـ <i>Scenarios</i> (أو الـ +1) اللي بتوضح استخدام النظام وتفاعله."
+          },
+          // Step 7: Self-Check 3 (Architectural Views)
+          {
+            type: "question",
+            text: "أي نظرة أو View تهتم بكيفية تفاعل المكونات أثناء وقت التشغيل الفعلي (Run-time)؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q3: Which architectural view shows the system's runtime processes and communication?</span>",
+            choices: [
+              { english: "A) Process View.", arabic: "منظور العمليات وقت التشغيل (Process View)", isCorrect: true },
+              { english: "B) Logical View.", arabic: "المنظور المنطقي للكلاسات والأوبجكتس", isCorrect: false },
+              { english: "C) Physical View.", arabic: "المنظور المادي وتوزيع السيرفرات", isCorrect: false }
+            ],
+            hint: "وقت التشغيل يعني processes بتتحرك وتكلم بعض، يعني منظور العمليات (Process View)!",
+            feedback: "صح يا عبقري! الـ Process View هي المسؤولة عن تتبع وقت التشغيل والعمليات."
+          },
+          // Step 8: Repository Pattern
+          {
+            type: "dialogue",
+            text: "🗄️ <b>Repository Pattern — نمط المستودع المركزي</b><br><br>تخيل عندك أدوات كتير عايزها تشتغل على نفس البيانات. بدل ما كل أداة تبعت للثانية، بنعمل <b>Central Repository (مستودع مركزي)</b> وكل المكونات بتقرأ وتكتب منه مباشرة.<br><br>📌 <b>مثال شهير: بيئة الـ IDE</b> (زي VS Code أو Eclipse):<br>الكود متخزن في مستودع مركزي، والـ Compiler والـ Editor والـ Debugger كلهم بيستخدموا نفس المستودع.<br><br>⚖️ <b>المميزات والعيوب:</b><br>• <b>المميزات</b>: مشاركة بيانات فعالة، وبساطة إدارة البيانات والنسخ الاحتياطي.<br>• <b>العيوب</b>: نقطة فشل واحدة <span class='en'>(single point of failure)</span> لو وقع المستودع النظام كله بيقف، واختناق أداء <span class='en'>(bottleneck)</span> لو أدوات كتير دخلت في نفس الوقت."
+          },
+          // Step 9: Self-Check 4 (Repository Pattern)
+          {
+            type: "question",
+            text: "ما هو العيب الرئيسي لنمط المعمارية المعتمد على المستودع المركزي (Repository Pattern)؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q4: What is a major disadvantage of using a centralized Repository Pattern?</span>",
+            choices: [
+              { english: "A) It acts as a single point of failure and can cause performance bottlenecks.", arabic: "نقطة فشل واحدة للنظام بأكمله واختناق في الأداء مع الحمل الزائد", isCorrect: true },
+              { english: "B) Subsystems cannot share data at all.", arabic: "الأنظمة الفرعية لا يمكنها مشاركة البيانات إطلاقاً", isCorrect: false },
+              { english: "C) Backup and data recovery become extremely complex.", arabic: "عمليات النسخ الاحتياطي واستعادة البيانات تصبح معقدة جداً", isCorrect: false }
+            ],
+            hint: "لو السيرفر المركزي اللي عليه البيانات وقع أو بقى عليه ضغط رهيب، السستم كله بيقف! يعني single point of failure!",
+            feedback: "مظبوط! نقطة الفشل الواحدة والاختناق هما العيوب الأساسية للـ Repository."
+          },
+          // Step 10: Pipe-and-Filter & Layered Architecture
+          {
+            type: "dialogue",
+            text: "🔧 <b>Pipe-and-Filter & Layered Architecture</b><br><br>🔷 <b>Pipe-and-Filter (خط الإنتاج)</b>:<br>البيانات بتدخل في ماسورة <span class='en'>(Pipe)</span> وتعدي على فلتر <span class='en'>(Filter)</span> يعملها تعديل وتطلع ماسورة تانية لفلتر بعده. 💡 <b>أمثلة:</b> الـ Compiler (معالجة الكود خطوة بخطوة)، وأنظمة الصراف الآلي ATM.<br><br>🏢 <b>Layered Architecture (الطبقات المتراصة)</b>:<br>بنقسم النظام لطبقات، كل طبقة بتكلم اللي تحتها بس وتخدم اللي فوقها. 💡 <b>مثال:</b> أنظمة المعلومات (4 طبقات بالترتيب من فوق لتحت):<br>1. UI Layer (واجهة المستخدم)<br>2. UI Management (إدارة منطق الواجهة)<br>3. Core Business Logic (منطق العمل الرئيسي للبرنامج)<br>4. System Support (نظام التشغيل وقاعدة البيانات OS/DB)"
+          },
+          // Step 11: Self-Check 5 (Layered Architecture)
+          {
+            type: "question",
+            text: "في معمارية المعلومات المكونة من 4 طبقات، أين تقع قاعدة البيانات ونظام التشغيل؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q5: In the 4-layer information system architecture, the database and operating system belong to:</span>",
+            choices: [
+              { english: "A) System Support layer.", arabic: "طبقة دعم النظام (System Support) في الأسفل", isCorrect: true },
+              { english: "B) User Interface layer.", arabic: "طبقة واجهة المستخدم (UI Layer)", isCorrect: false },
+              { english: "C) Core Business Logic layer.", arabic: "طبقة منطق العمل الفعلي", isCorrect: false }
+            ],
+            hint: "الهاردوير وقاعدة البيانات ونظام التشغيل هما الأساس اللي شايل السستم تحت خالص (System Support)!",
+            feedback: "صحيح! الـ Database و OS يقعان في طبقة الـ System Support."
+          },
+          // Step 12: Software Reuse Levels & Costs
+          {
+            type: "dialogue",
+            text: "♻️ <b>Software Reuse — إعادة استخدام البرمجيات</b><br><br>النهاردة كتابة كود من الصفر هي الاستثناء! معظم الأنظمة بتتبني بإعادة استخدام كود قديم. 💡 <b>عندنا 4 مستويات لإعادة الاستخدام:</b><br>1. <b>Abstraction</b>: إعادة استخدام الأفكار وأنماط التصميم (Knowledge).<br>2. <b>Object</b>: إعادة استخدام كلاسات ومكتبات جاهزة (Libraries).<br>3. <b>Component</b>: إعادة استخدام أطر عمل ومكونات أكبر (Frameworks).<br>4. <b>System</b>: إعادة استخدام أنظمة تجارية كاملة وتخصيصها (COTS Systems).<br><br>💸 <b>تكاليف إعادة الاستخدام (4 تكاليف مخفية):</b><br>1. البحث والتقييم (تلاقي المكون الصح). 2. تكلفة شراء النظام الجاهز. 3. تكلفة التكييف (Adaptation). 4. تكلفة الدمج والتكامل (Integration)."
+          },
+          // Step 13: Self-Check 6 (Reuse Levels)
+          {
+            type: "question",
+            text: "أي من مستويات إعادة الاستخدام يتم فيه استخدام مكتبات الكود البرمجية مباشرة مثل كلاسات الجافا الجاهزة؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q6: Reusing objects/classes directly from software libraries belongs to which reuse level?</span>",
+            choices: [
+              { english: "A) Object level.", arabic: "مستوى الكائن (Object level)", isCorrect: true },
+              { english: "B) Abstraction level.", arabic: "مستوى التجريد ونمط التصميم", isCorrect: false },
+              { english: "C) System level.", arabic: "مستوى النظام الشامل (System level)", isCorrect: false }
+            ],
+            hint: "استدعاء كلاسات وأوبجكتس جاهزة من مكتبة هو تطبيق مباشر لمستوى الـ Object!",
+            feedback: "برافو! استخدام الكلاسات والمكتبات الجاهزة يندرج تحت الـ Object level of reuse."
+          },
+          // Step 14: Configuration Management & Host-Target
+          {
+            type: "dialogue",
+            text: "⚙️ <b>Configuration Management (CM) & Host-Target</b><br><br>لما نشتغل كفريق، لازم ندير التغييرات على الكود المطور. الـ <b>CM</b> بتهتم بـ 3 أنشطة رئيسية:<br>1. <b>Version Management</b>: تتبع نسخ الملفات وتاريخ التعديل (زي Git).<br>2. <b>System Integration</b>: تجميع وتحديد مكونات النظام لعمل Build/Release.<br>3. <b>Problem Tracking</b>: تتبع البلاغات وحالة المشاكل (زي Jira).<br><br>🖥️ <b>Host-Target Development</b>:<br>• <b>Host Platform</b>: اللابتوب بتاعك اللي عليه الـ IDE وبتطور وتكتب عليه الكود.<br>• <b>Target Platform</b>: الجهاز الفعلي اللي هيشتغل عليه البرنامج في الإنتاج (Production) أو تليفون العميل."
+          },
+          // Step 15: Self-Check 7 (CM & Host-Target)
+          {
+            type: "question",
+            text: "ما هو التعريف الصحيح للـ Target Platform في تطوير البرمجيات؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q7: In Host-Target development, the 'Target' platform refers to:</span>",
+            choices: [
+              { english: "A) The execution platform where the software will run in production.", arabic: "منصة التشغيل الفعلي التي سيعمل عليها البرنامج في بيئة العميل", isCorrect: true },
+              { english: "B) The developer's computer used to write and compile source code.", arabic: "جهاز المطور المستخدم لكتابة وتجميع الكود", isCorrect: false },
+              { english: "C) The version control server that tracks code versions.", arabic: "سيرفر التحكم في النسخ الذي يتتبع التغييرات", isCorrect: false }
+            ],
+            hint: "الـ Host هو جهاز التطوير، أما الـ Target هو هدفنا النهائي اللي البرنامج بيشتغل عليه!",
+            feedback: "صح جداً! الـ Target هو المنصة النهائية لتشغيل البرنامج."
+          },
+          // Step 16: Open Source & Licensing
+          {
+            type: "dialogue",
+            text: "🌐 <b>Open Source Development & Licensing</b><br><br>التطوير مفتوح المصدر يعني الكود متاح للجميع يقرأوه ويعدلوه. المطورين بيكسبوا فلوس من <b>بيع الدعم والخدمات</b> (زي Red Hat مع Linux).<br><br>📌 <b>أشهر 3 أنواع من تراخيص المصدر المفتوح:</b><br>1. <b>GPL (GNU General Public License)</b>: رخصة تبادلية (reciprocal/viral). لو دمجت كود GPL في برنامجك، لازم تفتح برنامجك كله للعامة! 🔴<br>2. <b>LGPL (Lesser GPL)</b>: بتسمح لك تربط برنامجك المغلق بمكتبة GPL (linking) من غير ما تفتح كود برنامجك، بس لو عدلت في مكتبة الـ LGPL نفسها لازم تفتح كود التعديلات. 🟡<br>3. <b>BSD/MIT</b>: رخصة متساهلة جداً (permissive). استخدم الكود واعمل فيه اللي أنت عايزه، وبعه مغلق المصدر عادي من غير شروط، بس احتفظ بذكر الحقوق الأصلية! 🟢"
+          },
+          // Step 17: Self-Check 8 (Licensing Models)
+          {
+            type: "question",
+            text: "لو شركة عايزه تستخدم مكتبة مفتوحة المصدر وتدمجها في برنامج تجاري مغلق تماماً بدون إلزامها بفتح كودها الخاص، أي التراخيص هي الأنسب؟<br><br><span dir='ltr' style='display:block; text-align:right; color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q8: Which open-source license allows the code to be used in proprietary products without forcing the developer to open-source their application?</span>",
+            choices: [
+              { english: "A) BSD / MIT license.", arabic: "رخصة BSD / MIT المتساهلة (Permissive)", isCorrect: true },
+              { english: "B) GNU GPL license.", arabic: "رخصة GNU GPL التبادلية (Reciprocal)", isCorrect: false },
+              { english: "C) General public reciprocity schema.", arabic: "مخطط التبادل العام للمجتمع", isCorrect: false }
+            ],
+            hint: "الـ GPL رخصة فيروسية بتجبرك تفتح الكود، أما الـ BSD/MIT فهي رخصة متساهلة وحرة تماماً تبيع بيها كودك مغلق عادي!",
+            feedback: "ممتاز! رخصة BSD/MIT تسمى Permissive لأنها لا تفرض أي شروط لفتح الكود المشتق."
+          }
+        ],
+        challengeSteps: [
+          // Step 1: Challenge Intro
+          {
+            type: "dialogue",
+            text: "يا هلا يا بطل في تحدي المحاضرة التاسعة! ⚔️ هنا هنختبر معلوماتك مباشرة لجمع الذهب والـ XP. خلي بالك، كل إجابة غلط هتخصم 15 من طاقتك (HP)! جاهز؟"
+          },
+          // Step 2: Q1 (In the Large vs In the Small)
+          {
+            type: "question",
+            text: "ما هو الفرق بين معمارية الـ In the Small والـ In the Large؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q1: What is the difference between architecture in the small and in the large?</span>",
+            choices: [
+              { english: "In the small designs individual programs, while in the large designs enterprise systems with multiple systems.", arabic: "In the small تصمم برامج فردية، بينما in the large تصمم أنظمة مؤسسات ضخمة متعددة", isCorrect: true },
+              { english: "In the small is only for mobile applications, while in the large is for mainframes.", arabic: "In the small لتطبيقات الموبايل فقط، بينما in the large للأنظمة الرئيسية القديمة", isCorrect: false },
+              { english: "In the small means UML sketches, while in the large means code generation.", arabic: "In the small تعني شخابيط UML، بينما in the large تعني توليد الكود تلقائياً", isCorrect: false }
+            ],
+            hint: "أبو عيد: فكر في حجم النطاق (Scope) — برنامج واحد يعني small، أنظمة شركات معقدة يعني large!",
+            feedback: "برافو! In the small هو الفردي، و In the large هو المؤسسي المعقد."
+          },
+          // Step 3: Q2 (Explicit architecture advantages)
+          {
+            type: "question",
+            text: "ما هي الفوائد الثلاثة الأساسية للتصميم الصريح للمعمارية (Explicit Architecture)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q2: What are the three primary advantages of documenting software architecture explicitly?</span>",
+            choices: [
+              { english: "Stakeholder Communication, System Analysis, and Large-scale Reuse.", arabic: "تواصل أصحاب المصلحة، تحليل النظام المبكر، وإعادة الاستخدام واسع النطاق", isCorrect: true },
+              { english: "Fast development, Low testing cost, and Code formatting.", arabic: "سرعة التطوير، انخفاض تكلفة الاختبار، وتنسيق الكود", isCorrect: false },
+              { english: "Database scaling, Automated hosting, and Interface animation.", arabic: "توسيع قاعدة البيانات، الاستضافة التلقائية، وحركات الواجهات", isCorrect: false }
+            ],
+            hint: "أبو عيد: هما 3 فوائد مشهورة: تواصل الـ stakeholders، تحليل السستم (performance/security) مبكراً، والـ reuse!",
+            feedback: "رائع! الفوائد الثلاثة هي تواصل أصحاب المصلحة، تحليل النظام، وإعادة الاستخدام."
+          },
+          // Step 4: Q3 (Process View)
+          {
+            type: "question",
+            text: "أي من وجهات النظر (Views) الأربعة للمعمارية تختص بتوزيع البرنامج وتفاعلاته وقت التشغيل الفعلي (Run-time)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q3: Which architectural view shows the run-time processes and how they communicate?</span>",
+            choices: [
+              { english: "Process View.", arabic: "منظور العمليات (Process View)", isCorrect: true },
+              { english: "Logical View.", arabic: "منظور الكلاسات والأوبجكتس المنطقية", isCorrect: false },
+              { english: "Physical View.", arabic: "منظور الهاردوير والسيرفرات", isCorrect: false }
+            ],
+            hint: "أبو عيد: وقت التشغيل والـ processes وتواصلها بنسميها Process View!",
+            feedback: "ممتاز! الـ Process View تعتني بسلوك النظام وحركته أثناء التشغيل."
+          },
+          // Step 5: Q4 (Repository single point of failure)
+          {
+            type: "question",
+            text: "ما هو العيب المشترك والقاتل لنمط المستودع المركزي (Repository Pattern)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q4: What is a major weakness of the centralized Repository pattern?</span>",
+            choices: [
+              { english: "Single point of failure and potential performance bottlenecks.", arabic: "نقطة فشل واحدة للنظام بأكمله واختناق في الأداء", isCorrect: true },
+              { english: "It is impossible to share data between subsystems.", arabic: "مستحيل مشاركة البيانات بين الأنظمة الفرعية", isCorrect: false },
+              { english: "It requires complex decentralized replication protocols.", arabic: "يتطلب بروتوكولات نسخ متزامنة معقدة للغاية", isCorrect: false }
+            ],
+            hint: "أبو عيد: لو المستودع المركزي خرب السستم كله بيتعطل، يعني نقطة فشل وحيدة واختناق أداء!",
+            feedback: "صح! الـ single point of failure هي أكبر مشاكل الـ Repository."
+          },
+          // Step 6: Q5 (Pipe-and-Filter vs Layered info system layers)
+          {
+            type: "question",
+            text: "ما هي الطبقات الأربع لأنظمة المعلومات (Information Systems) بالترتيب الصحيح من الأعلى للأسفل؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q5: What is the correct top-to-bottom sequence of the 4 layers in an information system?</span>",
+            choices: [
+              { english: "User Interface, User Interface Management, Core Business Logic, System Support.", arabic: "واجهة المستخدم -> إدارة الواجهة -> منطق العمل الرئيسي -> دعم النظام (OS/DB)", isCorrect: true },
+              { english: "System Support, Business Logic, UI Management, User Interface.", arabic: "دعم النظام -> منطق العمل -> إدارة الواجهة -> واجهة المستخدم", isCorrect: false },
+              { english: "Database, Application, UI, and Presentation.", arabic: "قاعدة البيانات -> التطبيق -> الواجهة -> العرض", isCorrect: false }
+            ],
+            hint: "أبو عيد: واجهة المستخدم فوق خالص (UI) ودعم النظام وقاعدة البيانات تحت خالص (System Support)!",
+            feedback: "صح! الترتيب هو UI ثم UI Management ثم Core Business Logic ثم System Support."
+          },
+          // Step 7: Q6 (4 Costs of software reuse)
+          {
+            type: "question",
+            text: "ما هي التكاليف الأربعة المرتبطة بعملية إعادة استخدام السوفتوير (Software Reuse)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q6: What are the 4 typical costs incurred during software reuse?</span>",
+            choices: [
+              { english: "Search & evaluation, Purchase, Adaptation, and Integration costs.", arabic: "تكلفة البحث والتقييم، الشراء، التكييف، وتكامل المكونات", isCorrect: true },
+              { english: "Coding, Debugging, Deployment, and Marketing costs.", arabic: "تكلفة كتابة الكود، التتبع، النشر، والتسويق", isCorrect: false },
+              { english: "License check, Server cost, Encryption, and Analytics costs.", arabic: "تكلفة فحص التراخيص، السيرفرات، التشفير، والتحليلات", isCorrect: false }
+            ],
+            hint: "أبو عيد: عشان تستخدم كود جاهز بتدفع وقت تدور عليه (Search)، وتشتريه (Purchase)، وتعدله ليناسبك (Adapt)، وتركبه مع كودك (Integrate)!",
+            feedback: "مظبوط جداً! دي التكاليف الأربعة لإعادة الاستخدام."
+          },
+          // Step 8: Q7 (CM Core activities)
+          {
+            type: "question",
+            text: "ما هي الأنشطة الثلاثة الأساسية لإدارة التكوين والتهيئة (Configuration Management)؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q7: What are the three core activities of Configuration Management (CM)?</span>",
+            choices: [
+              { english: "Version management, System integration, and Problem tracking.", arabic: "إدارة النسخ (Versions)، تكامل النظام (Builds)، وتتبع المشاكل (Problems)", isCorrect: true },
+              { english: "Coding, Testing, and Deployment.", arabic: "الكتابة، الاختبار، والنشر", isCorrect: false },
+              { english: "Database setup, Server configuration, and Firewall management.", arabic: "إعداد قاعدة البيانات، تهيئة السيرفر، وحماية جدار الحماية", isCorrect: false }
+            ],
+            hint: "أبو عيد: تتبع نسخ الملفات، وبناء السيستم، وتتبع البلاغات وحل المشاكل!",
+            feedback: "برافو! تتبع النسخ والتكامل وتتبع المشاكل هي الركائز الثلاث للـ CM."
+          },
+          // Step 9: Q8 (Open-source Licenses)
+          {
+            type: "question",
+            text: "أي رخصة مفتوحة المصدر تجبرك على فتح كود برنامجك الجديد بالكامل للعامة إذا استخدمت أو دمجت كوداً مرخصاً بها؟<br><br><span style='color:var(--gold-soft); font-family:var(--font-english); font-weight:700; font-size:1.1rem;'>Q8: Which open-source license is reciprocal (viral) and forces you to open-source your entire application if you use its code?</span>",
+            choices: [
+              { english: "GNU GPL (General Public License).", arabic: "رخصة GNU GPL التبادلية الفيروسية", isCorrect: true },
+              { english: "GNU LGPL (Lesser GPL).", arabic: "رخصة GNU LGPL التي تسمح بالربط", isCorrect: false },
+              { english: "BSD / MIT license.", arabic: "رخصة BSD / MIT المتساهلة", isCorrect: false }
+            ],
+            hint: "أبو عيد: الرخصة التبادلية (Reciprocal) الشهيرة هي الـ GPL، بتعدي الكود بتاعك وتخليه مفتوح غصب عنك!",
+            feedback: "عبقري يا بطل! كدة أنت خلصت المذاكرة وحليت كل أسئلة وتحديات المحاضرة التاسعة بنجاح ساحق ومستعد للفاينال!"
+          }
+        ]
       }
     };
 
@@ -2551,6 +2994,20 @@
       }
       if (Player.completedQuests.includes(7)) {
         const badge = document.getElementById('q7-badge');
+        if (badge) {
+          badge.textContent = 'تم الإنجاز 🏆';
+          badge.className = 'quest-badge conquered';
+        }
+      }
+      if (Player.completedQuests.includes(8)) {
+        const badge = document.getElementById('q8-badge');
+        if (badge) {
+          badge.textContent = 'تم الإنجاز 🏆';
+          badge.className = 'quest-badge conquered';
+        }
+      }
+      if (Player.completedQuests.includes(9)) {
+        const badge = document.getElementById('q9-badge');
         if (badge) {
           badge.textContent = 'تم الإنجاز 🏆';
           badge.className = 'quest-badge conquered';

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE 302 — المراجعة النهائية الشاملة | All Lectures</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070a; --panel:rgba(255,255,255,.025); --border:rgba(232,184,90,.18);
+  --ink:#e9e6df; --muted:#9b968a; --gold:#e8b85a; --gold2:#f4d28a;
+  --green:#7dd87d; --red:#ff7b7b; --blue:#7bb8ff; --purple:#c79bff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif;line-height:1.85;
+  background-image:radial-gradient(900px 500px at 50% -10%,rgba(232,184,90,.07),transparent 55%);}
+.en{direction:ltr;display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.92em;color:var(--gold2)}
+b.en,strong .en{color:var(--gold2)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 80px}
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(7,7,10,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);padding:10px 14px;display:flex;gap:7px;overflow-x:auto;white-space:nowrap}
+nav a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:700;padding:5px 12px;
+  border:1px solid transparent;border-radius:20px;transition:.2s}
+nav a:hover,nav a.gold{color:var(--gold);border-color:var(--border)}
+nav a.gold{background:rgba(232,184,90,.08)}
+/* HEADER */
+header{text-align:center;padding:55px 10px 30px}
+.kick{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:.78rem;letter-spacing:4px}
+h1{font-family:'Cairo',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:900;margin:10px 0 6px}
+h1 span{color:var(--gold)}
+.sub{color:var(--muted);max-width:640px;margin:0 auto;font-size:1.02rem}
+/* SECTIONS */
+section{margin-top:55px}
+.lec-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.lec-num{font-family:'JetBrains Mono',monospace;background:rgba(232,184,90,.12);color:var(--gold);
+  border:1px solid var(--border);border-radius:10px;padding:6px 13px;font-size:1rem;font-weight:700;flex-shrink:0}
+.lec-head h2{font-family:'Cairo',sans-serif;font-size:clamp(1.2rem,3vw,1.7rem);font-weight:900}
+.lec-head small{display:block;color:var(--muted);font-weight:400;font-size:.85rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+.card h3{color:var(--gold);font-size:1.05rem;margin-bottom:8px;font-family:'Cairo',sans-serif}
+.card ul{padding-right:20px}
+.card li{margin-bottom:7px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95rem}
+th{color:var(--gold);text-align:right;border-bottom:1px solid var(--border);padding:8px 10px;font-family:'Cairo',sans-serif}
+td{border-bottom:1px solid rgba(255,255,255,.06);padding:8px 10px;vertical-align:top}
+tr:last-child td{border-bottom:none}
+/* TAGS */
+.trap{background:rgba(255,123,123,.07);border:1px solid rgba(255,123,123,.3);border-radius:12px;padding:13px 16px;margin:12px 0}
+.trap::before{content:"⚠️ فخ امتحان — ";color:var(--red);font-weight:800}
+.mem{background:rgba(125,216,125,.06);border:1px solid rgba(125,216,125,.28);border-radius:12px;padding:13px 16px;margin:12px 0}
+.mem::before{content:"🔑 احفظ — ";color:var(--green);font-weight:800}
+.draw-flag{display:inline-block;background:rgba(123,184,255,.12);color:var(--blue);border:1px solid rgba(123,184,255,.3);
+  border-radius:20px;padding:1px 12px;font-size:.8rem;font-weight:700;margin-right:6px}
+/* DRAWINGS */
+.dr{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:22px}
+.dr h3{color:var(--blue);font-family:'Cairo',sans-serif;font-size:1.1rem;margin-bottom:4px}
+.dr .ask{color:var(--muted);font-size:.88rem;margin-bottom:10px}
+.dr svg{width:100%;height:auto;background:rgba(0,0,0,.35);border-radius:10px;border:1px solid rgba(255,255,255,.07);margin:8px 0;direction:ltr}
+.steps{padding-right:20px;font-size:.95rem}
+.steps li{margin-bottom:5px}
+svg text{font-family:'JetBrains Mono',monospace}
+.bx{fill:rgba(232,184,90,.10);stroke:#e8b85a;stroke-width:1.3;rx:7}
+.bx2{fill:rgba(123,184,255,.10);stroke:#7bb8ff;stroke-width:1.3;rx:7}
+.bx3{fill:rgba(125,216,125,.10);stroke:#7dd87d;stroke-width:1.3;rx:7}
+.tx{fill:#e9e6df;font-size:12px;text-anchor:middle}
+.tg{fill:#e8b85a;font-size:12px;text-anchor:middle;font-weight:bold}
+.ts{fill:#9b968a;font-size:10px;text-anchor:middle}
+.ar{stroke:#9b968a;stroke-width:1.4;fill:none;marker-end:url(#ah)}
+/* CRAM */
+.cram{background:linear-gradient(160deg,rgba(232,184,90,.08),rgba(232,184,90,.02));border:1px solid var(--border);border-radius:16px;padding:22px}
+.cram ol{padding-right:22px}
+.cram li{margin-bottom:9px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.up{position:fixed;bottom:18px;left:18px;background:rgba(232,184,90,.15);border:1px solid var(--border);color:var(--gold);
+  border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.2rem;z-index:60}
+footer{text-align:center;color:var(--muted);margin-top:70px;font-size:.9rem}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="gold">🏠</a>
+  <a href="#help">📖 افهم السؤال</a>
+  <a href="#l1">Lec 1</a><a href="#l2">Lec 2</a><a href="#l3">Lec 3</a>
+  <a href="#l4">Lec 4</a><a href="#l5">Lec 5</a><a href="#l6">Lec 6</a>
+  <a href="#l7">Lec 7</a><a href="#l8">Lec 8</a><a href="#l9">Lec 9</a>
+  <a href="#draw" class="gold">✏️ الرسومات</a>
+  <a href="#cram" class="gold">⚡ آخر 30 دقيقة</a>
+</nav>
+
+<div class="wrap">
+<header>
+  <span class="kick">CSE 302 · FINAL EXAM · ALL-IN-ONE</span>
+  <h1>المراجعة النهائية <span>الشاملة</span></h1>
+  <p class="sub">يا أبو 👋 كل المحاضرات التسعة في صفحة واحدة: المصطلح بالإنجليزي زي ما هييجي في الورقة + الشرح بالعربي + كل رسمة ممكن الدكتور يطلبها. اقرأها بالترتيب، وقبل ما تنزل القاعة افتح قسم ⚡ آخر 30 دقيقة. ربنا يوفقك 🤍</p>
+</header>
+
+<!-- ===== EXAM ENGLISH HELP ===== -->
+<section id="help">
+  <div class="lec-head"><span class="lec-num">📖</span><h2>افهم سؤال الامتحان <small>كلمات الأسئلة بالإنجليزي ومعناها — عشان متتلخبطش في القاعة</small></h2></div>
+  <div class="card">
+  <table>
+    <tr><th>لو السؤال فيه…</th><th>معناها</th><th>تعمل إيه؟</th></tr>
+    <tr><td><span class="en">Define / What is…?</span></td><td>عرّف</td><td>اكتب التعريف القصير المحفوظ</td></tr>
+    <tr><td><span class="en">List / Mention / Enumerate</span></td><td>اذكر / عدّد</td><td>اكتب النقاط في سطور — من غير شرح طويل</td></tr>
+    <tr><td><span class="en">Explain / Describe</span></td><td>اشرح / صِف</td><td>اكتب النقاط + جملة شرح لكل نقطة</td></tr>
+    <tr><td><span class="en">Compare / Differentiate between</span></td><td>قارن / الفرق بين</td><td>اعمل جدول بعمودين</td></tr>
+    <tr><td><span class="en">Draw / Sketch / Illustrate</span></td><td>ارسم</td><td>روح لقسم ✏️ الرسومات تحت — كلها هناك</td></tr>
+    <tr><td><span class="en">Give an example</span></td><td>اذكر مثال</td><td>مثال واحد كفاية (insulin pump, ATM, Mentcare…)</td></tr>
+    <tr><td><span class="en">Advantages / Disadvantages</span></td><td>مزايا / عيوب</td><td>نقطتين-تلاتة لكل واحدة</td></tr>
+    <tr><td><span class="en">Which is NOT…?</span></td><td>أنهي إجابة <b>مش</b> صح؟</td><td>⚠️ خد بالك — بيدوروا على الغلط مش الصح!</td></tr>
+    <tr><td><span class="en">State whether True or False</span></td><td>صح ولا غلط</td><td>اقرأ الجملة مرتين قبل ما تجاوب</td></tr>
+    <tr><td><span class="en">Justify / Why?</span></td><td>علّل / ليه؟</td><td>اكتب السبب بجملة "because…"</td></tr>
+  </table>
+  <div class="mem">جمل جاهزة تبدأ بيها أي إجابة: <span class="en">"… is defined as …"</span> (يُعرَّف بأنه) · <span class="en">"It consists of …"</span> (يتكون من) · <span class="en">"The main advantage is …"</span> (الميزة الأساسية) · <span class="en">"For example, …"</span> (على سبيل المثال)</div>
+  </div>
+</section>
+
+<!-- ===== LEC 1 ===== -->
+<section id="l1">
+  <div class="lec-head"><span class="lec-num">Lec 1</span><h2>أساسيات هندسة البرمجيات <small>What is Software & SE · Attributes · Crises · Application Types — Sommerville Ch.1</small></h2></div>
+
+  <div class="card"><h3>التعريفات الأساسية</h3>
+  <ul>
+    <li><b><span class="en">Software</span></b> = <span class="en">Programs + Data + Documentation</span> — السوفتوير مش بس الكود! برامج + بيانات + توثيق. والتوثيق نوعين: <span class="en">System documentation</span> (للمطورين) و<span class="en">User documentation</span> (للمستخدم). <span class="draw-flag">✏️ ليها رسمة</span></li>
+    <li><b><span class="en">Software Engineering</span></b> = <span class="en">an engineering discipline concerned with ALL aspects of software production</span> — تخصص هندسي بيهتم بكل جوانب إنتاج السوفتوير من الفكرة للصيانة.</li>
+    <li><b>أنشطة الـ SE الأربعة:</b> <span class="en">Specification → Development → Validation → Evolution</span> (احفظها S-D-V-E).</li>
+    <li><b><span class="en">SE vs Computer Science:</span></b> الـ CS = نظريات وأساسيات. الـ SE = التطبيق العملي لبناء وتسليم سوفتوير مفيد.</li>
+    <li><b><span class="en">SE vs System Engineering:</span></b> هندسة النظم بتشمل النظام كله (hardware + software + process)، والـ SE جزء منها.</li>
+    <li><b>التكاليف:</b> ≈ <span class="en">60% development + 40% testing</span>، وفي الأنظمة المخصصة تكلفة الـ <span class="en">evolution</span> بتعدي تكلفة التطوير.</li>
+  </ul></div>
+
+  <div class="card"><h3>صفات السوفتوير الجيد — <span class="en">Attributes of Good Software</span></h3>
+  <ul>
+    <li><b><span class="en">Maintainability</span></b> — قابل للتعديل والتطوير مع تغير احتياجات العميل.</li>
+    <li><b><span class="en">Dependability & Security</span></b> — موثوق وآمن: ميسببش ضرر لو فشل، ومحمي من المستخدمين الخبيثين.</li>
+    <li><b><span class="en">Efficiency</span></b> — مايهدرش موارد: سرعة استجابة، معالجة، ذاكرة.</li>
+    <li><b><span class="en">Acceptability</span></b> — مقبول للمستخدمين: مفهوم وقابل للاستخدام ومتوافق مع أنظمتهم.</li>
+  </ul>
+  <div class="mem">احفظهم بكلمة <span class="en">MADE</span>: Maintainable · Acceptable · Dependable · Efficient</div></div>
+
+  <div class="card"><h3>مثلث التصميم + أزمات السوفتوير</h3>
+  <ul>
+    <li><b>الـ 3 اهتمامات الأساسية في التصميم:</b> <span class="en">Time · Cost · Quality</span> — مثلث: حسّن اتنين، التالت هيتأثر. <span class="draw-flag">✏️ ليها رسمة</span></li>
+    <li><b><span class="en">Software Crisis</span></b> = مشاريع <span class="en">Late, Over budget, Unreliable, Hard to maintain, Performed poorly</span>.</li>
+  </ul>
+  <table>
+    <tr><th>الأزمة</th><th>الأرقام اللي لازم تحفظها</th></tr>
+    <tr><td><span class="en">Scotland flights 2009</span> ✈️</td><td>عطل في نظام مراقبة جوية → تأخير رحلات، رجعوا للـ <span class="en">backup</span>، اتصلح في ساعات</td></tr>
+    <tr><td><span class="en">Ariane 5</span> 🚀</td><td>10 سنين و7 مليار دولار → انفجر بعد <b>36.7 ثانية</b> بسبب <span class="en">overflow error</span> (رقم 64-bit في مساحة 16-bit)</td></tr>
+    <tr><td><span class="en">London Ambulance 1992</span> 🚑</td><td>أكبر خدمة إسعاف في العالم → <span class="en">overload</span>، مقدرش يتابع العربيات → <b>46 وفاة</b></td></tr>
+  </table></div>
+
+  <div class="card"><h3>أنواع التطبيقات الـ 8 — <span class="en">Application Types</span></h3>
+  <ul>
+    <li><span class="en">Stand-alone applications</span> — على جهاز واحد من غير نت (photo editor).</li>
+    <li><span class="en">Interactive transaction-based</span> — على سيرفر بعيد والمستخدم بيوصله (e-commerce).</li>
+    <li><span class="en">Embedded control systems</span> — بتتحكم في أجهزة. <b>الأكثر انتشاراً</b> (غسالة).</li>
+    <li><span class="en">Batch processing systems</span> — دفعات كبيرة من البيانات (مرتبات شهرية).</li>
+    <li><span class="en">Entertainment systems</span> — ترفيه (ألعاب).</li>
+    <li><span class="en">Modeling & simulation</span> — محاكاة عمليات فيزيائية (طقس).</li>
+    <li><span class="en">Data collection systems</span> — تجمع بيانات بـ <span class="en">sensors</span> (محطة طقس).</li>
+    <li><span class="en">Systems of systems</span> — أنظمة مكونة من أنظمة تانية.</li>
+  </ul>
+  <div class="trap">مفيش "أفضل طريقة واحدة" لكل الأنظمة — ده اسمه <span class="en">Software Engineering Diversity</span>. ولو سُئلت "أكتر نوع منتشر؟" → <span class="en">Embedded</span>.</div></div>
+</section>
+
+<!-- ===== LEC 2 ===== -->
+<section id="l2">
+  <div class="lec-head"><span class="lec-num">Lec 2</span><h2>السوفتوير الجيد · الأخلاقيات · دراسات الحالة <small>Good Software (Op/Tr/Mt) · SE Ethics · 4 Case Studies</small></h2></div>
+
+  <div class="card"><h3>خصائص السوفتوير الجيد — 3 مستويات</h3>
+  <table>
+    <tr><th>المستوى</th><th>المعنى</th><th>أمثلة الكلمات</th></tr>
+    <tr><td><b><span class="en">Operational</span></b></td><td>شغال كويس <b>دلوقتي</b></td><td><span class="en">Usability, Correctness, Efficiency, Security, Safety, Dependability</span></td></tr>
+    <tr><td><b><span class="en">Transitional</span></b></td><td>ينتقل بين <b>المنصات</b></td><td><span class="en">Portability, Interoperability, Reusability, Adaptability</span></td></tr>
+    <tr><td><b><span class="en">Maintenance</span></b></td><td>يتصان ويكبر <b>مع الوقت</b></td><td><span class="en">Modularity, Maintainability, Flexibility, Scalability</span></td></tr>
+  </table></div>
+
+  <div class="card"><h3>أخلاقيات هندسة البرمجيات — <span class="en">ACM/IEEE Code of Ethics</span></h3>
+  <ul>
+    <li><b>المبادئ الـ 8:</b> <span class="en">Public · Client & Employer · Product · Judgment · Management · Profession · Colleagues · Self</span></li>
+    <li><b>قضايا المسؤولية المهنية:</b> <span class="en">Confidentiality</span> (السرية حتى من غير عقد) · <span class="en">Competence</span> (متقبلش شغل فوق قدرتك) · <span class="en">Intellectual Property</span> (حقوق الملكية) · <span class="en">Computer Misuse</span> (إساءة استخدام أجهزة الغير).</li>
+  </ul>
+  <div class="trap">لو السؤال "عند تعارض المصالح، الأولوية لمين؟" → <span class="en">Public health, safety and welfare</span> — المصلحة العامة فوق الكل. ولو سأل "أنهي مش من المبادئ الـ 8؟" → <span class="en">Organizational</span> و<span class="en">Personal</span> مش منهم.</div></div>
+
+  <div class="card"><h3>دراسات الحالة الأربعة — <span class="en">The 4 Case Studies</span></h3>
+  <table>
+    <tr><th>النظام</th><th>نوعه (إجابة جاهزة)</th><th>أهم نقطة</th></tr>
+    <tr><td>💉 <span class="en">Insulin Pump</span></td><td><span class="en">Embedded / Medical device — safety-critical</span></td><td>يقرأ السكر بـ <span class="en">sensor</span> ويحقن الجرعة بـ <span class="en">micro-pump</span>. خطأ = غيبوبة أو وفاة <span class="draw-flag">✏️ ليها رسمة</span></td></tr>
+    <tr><td>🏥 <span class="en">MHC-PMS / Mentcare</span></td><td><span class="en">Medical information system</span></td><td>قاعدة بيانات مرضى نفسيين مركزية. أهم مخاوفه: <span class="en">Privacy + Safety</span></td></tr>
+    <tr><td>🌦️ <span class="en">Wilderness Weather Station</span></td><td><span class="en">Data collection / environmental monitoring</span></td><td>محطات في أماكن نائية، 3 أنظمة: جمع البيانات + الأرشفة + الصيانة بالقمر الصناعي</td></tr>
+    <tr><td>📚 <span class="en">iLearn</span></td><td><span class="en">Educational, service-oriented</span></td><td>3 طبقات خدمات: <span class="en">Configuration / Application / Utility services</span></td></tr>
+  </table></div>
+</section>
+
+<!-- ===== LEC 3 ===== -->
+<section id="l3">
+  <div class="lec-head"><span class="lec-num">Lec 3</span><h2>نماذج عمليات البرمجيات <small>Process Models: Waterfall · Evolutionary · Reuse · Spiral · V-Model · RUP · Testing Stages</small></h2></div>
+
+  <div class="card"><h3>الأساسيات</h3>
+  <ul>
+    <li><b><span class="en">Software Process</span></b> = مجموعة أنشطة منظمة مطلوبة لتطوير نظام برمجي. <b><span class="en">Process Model</span></b> = تمثيل مجرد للعملية من منظور معين.</li>
+    <li><b><span class="en">Plan-driven</span></b> = كل حاجة مخططة مسبقاً. <b><span class="en">Agile</span></b> = تخطيط تدريجي. معظم المشاريع الحقيقية <b>مزيج من الاتنين</b>.</li>
+    <li><b>النماذج العامة الثلاثة (<span class="en">3 Generic Models</span>):</b> ① <span class="en">Waterfall</span> ② <span class="en">Evolutionary Development</span> ③ <span class="en">Reuse-oriented (Integration & Configuration)</span>.</li>
+  </ul></div>
+
+  <div class="card"><h3>النماذج واحد واحد</h3>
+  <table>
+    <tr><th>النموذج</th><th>فكرته + مراحله</th><th>كلمته السحرية</th></tr>
+    <tr><td>🌊 <b><span class="en">Waterfall</span></b> <span class="draw-flag">✏️</span></td><td>خطي تسلسلي — كل مرحلة تخلص قبل اللي بعدها: <span class="en">Requirements → Design → Implementation → Testing → Maintenance</span></td><td><span class="en">linear, sequential</span></td></tr>
+    <tr><td>🧬 <b><span class="en">Evolutionary</span></b></td><td>نوعان: <span class="en">Exploratory</span> (يبدأ من متطلبات <b>مفهومة</b>) و<span class="en">Throw-away prototyping</span> (يبدأ من متطلبات <b>غامضة</b> والـ prototype بيترمي)</td><td><span class="en">interleaved activities</span></td></tr>
+    <tr><td>♻️ <b><span class="en">Reuse-oriented</span></b></td><td><span class="en">Requirements Spec → Component Analysis → Requirements Modification → Design with Reuse → Development & Integration → Validation</span>. أنواع المكونات: <span class="en">Web services · Object collections · Stand-alone systems</span></td><td><span class="en">existing components</span></td></tr>
+    <tr><td>🌀 <b><span class="en">Spiral</span></b> (Boehm 1988) <span class="draw-flag">✏️</span></td><td>حلقات — كل لفة 4 قطاعات: <span class="en">① Objective Setting ② Risk Assessment & Reduction ③ Development & Validation (Engineering) ④ Planning</span></td><td><span class="en">risk-driven</span></td></tr>
+    <tr><td>✅ <b><span class="en">V-Model</span></b> <span class="draw-flag">✏️</span></td><td>لكل مرحلة تطوير (يسار) مرحلة اختبار مقابلة (يمين) — اكتشاف مبكر للأخطاء</td><td><span class="en">verification per phase</span></td></tr>
+    <tr><td>📐 <b><span class="en">Prototype</span></b></td><td>نسخة مبسطة → عرض → feedback → تعديل. يقلل التكلفة والمخاطر</td><td><span class="en">early feedback</span></td></tr>
+    <tr><td>🏛️ <b><span class="en">RUP</span></b></td><td>4 مراحل: <span class="en">Inception → Elaboration → Construction → Transition</span> (احفظ I-E-C-T)</td><td><span class="en">derived from UML</span></td></tr>
+  </table>
+  <div class="trap">أشهر 4 فخاخ في شيت 3: ① <span class="en">"NOT a Waterfall phase?" → Iteration</span> (مفيش تكرار في الشلال). ② <span class="en">"NOT an Agile principle?" → Comprehensive documentation</span>. ③ <span class="en">"Spiral: prototypes built in which phase?" → Engineering</span> مش Risk Analysis! ④ <span class="en">"NOT a V-Model characteristic?" → "linear sequential like Waterfall"</span>.</div></div>
+
+  <div class="card"><h3>الأنشطة + الاختبار + التسليم التدريجي</h3>
+  <ul>
+    <li><b>الـ 4 <span class="en">Process Activities</span>:</b> <span class="en">Specification → Design & Implementation → Validation → Evolution</span>.</li>
+    <li><b>الـ <span class="en">Requirements Engineering</span> جوه الـ Specification:</b> <span class="en">Feasibility Study → Elicitation & Analysis → Specification → Validation</span>.</li>
+    <li><b>مراحل الاختبار الخمسة (بالترتيب):</b> <span class="en">Unit → Module → Sub-system → System → Acceptance</span>. الـ Sub-system تركيزه على <span class="en">interface testing</span>، والـ Acceptance بـ <span class="en">real customer data</span>.</li>
+    <li><b><span class="en">Incremental development</span>:</b> تسليم على دفعات — الأولوية العالية الأول، مخاطر أقل، لكن صعب مع العقود الحكومية اللي عايزة spec كامل.</li>
+    <li><b><span class="en">CASE tools</span></b> = برمجيات بتدعم تطوير البرمجيات. 3 تصنيفات: <span class="en">Functional · Process · Integration</span>.</li>
+  </ul>
+  <div class="mem">صفات العملية الفعالة: <span class="en">Flexibility · Predictability · Adaptability</span> — ومش منهم أبداً <span class="en">Rigidity</span> (الجمود).</div></div>
+</section>
+
+<!-- ===== LEC 4 ===== -->
+<section id="l4">
+  <div class="lec-head"><span class="lec-num">Lec 4</span><h2>الأجايل و الـ XP <small>Agile Manifesto · 5 Principles · Extreme Programming · TDD · Pair Programming</small></h2></div>
+
+  <div class="card"><h3>ليه Agile؟ + الـ Manifesto</h3>
+  <ul>
+    <li>ظهر في <b><span class="en">late 1990s</span></b> عشان يقلل وقت التسليم جذرياً — السوق سريع التغير ومستحيل تثبت المتطلبات.</li>
+    <li>في Agile الأنشطة <b><span class="en">inter-leaved</span></b> (متشابكة): التحديد والتصميم والتنفيذ والاختبار مع بعض، والمخرجات بتتحدد بالـ <span class="en">negotiation</span> أثناء التطوير.</li>
+  </ul>
+  <table>
+    <tr><th>بنقدّر أكتر ✅</th><th>على حساب ⬇️</th></tr>
+    <tr><td><span class="en">Individuals & interactions</span> (الناس والتواصل)</td><td><span class="en">Processes and tools</span></td></tr>
+    <tr><td><span class="en">Working software</span> (برنامج شغال)</td><td><span class="en">Comprehensive documentation</span> ⚠️</td></tr>
+    <tr><td><span class="en">Customer collaboration</span> (التعاون مع العميل)</td><td><span class="en">Contract negotiation</span></td></tr>
+    <tr><td><span class="en">Responding to change</span> (التكيف مع التغيير)</td><td><span class="en">Following a plan</span></td></tr>
+  </table>
+  <div class="mem">المبادئ الخمسة (CIPEM): <span class="en">Customer involvement · Incremental delivery · People not process · Embrace change · Maintain simplicity</span></div></div>
+
+  <div class="card"><h3>الـ XP — <span class="en">Extreme Programming</span></h3>
+  <ul>
+    <li>أكتر منهج Agile تحديداً للممارسات الهندسية. نسخ جديدة <b>عدة مرات في اليوم</b>، تسليم للعميل كل <b>أسبوعين</b>، وكل الاختبارات لازم تنجح لكل build.</li>
+    <li><b>الـ 10 ممارسات:</b> <span class="en">Incremental planning · Small releases · Simple design · Test-first development · Refactoring · Pair programming · Collective ownership · Continuous integration · Sustainable pace · On-site customer</span>.</li>
+    <li><b><span class="en">User stories</span></b> — المتطلبات بتتكتب على كروت كقصص، والفريق بيكسرها لـ <span class="en">tasks</span> للتقدير.</li>
+    <li><b><span class="en">Refactoring</span></b> = تحسين الكود باستمرار <b>من غير تغيير وظيفته</b> — الـ XP بيرفض "التصميم للتغيير المستقبلي" لأن التغيير مش متوقع بدقة.</li>
+    <li><b><span class="en">Test-first / TDD</span></b> = اكتب الاختبار <b>قبل</b> الكود — بيوضح المتطلبات، والاختبارات برامج قابلة للتشغيل التلقائي. مشاكله: المبرمجين بيفضلوا البرمجة، صعوبة اختبار الواجهات، صعوبة الحكم على الاكتمال.</li>
+    <li><b><span class="en">Pair programming</span></b> = اتنين على جهاز واحد — مراجعة مستمرة، معرفة مشتركة، و<b>مش</b> بالضرورة أقل كفاءة (فيه دليل إنه أكفأ من اتنين منفصلين).</li>
+  </ul>
+  <div class="trap"><span class="en">Sustainable pace</span> يعني: ممنوع الـ <span class="en">overtime</span> الكتير لأنه بيقلل جودة الكود والإنتاجية — مش "اشتغل أكتر".</div></div>
+</section>
+
+<!-- ===== LEC 5 ===== -->
+<section id="l5">
+  <div class="lec-head"><span class="lec-num">Lec 5</span><h2>إدارة مشاريع الأجايل — Scrum <small>Scrum Phases · Terminology · Sprint Cycle · Scaling · Multi-team Scrum</small></h2></div>
+
+  <div class="card"><h3>Scrum الأساسي</h3>
+  <ul>
+    <li><b><span class="en">Scrum</span></b> = منهج Agile لإدارة الـ <span class="en">iterative development</span> (مش ممارسات محددة زي XP). عملية <span class="en">empirical</span>: ملاحظة + تجربة.</li>
+    <li><b>3 أعمدة:</b> <span class="en">Transparency · Inspection · Adaptation</span>.</li>
+    <li><b>3 مراحل:</b> <span class="en">Outline Planning → Sprint Cycles → Closure</span>.</li>
+    <li><b>الأساس اللي بيربط الفريق:</b> <span class="en">TRUST</span> (الثقة).</li>
+    <li><b>5 قيم (C-F-C-R-O):</b> <span class="en">Courage · Focus · Commitment · Respect · Openness</span>.</li>
+  </ul></div>
+
+  <div class="card"><h3>مصطلحات Scrum الثمانية — كلها بتيجي</h3>
+  <table>
+    <tr><th>المصطلح</th><th>المعنى</th></tr>
+    <tr><td><span class="en">Development Team</span></td><td>فريق <span class="en">self-organizing</span> — <b>أقصى حد 7 أشخاص</b></td></tr>
+    <tr><td><span class="en">Product Backlog</span></td><td>قائمة المهام (to-do list): features، متطلبات، user stories</td></tr>
+    <tr><td><span class="en">Product Owner</span></td><td>بيحدد الـ features ويرتب أولوياتها — ممكن يكون العميل</td></tr>
+    <tr><td><span class="en">ScrumMaster</span></td><td>بيضمن تطبيق Scrum ويحمي الفريق — <b>مش</b> project manager! ⚠️</td></tr>
+    <tr><td><span class="en">Sprint</span></td><td>دورة تطوير ثابتة الطول — <b>2 إلى 4 أسابيع</b></td></tr>
+    <tr><td><span class="en">Velocity</span></td><td>كمية الـ backlog اللي الفريق بيغطيها في sprint واحد — مقياس إنتاجية</td></tr>
+    <tr><td><span class="en">Daily Scrum</span></td><td>اجتماع يومي قصير <b>وجهاً لوجه</b>: عملت إيه؟ المشاكل؟ خطة بكرة؟</td></tr>
+    <tr><td><span class="en">Shippable Increment</span></td><td>الزيادة المسلمة من كل sprint — جاهزة، مش محتاجة اختبار إضافي</td></tr>
+  </table>
+  <div class="mem">دورة الـ Sprint <span class="draw-flag">✏️ ليها رسمة</span>: <span class="en">Review Backlog → Select items & Plan → Sprint (2-4w, team isolated, all communication via ScrumMaster) → Review Sprint → Shippable Software</span> → وترجع تاني.</div></div>
+
+  <div class="card"><h3>التوسع والمشاكل العملية</h3>
+  <ul>
+    <li><b><span class="en">Scaling UP</span></b> = استخدام Agile لأنظمة كبيرة. <b><span class="en">Scaling OUT</span></b> = إدخال Agile في منظمة كبيرة تقليدية.</li>
+    <li><b>مشاكل Agile العملية الـ 3:</b> ① الـ <span class="en">informality</span> بتتعارض مع العقود ② مناسب للتطوير الجديد مش الـ <span class="en">maintenance</span> ③ اتصمم لفرق صغيرة في مكان واحد مش <span class="en">distributed teams</span>.</li>
+    <li><b>مشاكل الصيانة الـ 3:</b> <span class="en">Lack of documentation · Keeping customers involved · Team continuity</span>.</li>
+    <li><b><span class="en">Brownfield</span></b> = تطوير سوفتوير جديد في وجود أنظمة <span class="en">legacy</span> قديمة (عكس <span class="en">Greenfield</span>).</li>
+    <li><b><span class="en">Multi-team Scrum</span> — 4 آليات:</b> <span class="en">Role replication · Product architects · Release alignment · Scrum of Scrums</span>.</li>
+  </ul></div>
+</section>
+
+<!-- ===== LEC 6 ===== -->
+<section id="l6">
+  <div class="lec-head"><span class="lec-num">Lec 6</span><h2>هندسة المتطلبات <small>Requirements Engineering: Types · NFR Metrics · SRS Document · Insulin Pump Spec</small></h2></div>
+
+  <div class="card"><h3>مستويات وأنواع المتطلبات</h3>
+  <ul>
+    <li><b><span class="en">User requirements</span></b> = لغة طبيعية + رسوم بسيطة، للعميل، مستوى عالي (abstract). <b><span class="en">System requirements</span></b> = وثيقة منظمة مفصلة، للمطورين، ممكن تكون جزء من عقد.</li>
+    <li><b>الأنواع الثلاثة:</b> ① <span class="en">Functional</span> — النظام يعمل إيه (خدمات ووظائف). ② <span class="en">Non-functional</span> — قيود على الكيفية (سرعة، أمان، توافر). ③ <span class="en">Domain</span> — قيود من مجال التشغيل (قوانين طبية/مالية).</li>
+    <li><b>تصنيف الـ NFR:</b> <span class="en">Product</span> (سلوك المنتج: متاح من 08:30–17:30، downtime ≤ 5 ثواني) · <span class="en">Organizational</span> (سياسات المؤسسة: الدخول بكارت الهيئة الصحية) · <span class="en">External</span> (خارجي: قانون الخصوصية HStan-03-2006). <span class="draw-flag">✏️ شجرة NFR ليها رسمة</span></li>
+    <li><b><span class="en">Complete</span></b> = كل الوظائف موصوفة. <b><span class="en">Consistent</span></b> = مفيش تعارض. عملياً مستحيل تحقق الاتنين 100%.</li>
+  </ul>
+  <div class="trap">"النظام يكون سهل الاستخدام" = <span class="en">Goal</span> مش requirement! الـ requirement الحقيقي لازم يكون <span class="en">testable</span> برقم: "بعد 4 ساعات تدريب، أخطاء المستخدم ≤ 2 في الساعة". مقاييس مهمة: <span class="en">Speed → transactions/sec · Reliability → mean time to failure · Ease of use → training time · Portability → % target-dependent statements</span>.</div></div>
+
+  <div class="card"><h3>وثيقة الـ SRS + طرق الكتابة</h3>
+  <ul>
+    <li><b><span class="en">SRS (Software Requirements Document)</span></b> = البيان الرسمي للمطلوب. بتقول <b>WHAT مش HOW</b> — مش وثيقة تصميم!</li>
+    <li><b>مستخدميها:</b> <span class="en">Customers</span> (يتأكدوا من احتياجاتهم) · <span class="en">Managers</span> (تخطيط) · <span class="en">System Engineers</span> (الفهم) · <span class="en">Test Engineers</span> (الاختبارات) · <span class="en">Maintenance Engineers</span> (الصيانة).</li>
+    <li><b>هيكلها:</b> <span class="en">Preface → Introduction → Glossary → User Requirements → System Architecture → System Requirements Spec → System Models → System Evolution → Appendices → Index</span>.</li>
+    <li><b>5 طرق لكتابة المتطلبات:</b> <span class="en">Natural language · Structured natural language · Design description languages · Graphical notations (UML) · Mathematical specifications</span>.</li>
+    <li><b>مشاكل اللغة الطبيعية الـ 3:</b> <span class="en">Lack of clarity · Requirements confusion · Requirements amalgamation</span> (خلط أكتر من متطلب في جملة).</li>
+  </ul></div>
+
+  <div class="card"><h3>مثال الـ Insulin Pump — أرقام بتيجي في الامتحان</h3>
+  <ul>
+    <li>المنطقة الآمنة للسكر: <b>3–7 وحدات</b>. المدخلات: <span class="en">r0, r1, r2</span> (أقدم → أحدث قراءة).</li>
+    <li><span class="en">CompDose = 0</span> لو السكر ثابت أو بينزل. لو بيزيد بمعدل متزايد: <span class="en">CompDose = round((r2−r1)/4)</span>، ولو النتيجة صفر → <span class="en">MinimumDose</span>.</li>
+    <li><b><span class="en">Pre-condition:</span></b> الخزان فيه على الأقل أقصى جرعة مسموحة. <b><span class="en">Post-condition:</span></b> r0←r1 وr1←r2.</li>
+    <li>الـ <span class="en">Form-based spec</span> بتقلل الغموض، والـ <span class="en">Tabular spec</span> ممتازة لما يكون فيه سيناريوهات متعددة.</li>
+  </ul></div>
+</section>
+
+<!-- ===== LEC 7 ===== -->
+<section id="l7">
+  <div class="lec-head"><span class="lec-num">Lec 7</span><h2>عملية هندسة المتطلبات <small>RE Process: Elicitation · Ethnography · Validation · Change Management</small></h2></div>
+
+  <div class="card"><h3>الأنشطة والدورة</h3>
+  <ul>
+    <li><b>أنشطة الـ RE الأربعة:</b> <span class="en">① Elicitation ② Analysis ③ Validation ④ Management</span> — عملية <span class="en">iterative</span> متشابكة، بتترسم كـ <span class="en">spiral</span>. <span class="draw-flag">✏️ ليها رسمة</span></li>
+    <li><b>دورة الـ Elicitation الرباعية:</b> <span class="en">Discovery → Classification & Organization → Prioritization & Negotiation → Specification</span> → وترجع تاني.</li>
+    <li><b>مشاكل الـ Elicitation الخمسة:</b> ① الناس مش عارفة عايزة إيه ② كل واحد بيتكلم بلغته ③ متطلبات متعارضة ④ عوامل سياسية وتنظيمية ⑤ المتطلبات بتتغير أثناء التحليل.</li>
+    <li><b><span class="en">Stakeholders</span></b> في MHC-PMS (8): <span class="en">Patients · Doctors · Nurses · Receptionists · IT staff · Ethics manager · Health care managers · Records staff</span>.</li>
+  </ul></div>
+
+  <div class="card"><h3>تقنيات الجمع</h3>
+  <ul>
+    <li><b><span class="en">Interviews</span>:</b> نوعان — <span class="en">Closed</span> (أسئلة محددة مسبقاً) و<span class="en">Open</span> (نقاش مفتوح). كويسة للفهم العام، <b>مش</b> كويسة للـ <span class="en">domain requirements</span> بسبب الـ <span class="en">tacit knowledge</span> (المعرفة الضمنية اللي الخبير مش واعي بيها).</li>
+    <li><b><span class="en">Ethnography</span>:</b> مراقبة الناس وهي بتشتغل <b>فعلاً</b> مش زي ما بتقول. بتكشف العوامل الاجتماعية والتنظيمية. عيبها: <b>متقدرش تكتشف features جديدة</b> — أداة فهم مش ابتكار.</li>
+    <li><b><span class="en">Focused ethnography</span>:</b> اتطورت في مشروع <span class="en">air traffic control</span> — بتدمج الـ ethnography مع الـ <span class="en">prototyping</span>.</li>
+  </ul></div>
+
+  <div class="card"><h3>التحقق وإدارة التغيير</h3>
+  <ul>
+    <li><b>قاعدة الـ 100×:</b> إصلاح خطأ في المتطلبات بعد التسليم بيكلف <b>100 ضعف</b> إصلاح خطأ تنفيذ.</li>
+    <li><b>الفحوصات الخمسة:</b> <span class="en">Validity · Consistency · Completeness · Realism · Verifiability</span>.</li>
+    <li><b>تقنيات الـ Validation الثلاثة:</b> <span class="en">Requirements reviews · Prototyping · Test-case generation</span>.</li>
+    <li><b>فحوصات الـ Review الأربعة:</b> <span class="en">Verifiability · Comprehensibility · Traceability · Adaptability</span>.</li>
+    <li><b>عملية إدارة التغيير:</b> <span class="en">Identified Problem → Problem Analysis & Change Spec → Change Analysis & Costing → Change Implementation → Revised Requirements</span>. <span class="draw-flag">✏️ ليها رسمة</span></li>
+    <li><b>عناصرها الأربعة:</b> <span class="en">Requirements Identification (unique ID) · Change Management Process · Traceability Policies · Tool Support</span>.</li>
+  </ul></div>
+</section>
+
+<!-- ===== LEC 8 ===== -->
+<section id="l8">
+  <div class="lec-head"><span class="lec-num">Lec 8</span><h2>نمذجة الأنظمة — UML <small>System Modeling: Perspectives · Context · Use Case · Sequence · Class · State/Activity</small></h2></div>
+
+  <div class="card"><h3>الأساسيات والمنظورات</h3>
+  <ul>
+    <li><b><span class="en">System Modeling</span></b> = تطوير نماذج مجردة للنظام، كل نموذج بيعرض منظور مختلف. الـ <b><span class="en">UML</span></b> هو اللغة القياسية.</li>
+    <li><b>المنظورات الأربعة:</b> ① <span class="en">External</span> → Context model ② <span class="en">Interaction</span> → Use case + Sequence ③ <span class="en">Structural</span> → Class diagram ④ <span class="en">Behavioral</span> → State + Activity.</li>
+    <li><b>أهم 5 أنواع UML:</b> <span class="en">Activity · Use Case · Sequence · Class · State</span>.</li>
+    <li><b>3 استخدامات للنماذج:</b> ① تسهيل النقاش (مسموح تكون ناقصة) ② توثيق نظام موجود (لازم accurate) ③ توليد الكود (لازم <span class="en">correct AND complete</span>).</li>
+  </ul></div>
+
+  <div class="card"><h3>النماذج واحد واحد — كل دول ليهم رسومات ✏️</h3>
+  <ul>
+    <li><b><span class="en">Context Model</span>:</b> بيحدد حدود النظام (<span class="en">system boundary</span>) — قرار "سياسي". بيعرض الأنظمة التانية حواليه. الـ Mentcare حواليه: <span class="en">Patient record · Admissions · Management reporting · Prescription · HC statistics · Appointments systems</span>.</li>
+    <li><b><span class="en">Use Case Diagram</span>:</b> كل use case = مهمة فيها تفاعل خارجي. الـ <span class="en">Actors</span> ممكن بشر أو أنظمة. الـ receptionist عنده 5: <span class="en">Register patient · Unregister · View info · Transfer data · Contact patient</span>.</li>
+    <li><b><span class="en">Sequence Diagram</span>:</b> الـ objects فوق + <span class="en">dotted lifelines</span> نازلة + أسهم أفقية للرسائل. مثال: <span class="en">ViewInfo(PID) → report → authorize → [OK: info / FAIL: error]</span>.</li>
+    <li><b><span class="en">Class Diagram</span>:</b> صندوق من 3 أقسام: <span class="en">Name | Attributes | Operations</span>. الـ <span class="en">Association</span> = خط بعلاقة وأرقام (multiplicity مثل 1..*).</li>
+    <li><b><span class="en">Generalization</span> (الوراثة):</b> الـ subclass بيرث صفات وعمليات الـ superclass ويضيف بتاعته. هرم الدكاترة: <span class="en">Doctor → Hospital doctor / General practitioner → Consultant / Team doctor → Trainee / Qualified</span>.</li>
+    <li><b><span class="en">Aggregation</span>:</b> علاقة "جزء من" — معينة ◇ فاضية. <span class="en">Patient record = Patient (1) + Consultations (1..*)</span>.</li>
+    <li><b><span class="en">Behavioral models</span>:</b> الاستجابة لمحفز <span class="en">Data</span> أو <span class="en">Event</span>. مثال الـ Activity: <span class="en">insulin pump — sensor → compute sugar → calculate insulin → control pump</span>.</li>
+  </ul>
+  <div class="trap">الفرق المحبوب للدكتور: الـ <span class="en">Context model</span> بيعرض الأنظمة اللي <b>حوالين</b> النظام بس، أما الـ <span class="en">Process model (Activity diagram)</span> بيعرض النظام بيُستخدم <b>إزاي</b> جوه العمليات. والـ <span class="en">Structural</span> = صورة ساكنة، الـ <span class="en">Behavioral</span> = ديناميكي.</div></div>
+</section>
+
+<!-- ===== LEC 9 ===== -->
+<section id="l9">
+  <div class="lec-head"><span class="lec-num">Lec 9</span><h2>التصميم والتنفيذ <small>Architectural Design · Patterns · Reuse · Configuration Management · Open Source</small></h2></div>
+
+  <div class="card"><h3>التصميم المعماري</h3>
+  <ul>
+    <li><b><span class="en">Architectural Design</span></b> = <b>أول مرحلة</b> في التصميم — تحديد الـ <span class="en">subsystems</span> وعلاقاتها. الحلقة بين الـ specification والتصميم التفصيلي.</li>
+    <li><b>مستويان:</b> <span class="en">In the small</span> (برنامج واحد) و<span class="en">In the large</span> (أنظمة enterprise كاملة).</li>
+    <li><b>3 مزايا للمعمارية الصريحة:</b> <span class="en">Stakeholder communication · System analysis (early) · Large-scale reuse</span>.</li>
+    <li><b>4 منظورات (Views):</b> <span class="en">Logical</span> (objects/classes) · <span class="en">Process</span> (run-time) · <span class="en">Development</span> (تقسيم الكود) · <span class="en">Physical</span> (التوزيع على الأجهزة).</li>
+  </ul></div>
+
+  <div class="card"><h3>الأنماط المعمارية — <span class="en">Architectural Patterns</span> ✏️</h3>
+  <table>
+    <tr><th>النمط</th><th>الفكرة + مثال</th><th>مزايا / عيوب</th></tr>
+    <tr><td>🗄️ <b><span class="en">Repository</span></b></td><td>كل الـ subsystems بتتشارك مستودع مركزي واحد. مثال: <span class="en">IDE</span> (Editor, Compiler, Debugger حوالين مستودع)</td><td>+ مشاركة بيانات فعالة / − <span class="en">single point of failure + bottleneck</span></td></tr>
+    <tr><td>🔧 <b><span class="en">Pipe-and-Filter</span></b></td><td>مراحل متسلسلة، كل filter بياخد input ويحوّله. مثال: <span class="en">Compiler: Lexical → Syntax → Semantic → Code generation</span>، وكمان الـ ATM</td><td>+ تبديل أي filter بسهولة / − لازم توافق صيغة البيانات</td></tr>
+    <tr><td>🏢 <b><span class="en">Layered</span></b></td><td>طبقات — كل طبقة بتخدم اللي فوقها. مثال: <span class="en">UI → UI Management → Business Logic → System Support (DB+OS)</span></td><td>+ تعديل طبقة من غير الباقي / − أداء أبطأ أحياناً</td></tr>
+  </table></div>
+
+  <div class="card"><h3>إعادة الاستخدام + إدارة الإعدادات + المصادر المفتوحة</h3>
+  <ul>
+    <li><b>4 مستويات Reuse:</b> <span class="en">Abstraction (patterns) → Object (libraries) → Component (frameworks) → System (COTS)</span>.</li>
+    <li><b>4 تكاليف Reuse:</b> <span class="en">Search & evaluation · Purchase · Adaptation · Integration</span> — إعادة الاستخدام مش مجانية!</li>
+    <li><b><span class="en">Configuration Management</span> — 3 أنشطة:</b> <span class="en">Version management (Git) · System integration · Problem tracking (Jira)</span>.</li>
+    <li><b><span class="en">Host-Target development</span>:</b> بتطور على الـ <span class="en">Host</span> (IDE + compilers + tools) والبرنامج بيشتغل على الـ <span class="en">Target</span> (libraries + DB). ✏️</li>
+    <li><b><span class="en">Open Source</span>:</b> الكود متاح للعموم — بدأت من <span class="en">FSF (Richard Stallman)</span>. أمثلة: <span class="en">Linux, Apache, mySQL</span>. نموذج الربح: بيع <b>الدعم والخدمات</b> مش البرنامج (Red Hat).</li>
+  </ul>
+  <div class="mem">رخص المصادر المفتوحة الثلاثة: <span class="en">GPL</span> = تبادلية (لو استخدمته لازم تفتح كودك) · <span class="en">LGPL</span> = أخف (للمكتبات، مش لازم تفتح مكوناتك) · <span class="en">BSD</span> = غير تبادلية (حر — ممكن تخليه مغلق ومدفوع). GPL الأكثر تقييداً، BSD الأكثر حرية.</div></div>
+</section>
+
+<!-- ===== DRAWINGS ===== -->
+<section id="draw">
+  <div class="lec-head"><span class="lec-num">✏️</span><h2>كل الرسومات اللي ممكن يقولك "ارسم" <small>Draw / Sketch — اتمرن عليها بإيدك على ورقة قبل الامتحان</small></h2></div>
+  <svg width="0" height="0" style="position:absolute"><defs>
+    <marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#9b968a"/></marker>
+  </defs></svg>
+
+  <div class="dr"><h3>1 · مكونات السوفتوير — <span class="en">What is Software?</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the components of software"</span> (Lec 1)</p>
+  <svg viewBox="0 0 700 210">
+    <rect class="bx" x="280" y="15" width="140" height="40"/><text class="tg" x="350" y="40">Software</text>
+    <line class="ar" x1="310" y1="55" x2="180" y2="95"/><line class="ar" x1="390" y1="55" x2="520" y2="95"/>
+    <rect class="bx2" x="110" y="100" width="140" height="40"/><text class="tx" x="180" y="125">Programs</text>
+    <rect class="bx2" x="450" y="100" width="160" height="40"/><text class="tx" x="530" y="125">Documentation</text>
+    <line class="ar" x1="495" y1="140" x2="400" y2="170"/><line class="ar" x1="565" y1="140" x2="640" y2="170"/>
+    <rect class="bx3" x="310" y="170" width="180" height="34"/><text class="tx" x="400" y="192">System Documentation</text>
+    <rect class="bx3" x="540" y="170" width="155" height="34"/><text class="tx" x="617" y="192">User Documentation</text>
+    <rect class="bx3" x="20" y="170" width="120" height="34"/><text class="tx" x="80" y="192">Data</text>
+    <line class="ar" x1="150" y1="140" x2="90" y2="170"/>
+  </svg>
+  <ol class="steps"><li>صندوق فوق: <span class="en">Software</span></li><li>تحته: <span class="en">Programs</span> و<span class="en">Documentation</span> و<span class="en">Data</span></li><li>تحت الـ Documentation: <span class="en">System docs</span> (للمطورين) و<span class="en">User docs</span> (للمستخدم)</li></ol></div>
+
+  <div class="dr"><h3>2 · مثلث التصميم — <span class="en">Time / Cost / Quality</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the three main design concerns"</span> (Lec 1)</p>
+  <svg viewBox="0 0 700 200">
+    <polygon points="350,25 170,165 530,165" fill="rgba(232,184,90,.07)" stroke="#e8b85a" stroke-width="1.5"/>
+    <text class="tg" x="350" y="18">Quality 💎</text><text class="tg" x="135" y="185">Time ⏱</text><text class="tg" x="560" y="185">Cost 💰</text>
+    <text class="ts" x="350" y="115">Pick any two —</text><text class="ts" x="350" y="132">the third suffers</text>
+  </svg>
+  <ol class="steps"><li>ارسم مثلث، واكتب على الرؤوس الثلاثة: <span class="en">Time · Cost · Quality</span></li><li>اكتب تحته: تحسين اثنين بيأثر على الثالث</li></ol></div>
+
+  <div class="dr"><h3>3 · نموذج الشلال — <span class="en">Waterfall Model</span></h3>
+  <p class="ask">أشهر رسمة في المادة كلها (Lec 3)</p>
+  <svg viewBox="0 0 700 280">
+    <rect class="bx" x="10" y="10" width="170" height="38"/><text class="tx" x="95" y="34">Requirements</text>
+    <rect class="bx" x="140" y="65" width="170" height="38"/><text class="tx" x="225" y="89">Design</text>
+    <rect class="bx" x="270" y="120" width="170" height="38"/><text class="tx" x="355" y="144">Implementation</text>
+    <rect class="bx" x="400" y="175" width="170" height="38"/><text class="tx" x="485" y="199">Testing</text>
+    <rect class="bx" x="520" y="230" width="170" height="38"/><text class="tx" x="605" y="254">Maintenance</text>
+    <line class="ar" x1="170" y1="48" x2="200" y2="65"/><line class="ar" x1="300" y1="103" x2="330" y2="120"/>
+    <line class="ar" x1="430" y1="158" x2="460" y2="175"/><line class="ar" x1="555" y1="213" x2="580" y2="230"/>
+  </svg>
+  <ol class="steps"><li>5 صناديق نازلة زي السلم: <span class="en">Requirements Analysis → Design → Implementation → Testing → Maintenance</span></li><li>سهم من كل مرحلة للي بعدها — <b>من غير</b> أسهم راجعة (مفيش iteration!)</li></ol></div>
+
+  <div class="dr"><h3>4 · النموذج الحلزوني — <span class="en">Boehm's Spiral Model</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the spiral model showing its four sectors"</span> (Lec 3)</p>
+  <svg viewBox="0 0 700 320">
+    <line x1="350" y1="20" x2="350" y2="300" stroke="#9b968a" stroke-width="1"/>
+    <line x1="120" y1="160" x2="580" y2="160" stroke="#9b968a" stroke-width="1"/>
+    <path d="M350,160 m0,-18 a18,18 0 1,1 -18,18 a30,30 0 1,1 36,-36 a55,55 0 1,1 -66,55 a85,85 0 1,1 100,-85 a118,118 0 1,1 -140,118" fill="none" stroke="#e8b85a" stroke-width="2"/>
+    <text class="tg" x="210" y="50">1 · Objective Setting</text>
+    <text class="tg" x="500" y="50">2 · Risk Assessment</text><text class="ts" x="500" y="66">& Reduction</text>
+    <text class="tg" x="505" y="280">3 · Development &</text><text class="ts" x="505" y="296">Validation (Engineering)</text>
+    <text class="tg" x="200" y="280">4 · Planning</text>
+    <text class="ts" x="350" y="315">كل لفة = مرحلة كاملة · من الداخل: Feasibility → Requirements → Design → ...</text>
+  </svg>
+  <ol class="steps"><li>ارسم محورين متقاطعين (+) ولولب بيكبر من المنتصف للخارج</li><li>سمّي الأرباع الأربعة بالترتيب: <span class="en">① Objective Setting ② Risk Assessment & Reduction ③ Development & Validation ④ Planning</span></li><li>اكتب: <span class="en">"Each loop represents a phase — risk-driven (Boehm 1988)"</span></li></ol></div>
+
+  <div class="dr"><h3>5 · نموذج الـ V — <span class="en">V-Model</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the V-Model"</span> (Lec 3)</p>
+  <svg viewBox="0 0 700 300">
+    <rect class="bx" x="15" y="15" width="160" height="34"/><text class="tx" x="95" y="37">Requirements</text>
+    <rect class="bx" x="75" y="75" width="160" height="34"/><text class="tx" x="155" y="97">System Design</text>
+    <rect class="bx" x="135" y="135" width="160" height="34"/><text class="tx" x="215" y="157">Module Design</text>
+    <rect class="bx3" x="270" y="225" width="160" height="34"/><text class="tx" x="350" y="247">Coding</text>
+    <rect class="bx2" x="405" y="135" width="160" height="34"/><text class="tx" x="485" y="157">Unit / Integration Test</text>
+    <rect class="bx2" x="465" y="75" width="160" height="34"/><text class="tx" x="545" y="97">System Test</text>
+    <rect class="bx2" x="525" y="15" width="160" height="34"/><text class="tx" x="605" y="37">Acceptance Test</text>
+    <line class="ar" x1="130" y1="49" x2="150" y2="75"/><line class="ar" x1="190" y1="109" x2="210" y2="135"/><line class="ar" x1="255" y1="169" x2="320" y2="225"/>
+    <line class="ar" x1="395" y1="225" x2="455" y2="169"/><line class="ar" x1="510" y1="135" x2="530" y2="109"/><line class="ar" x1="570" y1="75" x2="590" y2="49"/>
+    <line x1="180" y1="32" x2="525" y2="32" stroke="#9b968a" stroke-dasharray="4" stroke-width="1"/>
+    <line x1="240" y1="92" x2="465" y2="92" stroke="#9b968a" stroke-dasharray="4" stroke-width="1"/>
+    <line x1="300" y1="152" x2="405" y2="152" stroke="#9b968a" stroke-dasharray="4" stroke-width="1"/>
+  </svg>
+  <ol class="steps"><li>الجانب الأيسر نازل (تطوير): <span class="en">Requirements → System Design → Module Design</span></li><li>قاع الـ V: <span class="en">Coding</span></li><li>الجانب الأيمن طالع (اختبار): <span class="en">Unit/Integration Test → System Test → Acceptance Test</span></li><li>خطوط متقطعة بتربط كل مرحلة تطوير بمرحلة الاختبار المقابلة ليها</li></ol></div>
+
+  <div class="dr"><h3>6 · دورة الـ Sprint — <span class="en">Scrum Sprint Cycle</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the Scrum sprint cycle"</span> (Lec 5)</p>
+  <svg viewBox="0 0 700 170">
+    <rect class="bx" x="10" y="55" width="120" height="52"/><text class="tx" x="70" y="77">Review work</text><text class="ts" x="70" y="95">(Product Backlog)</text>
+    <rect class="bx" x="160" y="55" width="120" height="52"/><text class="tx" x="220" y="77">Select items</text><text class="ts" x="220" y="95">+ Plan sprint</text>
+    <rect class="bx2" x="310" y="55" width="120" height="52"/><text class="tx" x="370" y="77">Sprint</text><text class="ts" x="370" y="95">2–4 weeks</text>
+    <rect class="bx" x="460" y="55" width="120" height="52"/><text class="tx" x="520" y="77">Review</text><text class="ts" x="520" y="95">sprint</text>
+    <rect class="bx3" x="610" y="55" width="85" height="52"/><text class="tx" x="652" y="77">Shippable</text><text class="ts" x="652" y="95">software</text>
+    <line class="ar" x1="130" y1="81" x2="160" y2="81"/><line class="ar" x1="280" y1="81" x2="310" y2="81"/>
+    <line class="ar" x1="430" y1="81" x2="460" y2="81"/><line class="ar" x1="580" y1="81" x2="610" y2="81"/>
+    <path class="ar" d="M520,55 C480,15 110,15 70,52"/>
+    <text class="ts" x="350" y="155">أثناء الـ Sprint: الفريق معزول — كل التواصل عبر الـ ScrumMaster فقط</text>
+  </svg>
+  <ol class="steps"><li>5 صناديق بالترتيب: <span class="en">Review Backlog → Select & Plan → Sprint (2–4 weeks) → Review Sprint → Shippable Software</span></li><li>سهم راجع من Review لأول صندوق (الدورة بتتكرر)</li></ol></div>
+
+  <div class="dr"><h3>7 · شجرة الـ NFR — <span class="en">Types of Non-functional Requirements</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Classify non-functional requirements with a diagram"</span> (Lec 6)</p>
+  <svg viewBox="0 0 700 230">
+    <rect class="bx" x="240" y="10" width="220" height="36"/><text class="tg" x="350" y="33">Non-functional Requirements</text>
+    <rect class="bx2" x="40" y="95" width="170" height="34"/><text class="tx" x="125" y="117">Product Requirements</text>
+    <rect class="bx2" x="255" y="95" width="190" height="34"/><text class="tx" x="350" y="117">Organizational Reqs</text>
+    <rect class="bx2" x="490" y="95" width="170" height="34"/><text class="tx" x="575" y="117">External Requirements</text>
+    <line class="ar" x1="300" y1="46" x2="135" y2="95"/><line class="ar" x1="350" y1="46" x2="350" y2="95"/><line class="ar" x1="400" y1="46" x2="565" y2="95"/>
+    <text class="ts" x="125" y="160">Efficiency · Dependability</text><text class="ts" x="125" y="176">Security · Usability</text><text class="ts" x="125" y="192">(Performance · Space)</text>
+    <text class="ts" x="350" y="160">Environmental · Operational</text><text class="ts" x="350" y="176">Development</text>
+    <text class="ts" x="575" y="160">Regulatory · Ethical</text><text class="ts" x="575" y="176">Legislative</text>
+    <text class="ts" x="575" y="192">(Accounting · Safety)</text>
+  </svg>
+  <ol class="steps"><li>صندوق فوق: <span class="en">Non-functional Requirements</span></li><li>3 فروع: <span class="en">Product · Organizational · External</span></li><li>تحت كل فرع اكتب مثالين على الأقل (زي اللي في الرسمة)</li></ol></div>
+
+  <div class="dr"><h3>8 · أنشطة هندسة المتطلبات — <span class="en">The RE Process</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the requirements engineering process / change management process"</span> (Lec 7)</p>
+  <svg viewBox="0 0 700 170">
+    <rect class="bx" x="20" y="20" width="140" height="40"/><text class="tx" x="90" y="45">① Elicitation</text>
+    <rect class="bx" x="200" y="20" width="140" height="40"/><text class="tx" x="270" y="45">② Analysis</text>
+    <rect class="bx" x="380" y="20" width="140" height="40"/><text class="tx" x="450" y="45">③ Validation</text>
+    <rect class="bx" x="560" y="20" width="130" height="40"/><text class="tx" x="625" y="45">④ Management</text>
+    <line class="ar" x1="160" y1="40" x2="200" y2="40"/><line class="ar" x1="340" y1="40" x2="380" y2="40"/><line class="ar" x1="520" y1="40" x2="560" y2="40"/>
+    <rect class="bx2" x="20" y="105" width="150" height="40"/><text class="ts" x="95" y="124">Identified</text><text class="ts" x="95" y="138">Problem</text>
+    <rect class="bx2" x="195" y="105" width="150" height="40"/><text class="ts" x="270" y="124">Problem Analysis</text><text class="ts" x="270" y="138">& Change Spec</text>
+    <rect class="bx2" x="370" y="105" width="150" height="40"/><text class="ts" x="445" y="124">Change Analysis</text><text class="ts" x="445" y="138">& Costing</text>
+    <rect class="bx2" x="545" y="105" width="145" height="40"/><text class="ts" x="617" y="124">Change</text><text class="ts" x="617" y="138">Implementation</text>
+    <line class="ar" x1="170" y1="125" x2="195" y2="125"/><line class="ar" x1="345" y1="125" x2="370" y2="125"/><line class="ar" x1="520" y1="125" x2="545" y2="125"/>
+    <text class="ts" x="90" y="90">↑ الـ 4 أنشطة (iterative)</text><text class="ts" x="120" y="165">↑ عملية إدارة التغيير → Revised Requirements</text>
+  </svg>
+  <ol class="steps"><li>فوق: الأنشطة الأربعة <span class="en">Elicitation → Analysis → Validation → Management</span> (واذكر إنها iterative/spiral)</li><li>تحت: سلسلة إدارة التغيير: <span class="en">Identified Problem → Analysis & Change Spec → Analysis & Costing → Implementation → Revised Requirements</span></li></ol></div>
+
+  <div class="dr"><h3>9 · نموذج السياق — <span class="en">Context Model (Mentcare)</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the context model of the Mentcare / MHC-PMS system"</span> (Lec 8)</p>
+  <svg viewBox="0 0 700 260">
+    <rect class="bx" x="270" y="105" width="160" height="50"/><text class="tg" x="350" y="127">«system»</text><text class="tg" x="350" y="145">Mentcare</text>
+    <rect class="bx2" x="40" y="20" width="170" height="44"/><text class="ts" x="125" y="38">«system»</text><text class="tx" x="125" y="55">Patient record system</text>
+    <rect class="bx2" x="480" y="20" width="170" height="44"/><text class="ts" x="565" y="38">«system»</text><text class="tx" x="565" y="55">Admissions system</text>
+    <rect class="bx2" x="20" y="190" width="180" height="44"/><text class="ts" x="110" y="208">«system»</text><text class="tx" x="110" y="225">Management reporting</text>
+    <rect class="bx2" x="265" y="195" width="170" height="44"/><text class="ts" x="350" y="213">«system»</text><text class="tx" x="350" y="230">Prescription system</text>
+    <rect class="bx2" x="490" y="190" width="190" height="44"/><text class="ts" x="585" y="208">«system»</text><text class="tx" x="585" y="225">HC statistics / Appointments</text>
+    <line class="ar" x1="200" y1="64" x2="290" y2="105"/><line class="ar" x1="500" y1="64" x2="410" y2="105"/>
+    <line class="ar" x1="140" y1="190" x2="280" y2="150"/><line class="ar" x1="350" y1="195" x2="350" y2="155"/><line class="ar" x1="560" y1="190" x2="420" y2="150"/>
+  </svg>
+  <ol class="steps"><li>صندوق في النص: <span class="en">«system» Mentcare</span></li><li>حواليه الأنظمة الخمسة/الستة بخطوط: <span class="en">Patient record · Admissions · Management reporting · Prescription · HC statistics · Appointments</span></li><li>اكتب <span class="en">«system»</span> فوق اسم كل صندوق</li></ol></div>
+
+  <div class="dr"><h3>10 · رسم حالات الاستخدام — <span class="en">Use Case Diagram</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw a use case diagram for the medical receptionist"</span> (Lec 8)</p>
+  <svg viewBox="0 0 700 260">
+    <circle cx="90" cy="90" r="18" fill="none" stroke="#e8b85a" stroke-width="1.5"/>
+    <line x1="90" y1="108" x2="90" y2="155" stroke="#e8b85a" stroke-width="1.5"/>
+    <line x1="60" y1="125" x2="120" y2="125" stroke="#e8b85a" stroke-width="1.5"/>
+    <line x1="90" y1="155" x2="65" y2="195" stroke="#e8b85a" stroke-width="1.5"/><line x1="90" y1="155" x2="115" y2="195" stroke="#e8b85a" stroke-width="1.5"/>
+    <text class="tg" x="90" y="225">Medical Receptionist</text>
+    <ellipse cx="420" cy="30" rx="105" ry="22" fill="rgba(123,184,255,.1)" stroke="#7bb8ff"/><text class="tx" x="420" y="35">Register patient</text>
+    <ellipse cx="430" cy="83" rx="105" ry="22" fill="rgba(123,184,255,.1)" stroke="#7bb8ff"/><text class="tx" x="430" y="88">Unregister patient</text>
+    <ellipse cx="425" cy="136" rx="105" ry="22" fill="rgba(123,184,255,.1)" stroke="#7bb8ff"/><text class="tx" x="425" y="141">View patient info.</text>
+    <ellipse cx="420" cy="189" rx="105" ry="22" fill="rgba(123,184,255,.1)" stroke="#7bb8ff"/><text class="tx" x="420" y="194">Transfer data</text>
+    <ellipse cx="420" cy="240" rx="105" ry="20" fill="rgba(123,184,255,.1)" stroke="#7bb8ff"/><text class="tx" x="420" y="245">Contact patient</text>
+    <line x1="125" y1="115" x2="315" y2="32" stroke="#9b968a"/><line x1="125" y1="120" x2="325" y2="83" stroke="#9b968a"/>
+    <line x1="125" y1="130" x2="320" y2="136" stroke="#9b968a"/><line x1="125" y1="140" x2="315" y2="187" stroke="#9b968a"/><line x1="125" y1="150" x2="315" y2="237" stroke="#9b968a"/>
+    <text class="ts" x="620" y="135">في Transfer data فيه</text><text class="ts" x="620" y="152">actor تاني: PRS system</text>
+  </svg>
+  <ol class="steps"><li>راجل عود (stick man) على الشمال = الـ <span class="en">Actor</span></li><li>5 أشكال بيضاوية = الـ use cases: <span class="en">Register · Unregister · View info · Transfer data · Contact patient</span></li><li>خطوط بين الـ actor وكل ellipse — والـ actor ممكن يكون نظام تاني (زي PRS)</li></ol></div>
+
+  <div class="dr"><h3>11 · رسم التسلسل — <span class="en">Sequence Diagram (View Patient Info)</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw a sequence diagram for viewing patient information"</span> (Lec 8)</p>
+  <svg viewBox="0 0 700 280">
+    <rect class="bx" x="20" y="10" width="150" height="34"/><text class="ts" x="95" y="32">Medical Receptionist</text>
+    <rect class="bx2" x="230" y="10" width="120" height="34"/><text class="tx" x="290" y="32">P: PatientInfo</text>
+    <rect class="bx2" x="400" y="10" width="130" height="34"/><text class="tx" x="465" y="32">D: Mentcare-DB</text>
+    <rect class="bx2" x="565" y="10" width="125" height="34"/><text class="tx" x="627" y="32">AS: Authorization</text>
+    <line x1="95" y1="44" x2="95" y2="265" stroke="#9b968a" stroke-dasharray="5"/>
+    <line x1="290" y1="44" x2="290" y2="265" stroke="#9b968a" stroke-dasharray="5"/>
+    <line x1="465" y1="44" x2="465" y2="265" stroke="#9b968a" stroke-dasharray="5"/>
+    <line x1="627" y1="44" x2="627" y2="265" stroke="#9b968a" stroke-dasharray="5"/>
+    <line class="ar" x1="95" y1="80" x2="290" y2="80"/><text class="ts" x="190" y="72">ViewInfo (PID)</text>
+    <line class="ar" x1="290" y1="120" x2="465" y2="120"/><text class="ts" x="377" y="112">report (Info, PID, UID)</text>
+    <line class="ar" x1="465" y1="160" x2="627" y2="160"/><text class="ts" x="546" y="152">authorize (Info, UID)</text>
+    <line class="ar" x1="627" y1="195" x2="465" y2="195"/><text class="ts" x="546" y="188">authorization</text>
+    <line class="ar" x1="465" y1="240" x2="95" y2="240"/><text class="ts" x="280" y="232">alt: [OK] patient info / [fail] error (no access)</text>
+  </svg>
+  <ol class="steps"><li>الـ actor والـ objects فوق في صناديق، ومن كل واحد خط رأسي متقطع نازل (<span class="en">lifeline</span>)</li><li>أسهم أفقية بالترتيب الزمني من فوق لتحت: <span class="en">ViewInfo → report → authorize → authorization → info/error</span></li><li>اكتب اسم الرسالة فوق كل سهم، واستخدم <span class="en">alt</span> للحالتين (نجاح/فشل)</li></ol></div>
+
+  <div class="dr"><h3>12 · الكلاس والوراثة والتجميع — <span class="en">Class · Generalization · Aggregation</span></h3>
+  <p class="ask">3 رسومات في واحدة — أساسيات الـ Class Diagram (Lec 8)</p>
+  <svg viewBox="0 0 700 320">
+    <rect class="bx" x="20" y="20" width="170" height="110"/>
+    <line x1="20" y1="55" x2="190" y2="55" stroke="#e8b85a"/><line x1="20" y1="95" x2="190" y2="95" stroke="#e8b85a"/>
+    <text class="tg" x="105" y="43">Consultation</text>
+    <text class="ts" x="105" y="72">Doctors, Date, Time,</text><text class="ts" x="105" y="87">Clinic, Reason ...</text>
+    <text class="ts" x="105" y="113">New(), Prescribe(),</text><text class="ts" x="105" y="126">RecordNotes()</text>
+    <text class="ts" x="105" y="150">↑ 3 أقسام: Name | Attributes | Operations</text>
+    <rect class="bx2" x="290" y="20" width="130" height="36"/><text class="tx" x="355" y="43">Doctor</text>
+    <rect class="bx2" x="230" y="110" width="130" height="36"/><text class="tx" x="295" y="133">Hospital doctor</text>
+    <rect class="bx2" x="390" y="110" width="160" height="36"/><text class="tx" x="470" y="133">General practitioner</text>
+    <line x1="295" y1="110" x2="340" y2="56" stroke="#9b968a"/><line x1="470" y1="110" x2="370" y2="56" stroke="#9b968a"/>
+    <polygon points="355,56 347,70 363,70" fill="none" stroke="#7bb8ff" stroke-width="1.5"/>
+    <text class="ts" x="360" y="170">↑ Generalization (وراثة): مثلث فاضي عند الـ superclass</text>
+    <rect class="bx" x="80" y="210" width="150" height="36"/><text class="tx" x="155" y="233">Patient record</text>
+    <rect class="bx3" x="330" y="210" width="110" height="36"/><text class="tx" x="385" y="233">Patient</text>
+    <rect class="bx3" x="490" y="210" width="130" height="36"/><text class="tx" x="555" y="233">Consultation</text>
+    <line x1="230" y1="228" x2="330" y2="228" stroke="#9b968a"/><line x1="230" y1="232" x2="490" y2="260" stroke="#9b968a"/>
+    <polygon points="230,228 244,222 258,228 244,234" fill="none" stroke="#7dd87d" stroke-width="1.5"/>
+    <polygon points="230,232 244,228 258,236 243,240" fill="none" stroke="#7dd87d" stroke-width="1.5"/>
+    <text class="ts" x="290" y="215">1—1</text><text class="ts" x="330" y="275">1—1..*</text>
+    <text class="ts" x="350" y="305">↑ Aggregation (جزء من): معينة ◇ فاضية عند الكل (Patient record)</text>
+  </svg>
+  <ol class="steps"><li><b>الكلاس:</b> مستطيل 3 أقسام: الاسم / الـ attributes / الـ operations</li><li><b>الوراثة:</b> سهم بمثلث فاضي △ من الـ subclass للـ superclass (Hospital doctor → Doctor)</li><li><b>التجميع:</b> معينة فاضية ◇ ناحية "الكل": <span class="en">Patient record ◇— Patient (1-1) + Consultation (1-1..*)</span></li><li>متنساش الـ <span class="en">multiplicity</span> على الخطوط: 1، 1..*، 1..4</li></ol></div>
+
+  <div class="dr"><h3>13 · مضخة الأنسولين — <span class="en">Insulin Pump Activity Model</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the activity model of the insulin pump"</span> (Lec 2 + 8)</p>
+  <svg viewBox="0 0 700 200">
+    <rect class="bx3" x="15" y="30" width="115" height="44"/><text class="tx" x="72" y="49">Blood sugar</text><text class="tx" x="72" y="65">sensor</text>
+    <rect class="bx" x="165" y="30" width="115" height="44"/><text class="tx" x="222" y="56">Get sensor value</text>
+    <rect class="bx" x="315" y="30" width="130" height="44"/><text class="tx" x="380" y="49">Compute</text><text class="tx" x="380" y="65">sugar level</text>
+    <rect class="bx" x="480" y="30" width="140" height="44"/><text class="tx" x="550" y="49">Calculate insulin</text><text class="tx" x="550" y="65">delivery</text>
+    <rect class="bx" x="480" y="125" width="140" height="44"/><text class="tx" x="550" y="144">Calculate pump</text><text class="tx" x="550" y="160">commands</text>
+    <rect class="bx" x="315" y="125" width="130" height="44"/><text class="tx" x="380" y="151">Control pump</text>
+    <rect class="bx3" x="165" y="125" width="115" height="44"/><text class="tx" x="222" y="144">Insulin</text><text class="tx" x="222" y="160">pump</text>
+    <line class="ar" x1="130" y1="52" x2="165" y2="52"/><line class="ar" x1="280" y1="52" x2="315" y2="52"/><line class="ar" x1="445" y1="52" x2="480" y2="52"/>
+    <line class="ar" x1="550" y1="74" x2="550" y2="125"/><line class="ar" x1="480" y1="147" x2="445" y2="147"/><line class="ar" x1="315" y1="147" x2="280" y2="147"/>
+  </svg>
+  <ol class="steps"><li>سلسلة: <span class="en">Blood sugar sensor → Get sensor value → Compute sugar level → Calculate insulin delivery → Calculate pump commands → Control pump → Insulin pump</span></li><li>ده نظام <span class="en">embedded, safety-critical</span> — اذكرها لو طلب تعليق</li></ol></div>
+
+  <div class="dr"><h3>14 · الأنماط المعمارية الثلاثة — <span class="en">Repository · Pipe-and-Filter · Layered</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Draw the repository / pipe-and-filter / layered architecture"</span> (Lec 9)</p>
+  <svg viewBox="0 0 700 420">
+    <text class="tg" x="350" y="20">① Repository (IDE example)</text>
+    <ellipse cx="350" cy="85" rx="120" ry="32" fill="rgba(232,184,90,.1)" stroke="#e8b85a"/>
+    <text class="tx" x="350" y="82">Central Repository</text><text class="ts" x="350" y="97">(code + data)</text>
+    <rect class="bx2" x="30" y="65" width="100" height="36"/><text class="tx" x="80" y="88">Editor</text>
+    <rect class="bx2" x="570" y="65" width="110" height="36"/><text class="tx" x="625" y="88">Compiler</text>
+    <rect class="bx2" x="120" y="135" width="110" height="34"/><text class="tx" x="175" y="157">Debugger</text>
+    <rect class="bx2" x="460" y="135" width="130" height="34"/><text class="tx" x="525" y="157">Code generator</text>
+    <line class="ar" x1="130" y1="84" x2="230" y2="84"/><line class="ar" x1="570" y1="84" x2="470" y2="84"/>
+    <line class="ar" x1="210" y1="135" x2="280" y2="110"/><line class="ar" x1="500" y1="135" x2="430" y2="110"/>
+    <text class="tg" x="350" y="210">② Pipe-and-Filter (Compiler example)</text>
+    <rect class="bx" x="25" y="230" width="140" height="40"/><text class="tx" x="95" y="255">Lexical Analysis</text>
+    <rect class="bx" x="200" y="230" width="140" height="40"/><text class="tx" x="270" y="255">Syntax Analysis</text>
+    <rect class="bx" x="375" y="230" width="150" height="40"/><text class="tx" x="450" y="255">Semantic Analysis</text>
+    <rect class="bx" x="555" y="230" width="135" height="40"/><text class="tx" x="622" y="255">Code Generation</text>
+    <line class="ar" x1="165" y1="250" x2="200" y2="250"/><line class="ar" x1="340" y1="250" x2="375" y2="250"/><line class="ar" x1="525" y1="250" x2="555" y2="250"/>
+    <text class="tg" x="350" y="310">③ Layered (Information System)</text>
+    <rect class="bx2" x="150" y="322" width="400" height="24"/><text class="ts" x="350" y="338">User Interface</text>
+    <rect class="bx2" x="150" y="348" width="400" height="24"/><text class="ts" x="350" y="364">User Interface Management / Authentication</text>
+    <rect class="bx" x="150" y="374" width="400" height="24"/><text class="ts" x="350" y="390">Core Business Logic / Application Functionality</text>
+    <rect class="bx3" x="150" y="400" width="400" height="18"/><text class="ts" x="350" y="413">System Support (OS + Database)</text>
+  </svg>
+  <ol class="steps"><li><b>Repository:</b> مستودع في النص وكل الأدوات (Editor, Compiler, Debugger…) متوصلة بيه — مش ببعض</li><li><b>Pipe-and-Filter:</b> صناديق متسلسلة بأسهم: <span class="en">Lexical → Syntax → Semantic → Code Generation</span></li><li><b>Layered:</b> 4 طبقات فوق بعض: <span class="en">UI → UI Management → Business Logic → System Support</span> (نفس الفكرة لـ Mentcare)</li></ol></div>
+
+  <div class="dr"><h3>15 · بيئة التطوير — <span class="en">Host-Target Development</span></h3>
+  <p class="ask">لو السؤال: <span class="en">"Explain host-target development with a diagram"</span> (Lec 9)</p>
+  <svg viewBox="0 0 700 150">
+    <rect class="bx2" x="40" y="25" width="250" height="100"/><text class="tg" x="165" y="50">Host (development)</text>
+    <text class="ts" x="165" y="75">IDE · Compilers</text><text class="ts" x="165" y="92">Testing tools · Version control</text>
+    <rect class="bx3" x="420" y="25" width="250" height="100"/><text class="tg" x="545" y="50">Target (execution)</text>
+    <text class="ts" x="545" y="75">Libraries · Databases</text><text class="ts" x="545" y="92">Related systems</text>
+    <line class="ar" x1="290" y1="75" x2="420" y2="75"/><text class="ts" x="355" y="65">Deploy</text>
+  </svg>
+  <ol class="steps"><li>صندوقين: <span class="en">Host</span> (بيئة التطوير) وسهم Deploy لـ <span class="en">Target</span> (بيئة التشغيل)</li><li>اكتب محتويات كل واحد زي الرسمة</li></ol></div>
+</section>
+
+<!-- ===== CRAM ===== -->
+<section id="cram">
+  <div class="lec-head"><span class="lec-num">⚡</span><h2>آخر 30 دقيقة قبل الامتحان <small>اقرأ دي بس وانت رايح — كل الأرقام والقوائم اللي بتضيع منها درجات</small></h2></div>
+  <div class="grid2">
+  <div class="cram"><h3 style="color:var(--gold);margin-bottom:10px">📋 القوائم المرقمة</h3><ol>
+    <li><b>4 أنشطة SE:</b> <span class="en">Specification · Development · Validation · Evolution</span></li>
+    <li><b>4 صفات السوفتوير الجيد:</b> <span class="en">MADE — Maintainability · Acceptability · Dependability&Security · Efficiency</span></li>
+    <li><b>3 اهتمامات التصميم:</b> <span class="en">Time · Cost · Quality</span></li>
+    <li><b>3 نماذج عامة:</b> <span class="en">Waterfall · Evolutionary · Reuse-oriented</span></li>
+    <li><b>4 قطاعات Spiral:</b> <span class="en">Objectives · Risk · Engineering · Planning</span></li>
+    <li><b>5 مراحل اختبار:</b> <span class="en">Unit → Module → Sub-system → System → Acceptance</span></li>
+    <li><b>4 مراحل RUP:</b> <span class="en">Inception → Elaboration → Construction → Transition</span></li>
+    <li><b>4 قيم الـ Manifesto + 5 مبادئ Agile (CIPEM) + 10 ممارسات XP</b></li>
+    <li><b>Scrum:</b> 3 أعمدة (T-I-A) · 3 مراحل · 5 قيم (C-F-C-R-O) · sprint 2–4 أسابيع · فريق ≤ 7 · الأساس TRUST</li>
+    <li><b>3 أنواع متطلبات:</b> <span class="en">Functional · Non-functional · Domain</span> — والـ NFR: <span class="en">Product · Organizational · External</span></li>
+    <li><b>4 أنشطة RE:</b> <span class="en">Elicitation · Analysis · Validation · Management</span> — وقاعدة الـ <b>100×</b></li>
+    <li><b>5 فحوصات validation:</b> <span class="en">Validity · Consistency · Completeness · Realism · Verifiability</span></li>
+    <li><b>4 منظورات النمذجة:</b> <span class="en">External · Interaction · Structural · Behavioral</span></li>
+    <li><b>3 أنماط معمارية:</b> <span class="en">Repository · Pipe-and-Filter · Layered</span> — و4 Views: <span class="en">Logical · Process · Development · Physical</span></li>
+    <li><b>3 رخص:</b> <span class="en">GPL</span> (مقيدة) · <span class="en">LGPL</span> · <span class="en">BSD</span> (حرة)</li>
+  </ol></div>
+  <div class="cram"><h3 style="color:var(--red);margin-bottom:10px">⚠️ الفخاخ — متضيعش الدرجات دي</h3><ol>
+    <li><span class="en">"NOT a Waterfall phase?"</span> → <b>Iteration</b></li>
+    <li><span class="en">"NOT an Agile value?"</span> → <b>Comprehensive documentation</b></li>
+    <li><span class="en">Spiral prototypes</span> بتتبني في مرحلة → <b>Engineering</b> (مش Risk Analysis!)</li>
+    <li><span class="en">ScrumMaster</span> ≠ <b>Project Manager</b></li>
+    <li><span class="en">Agile</span> ظهر في → <b>late 1990s</b></li>
+    <li><span class="en">Pair programming</span> → <b>مش</b> بالضرورة أقل كفاءة</li>
+    <li>"سهل الاستخدام" = <b>Goal</b> — الـ requirement لازم يكون <b>testable</b> برقم</li>
+    <li><span class="en">SRS</span> بتقول <b>WHAT مش HOW</b> — مش وثيقة تصميم</li>
+    <li><span class="en">Ethnography</span> بتفهم الموجود — <b>متكتشفش features جديدة</b></li>
+    <li><span class="en">Interviews</span> مش كويسة للـ <b>domain requirements</b> (tacit knowledge)</li>
+    <li><span class="en">Context model</span> = الأنظمة حوالين النظام · <span class="en">Process model</span> = الاستخدام جوه العمليات</li>
+    <li><span class="en">Repository</span> عيبه → <b>single point of failure</b></li>
+    <li>الوراثة △ مثلث فاضي · التجميع ◇ معينة فاضية</li>
+    <li>أكتر نوع تطبيقات منتشر → <b>Embedded</b></li>
+    <li>أولوية الأخلاقيات → <b>Public health, safety & welfare</b></li>
+    <li>أرقام الأزمات: Ariane 5 = <b>36.7 ثانية / overflow 64→16 bit</b> · إسعاف لندن 1992 = <b>46 وفاة</b></li>
+    <li>Insulin pump: المنطقة الآمنة <b>3–7</b> · <span class="en">CompDose = round((r2−r1)/4)</span></li>
+  </ol></div>
+  </div>
+  <div class="mem" style="margin-top:18px">نصايح القاعة: ① اقرأ السؤال مرتين — خصوصاً لو فيه <span class="en">NOT</span>. ② في أسئلة الرسم: ارسم بقلم رصاص، سمّي <b>كل</b> صندوق وسهم بالإنجليزي. ③ لو مش متأكد من الإجابة الإنشائية، اكتب التعريف + مثال — بياخدوا درجات. ④ متسيبش سؤال فاضي أبداً. بالتوفيق يا أبو 🤍</div>
+</section>
+
+<footer>CSE 302 · Software Engineering — المراجعة الشاملة النهائية · اتبنت من المحاضرات التسعة والشيتات · ربنا يوفقك</footer>
+</div>
+<a href="#" class="up">↑</a>
+</body>
+</html>
